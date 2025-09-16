@@ -8,16 +8,16 @@ import { FadeText } from './ui/fade'
 
 export function About() {
   return (
-    <section id="about" className="min-h-screen py-20 px-6">
+    <section id="about" className="min-h-screen py-20 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="grid md:grid-cols-2 gap-12 items-center"
+          className="grid md:grid-cols-2 gap-8 md:gap-12 items-center"
         >
           <div>
-            <h2 className="text-5xl md:text-7xl font-light italic mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-light italic mb-6">
             <FadeText
                 className="text-white"
                 direction="up"
@@ -54,7 +54,7 @@ export function About() {
                 
               </span>
             </h2>
-            <p className="text-gray-400 text-lg mb-8">
+            <p className="text-gray-400 text-sm sm:text-base md:text-lg mb-8">
             I am an Information Technology student at Politeknik Negeri Madiun with experience in Laravel, PHP, JavaScript, React, Kotlin, Python, as well as interests in IoT and cybersecurity. I aim to become a skilled full-stack developer and software engineer while deepening my knowledge of networking, IoT, and secure system design. Through various projects, I’ve integrated Laravel with React and JavaScript, explored mobile app development with Kotlin, and built IoT-based solutions. My passion for technology drives me to keep learning and contribute to creating innovative and secure solutions.
             </p>
           </div>

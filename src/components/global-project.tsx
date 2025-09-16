@@ -4,6 +4,7 @@ import apkgudang from "@/public/apkgudang.png"
 import ponpes from "@/public/ponpes.png"
 import sensoriot from "@/public/sensoriot.png"
 import iotlampu from "@/public/iotlampu.png"
+import absensi from "@/public/absensi.png"
 
 export const projects = [
     {
@@ -37,5 +38,13 @@ export const projects = [
         tags: ['IOT', 'Firebase'],
         image: {iotlampu},
         link : "https://github.com/adialam345/iot-lampu"
+    },
+    {
+        id: 5,
+        title: 'ABSENSI PROJECT | WEBSITE',
+        description: 'Sistem Absensi Digital: Sebuah aplikasi web untuk manajemen absensi karyawan dengan fitur canggih seperti deteksi lokasi dengan radius, foto selfie untuk verifikasi kehadiran, dan dashboard real-time. Dibangun menggunakan Laravel dan Tailwind CSS dengan fitur keamanan tinggi dan antarmuka yang user-friendly.',
+        tags: ['Laravel', 'Tailwind CSS', 'GPS', 'Camera API'],
+        image: {absensi},
+        link : "https://github.com/adialam345/absensi-notepro"
     }
 ];

@@ -15,8 +15,8 @@ export type IconProps = React.HTMLAttributes<SVGElement>;
 
 export function DockDemo() {
   return (
-    <div className="fixed bottom-5 left-0 right-0 z-50">
-      <Dock iconMagnification={60} iconDistance={100}>
+    <div className="fixed bottom-3 sm:bottom-5 left-0 right-0 z-50 px-4 sm:px-0">
+      <Dock iconMagnification={60} iconDistance={80}>
        
         <DockIcon className="bg-black/10  dark:bg-white/10">
             <TooltipProvider>
