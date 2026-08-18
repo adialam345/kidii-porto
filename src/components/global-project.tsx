@@ -5,6 +5,7 @@ import ponpes from "@/public/ponpes.png"
 import sensoriot from "@/public/sensoriot.png"
 import iotlampu from "@/public/iotlampu.png"
 import absensi from "@/public/absensi.png"
+import laundry from "@/public/laundry.png"
 
 export const projects = [
     {
@@ -46,5 +47,13 @@ export const projects = [
         tags: ['Laravel', 'Tailwind CSS', 'GPS', 'Camera API'],
         image: {absensi},
         link : "https://github.com/adialam345/absensi-notepro"
+    },
+    {
+        id: 6,
+        title: 'LAUNDRY SYSTEM | WEBSITE',
+        description: 'Sistem Manajemen Laundry: Sebuah aplikasi web untuk pengelolaan transaksi laundry, manajemen pelanggan, pelacakan status cucian (proses, cuci, setrika, selesai), cetak nota/struk, dan laporan keuangan. Dibangun menggunakan Laravel dan Tailwind CSS dengan antarmuka yang responsif dan efisien.',
+        tags: ['Laravel', 'Tailwind CSS'],
+        image: {laundry},
+        link : "https://github.com/adialam345/laundry"
     }
 ];

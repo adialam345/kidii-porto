@@ -29,7 +29,7 @@ export function Projects() {
             >
               <div className="overflow-hidden rounded-2xl">
                 <Image
-                  src={project.image.apkgudang || project.image.ponpes || project.image.sensoriot || project.image.iotlampu || project.image.absensi}
+                  src={Object.values(project.image)[0]}
                   alt={project.title}
                   className="w-full h-[200px] object-cover transition-transform duration-500 group-hover:scale-110"
                 />

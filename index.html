@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KIDII DEV - Full-Stack Developer & Software Engineer Portfolio</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Portfolio of Adi Alam Sami Aji, a student at Polytechnic State Madiun, majoring in Information Technology and pursuing Full-Stack Development and Software Engineering.">
+    <meta name="keywords" content="Portfolio, Full-Stack Developer, Software Engineer, Adi Alam Sami Aji, KIDII DEV, Web Development, Kotlin, Laravel">
+    <meta name="author" content="Adi Alam Sami Aji">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    
+    <!-- Custom Styles -->
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09090b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46;
+        }
+
+        /* Particles & Wavy Canvas styling */
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        #wavy-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            filter: blur(25px);
+            opacity: 0.65;
+        }
+
+        /* Marquee Animation */
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: flex;
+            width: max-content;
+            animation: marquee 25s linear infinite;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+
+        /* Glow Border Animation (Shine) */
+        @keyframes shine {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .shine-border {
+            position: relative;
+            background: linear-gradient(90deg, #d9e9f6, #2b6684, #7caac2, #2b6684, #d9e9f6);
+            background-size: 300% 300%;
+            animation: shine 12s ease infinite;
+        }
+
+        /* Scroll Animation (Fade & Slide in) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-left.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-right.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* Grayscale transition for Marquee logos */
+        .marquee-logo {
+            filter: grayscale(100%) brightness(0.8);
+            transition: all 0.3s ease;
+        }
+        .marquee-logo:hover {
+            filter: grayscale(0%) brightness(1);
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="bg-black text-white font-sans overflow-x-hidden min-h-screen selection:bg-white selection:text-black">
+
+    <!-- Canvas Components -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- Header Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 backdrop-blur-md bg-black/10">
+        <a href="#home" class="text-xl font-bold border border-white/20 rounded-full px-5 py-2 hover:bg-white hover:text-black hover:border-white transition-all duration-300">
+            KIDII DEV
+        </a>
+    </header>
+
+    <!-- Floating Dock Menu -->
+    <div class="fixed bottom-4 sm:bottom-6 left-0 right-0 z-50 px-4 sm:px-0 flex justify-center">
+        <div id="dock" class="flex items-center gap-4 bg-white/5 border border-white/10 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-2xl h-[58px] transition-all duration-300">
+            <!-- Home -->
+            <div class="relative group flex items-center justify-center">
+                <a href="#home" class="dock-icon flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all duration-200">
+                    <i data-lucide="home" class="w-5 h-5"></i>
+                </a>
+                <span class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-neutral-900 border border-white/10 text-white text-[10px] tracking-wider px-2.5 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap uppercase">
+                    Home
+                </span>
+            </div>
+            <!-- About -->
+            <div class="relative group flex items-center justify-center">
+                <a href="#about" class="dock-icon flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all duration-200">
+                    <i data-lucide="user" class="w-5 h-5"></i>
+                </a>
+                <span class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-neutral-900 border border-white/10 text-white text-[10px] tracking-wider px-2.5 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap uppercase">
+                    About
+                </span>
+            </div>
+            <!-- Projects -->
+            <div class="relative group flex items-center justify-center">
+                <a href="#work" class="dock-icon flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all duration-200">
+                    <i data-lucide="folder-git" class="w-5 h-5"></i>
+                </a>
+                <span class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-neutral-900 border border-white/10 text-white text-[10px] tracking-wider px-2.5 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap uppercase">
+                    Projects
+                </span>
+            </div>
+            <!-- Contact -->
+            <div class="relative group flex items-center justify-center">
+                <a href="#contact" class="dock-icon flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all duration-200">
+                    <i data-lucide="message-square" class="w-5 h-5"></i>
+                </a>
+                <span class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-neutral-900 border border-white/10 text-white text-[10px] tracking-wider px-2.5 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap uppercase">
+                    Contact
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Home Section -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <canvas id="wavy-canvas"></canvas>
+        <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center">
+            <!-- Gradual Spacing Header -->
+            <div class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight select-none">
+                <div class="text-white flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center">
+                    <div class="gradual-spacing font-light italic" data-text="I'm a">I'm a</div>
+                    <div class="gradual-spacing font-bold" data-text="FULL-STACK">FULL-STACK</div>
+                </div>
+                <div class="gradual-spacing font-bold" data-text="DEVELOPER &">DEVELOPER &</div>
+                <div class="gradual-spacing font-bold" data-text="SOFTWARE ENGINEER">SOFTWARE ENGINEER</div>
+            </div>
+            
+            <p class="mt-6 text-sm sm:text-base md:text-xl text-neutral-300 max-w-2xl mx-auto px-4 leading-relaxed">
+                I am a student at Polytechnic State Madiun, majoring in Information Technology. I am currently learning to become a full-stack developer and software engineer, with skills in internet networking.
+            </p>
+            
+            <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 px-4">
+                <a href="#about" class="w-full sm:w-auto bg-white text-black hover:bg-neutral-200 px-8 py-3.5 rounded-full font-medium text-sm sm:text-base transition-all duration-300 hover:scale-105 active:scale-95 text-center">
+                    Know more
+                </a>
+                <a href="#contact" class="w-full sm:w-auto border border-white/30 hover:border-white hover:bg-white/5 px-8 py-3.5 rounded-full font-medium text-sm sm:text-base transition-all duration-300 hover:scale-105 active:scale-95 text-center">
+                    Contact
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="min-h-screen py-24 px-4 sm:px-6 flex flex-col justify-center border-t border-white/5 bg-neutral-950/20">
+        <div class="max-w-6xl mx-auto w-full">
+            <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+                <!-- Text Content -->
+                <div class="reveal-left">
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-light italic mb-8 leading-none">
+                        where<br>
+                        <span class="font-extrabold not-italic block mt-2 tracking-tight text-white">
+                            EXPERIENCE<br>BUILDS<br>CHARACTER
+                        </span>
+                    </h2>
+                    <p class="text-neutral-400 text-sm sm:text-base md:text-lg leading-relaxed">
+                        I am an Information Technology student at Politeknik Negeri Madiun with experience in Laravel, PHP, JavaScript, React, Kotlin, Python, as well as interests in IoT and cybersecurity. I aim to become a skilled full-stack developer and software engineer while deepening my knowledge of networking, IoT, and secure system design. Through various projects, I’ve integrated Laravel with React and JavaScript, explored mobile app development with Kotlin, and built IoT-based solutions. My passion for technology drives me to keep learning and contribute to creating innovative and secure solutions.
+                    </p>
+                </div>
+                
+                <!-- Profile Image -->
+                <div class="relative flex justify-center reveal-right">
+                    <div class="relative aspect-square w-full max-w-[420px] bg-gradient-to-br from-neutral-800 to-neutral-950 rounded-3xl p-1 shadow-2xl overflow-hidden group">
+                        <img src="src/public/profile.jpg" alt="Adi Alam Sami Aji Profile" class="w-full h-full object-cover rounded-[22px] transition-transform duration-500 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-[22px] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tech Stack Marquee -->
+        <div class="w-full mt-24 max-w-6xl mx-auto overflow-hidden reveal">
+            <h3 class="text-xs font-semibold tracking-widest text-center text-neutral-500 uppercase mb-8">Tech Stack & Tools</h3>
+            
+            <div class="relative flex overflow-x-hidden w-full py-6 bg-neutral-950/40 rounded-2xl border border-white/5 backdrop-blur-sm">
+                <!-- Row 1 -->
+                <div class="animate-marquee flex gap-8 whitespace-nowrap">
+                    <div class="flex items-center gap-8 px-4">
+                        <div class="w-32 h-16 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors" title="JavaScript">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png" alt="JavaScript" class="marquee-logo max-h-10 object-contain">
+                        </div>
+                        <div class="w-32 h-16 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors" title="React">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="React" class="marquee-logo max-h-10 object-contain">
+                        </div>
+                        <div class="w-32 h-16 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors" title="NodeJS">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d9/Node.js_logo.svg" alt="NodeJS" class="marquee-logo max-h-10 object-contain">
+                        </div>
+                        <div class="w-32 h-16 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors" title="Tailwind CSS">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" alt="Tailwind CSS" class="marquee-logo max-h-10 object-contain">
+                        </div>
+                        <div class="w-32 h-16 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors" title="Laravel">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Laravel.svg" alt="Laravel" class="marquee-logo max-h-10 object-contain">
+                        </div>
+                        <div class="w-32 h-16 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors" title="Kotlin">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/7/74/Kotlin_Icon.png" alt="Kotlin" class="marquee-logo max-h-10 object-contain">
+                        </div>
+                        <div class="w-32 h-16 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors" title="Python">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" alt="Python" class="marquee-logo max-h-10 object-contain">
+                        </div>
+                        <div class="w-32 h-16 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors" title="Bootstrap">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Bootstrap_logo.svg" alt="Bootstrap" class="marquee-logo max-h-10 object-contain">
+                        </div>
+                        <div class="w-32 h-16 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors" title="C++">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/ISO_C%2B%2B_Logo.svg" alt="C++" class="marquee-logo max-h-10 object-contain">
+                        </div>
+                        <div class="w-32 h-16 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors" title="Java">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Java_Logo.svg" alt="Java" class="marquee-logo max-h-10 object-contain">
+                        </div>
+                    </div>
+                </div>
+                <!-- Row 2 (Duplicate for loop) -->
+                <div class="animate-marquee flex gap-8 whitespace-nowrap" aria-hidden="true">
+                    <div class="flex items-center gap-8 px-4">
+                        <div class="w-32 h-16 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors" title="JavaScript">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png" alt="JavaScript" class="marquee-logo max-h-10 object-contain">
+                        </div>
+                        <div class="w-32 h-16 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors" title="React">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="React" class="marquee-logo max-h-10 object-contain">
+                        </div>
+                        <div class="w-32 h-16 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors" title="NodeJS">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d9/Node.js_logo.svg" alt="NodeJS" class="marquee-logo max-h-10 object-contain">
+                        </div>
+                        <div class="w-32 h-16 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors" title="Tailwind CSS">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" alt="Tailwind CSS" class="marquee-logo max-h-10 object-contain">
+                        </div>
+                        <div class="w-32 h-16 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors" title="Laravel">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Laravel.svg" alt="Laravel" class="marquee-logo max-h-10 object-contain">
+                        </div>
+                        <div class="w-32 h-16 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors" title="Kotlin">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/7/74/Kotlin_Icon.png" alt="Kotlin" class="marquee-logo max-h-10 object-contain">
+                        </div>
+                        <div class="w-32 h-16 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors" title="Python">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" alt="Python" class="marquee-logo max-h-10 object-contain">
+                        </div>
+                        <div class="w-32 h-16 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors" title="Bootstrap">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Bootstrap_logo.svg" alt="Bootstrap" class="marquee-logo max-h-10 object-contain">
+                        </div>
+                        <div class="w-32 h-16 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors" title="C++">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/ISO_C%2B%2B_Logo.svg" alt="C++" class="marquee-logo max-h-10 object-contain">
+                        </div>
+                        <div class="w-32 h-16 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors" title="Java">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Java_Logo.svg" alt="Java" class="marquee-logo max-h-10 object-contain">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Projects Section -->
+    <section class="py-24 px-4 sm:px-6 border-t border-white/5 bg-black">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">Latest Projects</h2>
+                <p class="text-neutral-400 max-w-2xl mx-auto text-sm sm:text-base md:text-lg">
+                    Sebuah sistem informasi berbasis web menggunakan Laravel untuk manajemen lembaga pendidikan. Fitur utama meliputi autentikasi berbasis peran, manajemen konten dinamis, pendaftaran siswa online, antarmuka responsif, dan arsitektur database yang efisien.
+                </p>
+            </div>
+            
+            <!-- Shine Border & Safari mockup -->
+            <div class="w-full flex justify-center reveal">
+                <div class="shine-border p-[3px] rounded-[15px] w-full lg:w-3/5 shadow-2xl transition-all duration-300 hover:scale-[1.02] cursor-grab active:cursor-grabbing">
+                    <div class="rounded-[12px] bg-[#1e1e1e] overflow-hidden border border-neutral-900">
+                        <!-- Safari Mockup Bar -->
+                        <div class="flex items-center justify-between px-4 py-3 bg-[#18181b] border-b border-neutral-800">
+                            <!-- dot buttons -->
+                            <div class="flex gap-2">
+                                <span class="w-3 h-3 rounded-full bg-[#ef4444]"></span>
+                                <span class="w-3 h-3 rounded-full bg-[#eab308]"></span>
+                                <span class="w-3 h-3 rounded-full bg-[#22c55e]"></span>
+                            </div>
+                            <!-- url -->
+                            <div class="flex-1 max-w-xs sm:max-w-md mx-auto bg-neutral-900 border border-white/5 text-[11px] text-neutral-400 text-center py-1.5 rounded-lg flex items-center justify-center gap-1.5 px-3">
+                                <i data-lucide="lock" class="w-3 h-3 text-neutral-500"></i>
+                                <span class="truncate">https://miftahulhudadoho.or.id/</span>
+                            </div>
+                            <!-- placeholder right icons -->
+                            <div class="flex items-center gap-3 text-neutral-500">
+                                <i data-lucide="share" class="w-3.5 h-3.5"></i>
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Content visual -->
+                        <div class="relative w-full aspect-[1200/753] bg-neutral-950">
+                            <img src="src/public/ponpes.png" alt="PONPES Website Mockup" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Work/Projects Section -->
+    <section id="work" class="py-24 px-4 sm:px-6 border-t border-white/5 bg-neutral-950/20">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-12 reveal-left">All Projects</h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <!-- Project 1: PONPES -->
+                <div class="group flex flex-col justify-between bg-white/5 border border-white/10 rounded-2xl p-4 transition-all duration-300 hover:bg-white/[0.08] hover:scale-[1.03] reveal">
+                    <div>
+                        <div class="overflow-hidden rounded-xl aspect-[16/10] mb-4">
+                            <img src="src/public/ponpes.png" alt="PONPES WEBSITE" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        </div>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-bold">PONPES MIFTAHUL HUDA | WEBSITE</h3>
+                            <a href="https://github.com/adialam345/ponpes_miftahulhuda" target="_blank" class="p-2 rounded-full border border-white/20 hover:bg-white hover:text-black transition-all duration-300">
+                                <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+                        <p class="text-neutral-400 text-sm mb-4 leading-relaxed line-clamp-4">
+                            Pondok Pesantren Miftahul Huda: Sebuah sistem informasi berbasis web menggunakan Laravel untuk manajemen lembaga pendidikan. Fitur utama meliputi autentikasi berbasis peran, manajemen konten dinamis, pendaftaran siswa online, antarmuka responsif, dan arsitektur database yang efisien.
+                        </p>
+                    </div>
+                    <div class="flex gap-2 flex-wrap mt-2">
+                        <span class="px-3 py-1 text-xs border border-white/10 bg-white/5 rounded-full text-neutral-300">Laravel</span>
+                        <span class="px-3 py-1 text-xs border border-white/10 bg-white/5 rounded-full text-neutral-300">Tailwind CSS</span>
+                    </div>
+                </div>
+
+                <!-- Project 2: Sistok Gudang -->
+                <div class="group flex flex-col justify-between bg-white/5 border border-white/10 rounded-2xl p-4 transition-all duration-300 hover:bg-white/[0.08] hover:scale-[1.03] reveal">
+                    <div>
+                        <div class="overflow-hidden rounded-xl aspect-[16/10] mb-4">
+                            <img src="src/public/apkgudang.png" alt="SISTOK GUDANG" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        </div>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-bold">SISTOK GUDANG | MOBILE</h3>
+                            <a href="https://github.com/adialam345/sistok_gudang" target="_blank" class="p-2 rounded-full border border-white/20 hover:bg-white hover:text-black transition-all duration-300">
+                                <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+                        <p class="text-neutral-400 text-sm mb-4 leading-relaxed line-clamp-4">
+                            Sisitok Gudang: Adalah aplikasi Android untuk memantau dan mengelola inventaris gudang secara real-time. Fitur utama mencakup pencatatan barang masuk/keluar, manajemen pemasok, autentikasi pengguna, dan sinkronisasi data melalui API dengan arsitektur MVVM dan basis data lokal.
+                        </p>
+                    </div>
+                    <div class="flex gap-2 flex-wrap mt-2">
+                        <span class="px-3 py-1 text-xs border border-white/10 bg-white/5 rounded-full text-neutral-300">Kotlin</span>
+                    </div>
+                </div>
+
+                <!-- Project 3: Monitoring Sensor -->
+                <div class="group flex flex-col justify-between bg-white/5 border border-white/10 rounded-2xl p-4 transition-all duration-300 hover:bg-white/[0.08] hover:scale-[1.03] reveal">
+                    <div>
+                        <div class="overflow-hidden rounded-xl aspect-[16/10] mb-4">
+                            <img src="src/public/sensoriot.png" alt="MONITORING SENSOR" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        </div>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-bold">MONITORING SENSOR | MOBILE</h3>
+                            <a href="https://github.com/adialam345/aplikasi-monitoring-sensor-IOT" target="_blank" class="p-2 rounded-full border border-white/20 hover:bg-white hover:text-black transition-all duration-300">
+                                <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+                        <p class="text-neutral-400 text-sm mb-4 leading-relaxed line-clamp-4">
+                            Monitoring Sensor: Sebuah aplikasi Android untuk memantau data sensor secara real-time menggunakan teknologi Internet of Things (IoT) dan Firebase Realtime Database. Fitur utama meliputi integrasi layanan Google dan antarmuka modern berbasis Material Design untuk tampilan yang intuitif dan responsif.
+                        </p>
+                    </div>
+                    <div class="flex gap-2 flex-wrap mt-2">
+                        <span class="px-3 py-1 text-xs border border-white/10 bg-white/5 rounded-full text-neutral-300">Kotlin</span>
+                        <span class="px-3 py-1 text-xs border border-white/10 bg-white/5 rounded-full text-neutral-300">Firebase</span>
+                        <span class="px-3 py-1 text-xs border border-white/10 bg-white/5 rounded-full text-neutral-300">IoT</span>
+                    </div>
+                </div>
+
+                <!-- Project 4: IoT Smart Lamp -->
+                <div class="group flex flex-col justify-between bg-white/5 border border-white/10 rounded-2xl p-4 transition-all duration-300 hover:bg-white/[0.08] hover:scale-[1.03] reveal">
+                    <div>
+                        <div class="overflow-hidden rounded-xl aspect-[16/10] mb-4">
+                            <img src="src/public/iotlampu.png" alt="IOT SMART LAMP" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        </div>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-bold">IOT SMART LAMP | WEBSITE</h3>
+                            <a href="https://github.com/adialam345/iot-lampu" target="_blank" class="p-2 rounded-full border border-white/20 hover:bg-white hover:text-black transition-all duration-300">
+                                <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+                        <p class="text-neutral-400 text-sm mb-4 leading-relaxed line-clamp-4">
+                            IoT Smart Lamp Monitoring & Control: Sebuah sistem IoT berbasis web untuk memantau dan mengontrol lampu secara real-time menggunakan Firebase Realtime Database. Fitur utama meliputi pemantauan status perangkat, mode otomatis dan manual, deteksi gerakan dengan sensor PIR, serta antarmuka web responsif untuk kendali lampu.
+                        </p>
+                    </div>
+                    <div class="flex gap-2 flex-wrap mt-2">
+                        <span class="px-3 py-1 text-xs border border-white/10 bg-white/5 rounded-full text-neutral-300">IoT</span>
+                        <span class="px-3 py-1 text-xs border border-white/10 bg-white/5 rounded-full text-neutral-300">Firebase</span>
+                    </div>
+                </div>
+
+                <!-- Project 5: Absensi Project -->
+                <div class="group flex flex-col justify-between bg-white/5 border border-white/10 rounded-2xl p-4 transition-all duration-300 hover:bg-white/[0.08] hover:scale-[1.03] reveal">
+                    <div>
+                        <div class="overflow-hidden rounded-xl aspect-[16/10] mb-4">
+                            <img src="src/public/absensi.png" alt="ABSENSI PROJECT" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        </div>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-bold">ABSENSI PROJECT | WEBSITE</h3>
+                            <a href="https://github.com/adialam345/absensi-notepro" target="_blank" class="p-2 rounded-full border border-white/20 hover:bg-white hover:text-black transition-all duration-300">
+                                <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+                        <p class="text-neutral-400 text-sm mb-4 leading-relaxed line-clamp-4">
+                            Sistem Absensi Digital: Sebuah aplikasi web untuk manajemen absensi karyawan dengan fitur canggih seperti deteksi lokasi dengan radius, foto selfie untuk verifikasi kehadiran, dan dashboard real-time. Dibangun menggunakan Laravel dan Tailwind CSS dengan fitur keamanan tinggi dan antarmuka yang user-friendly.
+                        </p>
+                    </div>
+                    <div class="flex gap-2 flex-wrap mt-2">
+                        <span class="px-3 py-1 text-xs border border-white/10 bg-white/5 rounded-full text-neutral-300">Laravel</span>
+                        <span class="px-3 py-1 text-xs border border-white/10 bg-white/5 rounded-full text-neutral-300">Tailwind CSS</span>
+                        <span class="px-3 py-1 text-xs border border-white/10 bg-white/5 rounded-full text-neutral-300">GPS</span>
+                        <span class="px-3 py-1 text-xs border border-white/10 bg-white/5 rounded-full text-neutral-300">Camera API</span>
+                    </div>
+                </div>
+
+                <!-- Project 6: Laundry System -->
+                <div class="group flex flex-col justify-between bg-white/5 border border-white/10 rounded-2xl p-4 transition-all duration-300 hover:bg-white/[0.08] hover:scale-[1.03] reveal">
+                    <div>
+                        <div class="overflow-hidden rounded-xl aspect-[16/10] mb-4">
+                            <img src="src/public/laundry.png" alt="LAUNDRY SYSTEM" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        </div>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-bold">LAUNDRY SYSTEM | WEBSITE</h3>
+                            <a href="https://github.com/adialam345/laundry" target="_blank" class="p-2 rounded-full border border-white/20 hover:bg-white hover:text-black transition-all duration-300">
+                                <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+                        <p class="text-neutral-400 text-sm mb-4 leading-relaxed line-clamp-4">
+                            Sistem Manajemen Laundry: Sebuah aplikasi web untuk pengelolaan transaksi laundry, manajemen pelanggan, pelacakan status cucian (proses, cuci, setrika, selesai), cetak nota/struk, dan laporan keuangan. Dibangun menggunakan Laravel dan Tailwind CSS dengan antarmuka yang responsif dan efisien.
+                        </p>
+                    </div>
+                    <div class="flex gap-2 flex-wrap mt-2">
+                        <span class="px-3 py-1 text-xs border border-white/10 bg-white/5 rounded-full text-neutral-300">Laravel</span>
+                        <span class="px-3 py-1 text-xs border border-white/10 bg-white/5 rounded-full text-neutral-300">Tailwind CSS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 px-4 sm:px-6 flex items-center justify-center border-t border-white/5 bg-black min-h-[calc(100vh-20rem)]">
+        <div class="max-w-3xl mx-auto text-center reveal">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-6">Get in Touch</h2>
+            <p class="text-sm sm:text-base md:text-xl text-neutral-400 mb-10 max-w-xl mx-auto leading-relaxed">
+                Have a project in mind? Let's work together to create something amazing.
+            </p>
+            
+            <!-- Confetti button -->
+            <button id="confetti-btn" class="relative group bg-white text-black hover:bg-neutral-200 px-10 sm:px-14 py-5 rounded-full font-semibold text-base sm:text-lg mb-12 transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-white/10 overflow-hidden">
+                <span class="relative z-10">Let's talk</span>
+            </button>
+            
+            <!-- Social links -->
+            <div class="flex justify-center gap-6">
+                <a href="https://github.com/adialam345" target="_blank" class="p-3.5 border border-white/20 rounded-full hover:border-white/60 hover:bg-white/5 hover:-translate-y-1 transition-all duration-300 text-white" title="GitHub">
+                    <i data-lucide="github" class="w-6 h-6"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/adi-alam-sami-aji-a62234334/" target="_blank" class="p-3.5 border border-white/20 rounded-full hover:border-white/60 hover:bg-white/5 hover:-translate-y-1 transition-all duration-300 text-white" title="LinkedIn">
+                    <i data-lucide="linkedin" class="w-6 h-6"></i>
+                </a>
+                <a href="https://www.instagram.com/kidiepie_/" target="_blank" class="p-3.5 border border-white/20 rounded-full hover:border-white/60 hover:bg-white/5 hover:-translate-y-1 transition-all duration-300 text-white" title="Instagram">
+                    <i data-lucide="instagram" class="w-6 h-6"></i>
+                </a>
+                <a href="mailto:adialam347@gmail.com" class="p-3.5 border border-white/20 rounded-full hover:border-white/60 hover:bg-white/5 hover:-translate-y-1 transition-all duration-300 text-white" title="Email">
+                    <i data-lucide="mail" class="w-6 h-6"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 px-6 border-t border-white/5 bg-neutral-950/40">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+            <div class="text-sm text-neutral-400">
+                &copy; <span id="year"></span> Adi Alam Sami Aji. All rights reserved.
+            </div>
+            <nav class="flex gap-6 text-sm text-neutral-400 justify-center">
+                <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                <a href="#" class="hover:text-white transition-colors">Terms & Conditions</a>
+                <a href="#" class="hover:text-white transition-colors">Cookies Policy</a>
+            </nav>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Dynamically set current year in footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // 1. Confetti Click Handler
+        const confettiBtn = document.getElementById('confetti-btn');
+        if (confettiBtn) {
+            confettiBtn.addEventListener('click', (e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = (rect.left + rect.width / 2) / window.innerWidth;
+                const y = (rect.top + rect.height / 2) / window.innerHeight;
+                
+                confetti({
+                    particleCount: 120,
+                    spread: 70,
+                    origin: { x, y },
+                    colors: ['#7caac2', '#2b6684', '#ffffff', '#4f8eaf']
+                });
+            });
+        }
+
+        // 2. Gradual Spacing Header Animation
+        document.querySelectorAll('.gradual-spacing').forEach(elem => {
+            const text = elem.getAttribute('data-text') || elem.textContent.trim();
+            elem.innerHTML = '';
+            
+            // For flex words wrapping
+            const words = text.split(' ');
+            words.forEach((word, wordIdx) => {
+                const wordSpan = document.createElement('span');
+                wordSpan.className = 'inline-block whitespace-nowrap';
+                
+                word.split('').forEach((char, charIdx) => {
+                    const charSpan = document.createElement('span');
+                    charSpan.innerHTML = char;
+                    charSpan.className = 'inline-block opacity-0 translate-x-[-15px] transition-all duration-700 ease-out';
+                    // Calculated overall delay
+                    const globalIdx = (wordIdx * 5) + charIdx;
+                    charSpan.style.transitionDelay = `${globalIdx * 0.04}s`;
+                    wordSpan.appendChild(charSpan);
+                });
+                
+                elem.appendChild(wordSpan);
+                
+                // Add space if not last word
+                if (wordIdx < words.length - 1) {
+                    const space = document.createElement('span');
+                    space.innerHTML = '&nbsp;';
+                    elem.appendChild(space);
+                }
+            });
+
+            // Trigger animation
+            setTimeout(() => {
+                elem.querySelectorAll('span').forEach(span => {
+                    span.classList.remove('opacity-0', 'translate-x-[-15px]');
+                    span.classList.add('opacity-100', 'translate-x-0');
+                });
+            }, 150);
+        });
+
+        // 3. Scroll Reveal Animations (Intersection Observer)
+        const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); // Reveal only once
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        revealElements.forEach(elem => {
+            observer.observe(elem);
+        });
+
+        // 4. macOS Dock Magnification Script
+        const dock = document.getElementById('dock');
+        const dockIcons = document.querySelectorAll('.dock-icon');
+
+        if (dock) {
+            dock.addEventListener('mousemove', (e) => {
+                const mouseX = e.clientX;
+                dockIcons.forEach(icon => {
+                    const rect = icon.getBoundingClientRect();
+                    const iconCenterX = rect.left + rect.width / 2;
+                    const distance = Math.abs(mouseX - iconCenterX);
+
+                    const maxDistance = 140; // distance over which scaling occurs
+                    const baseSize = 40;     // base width/height in px (w-10 h-10)
+                    const maxSize = 60;      // max width/height in px
+
+                    if (distance < maxDistance) {
+                        const factor = 1 - (distance / maxDistance); // 0 to 1
+                        // Sine easing for smoother zoom profile
+                        const size = baseSize + (maxSize - baseSize) * Math.sin(factor * Math.PI / 2);
+                        icon.style.width = `${size}px`;
+                        icon.style.height = `${size}px`;
+                    } else {
+                        icon.style.width = `${baseSize}px`;
+                        icon.style.height = `${baseSize}px`;
+                    }
+                });
+            });
+
+            dock.addEventListener('mouseleave', () => {
+                dockIcons.forEach(icon => {
+                    icon.style.width = '40px';
+                    icon.style.height = '40px';
+                });
+            });
+        }
+
+        // 5. Particles Background Script
+        const pCanvas = document.getElementById('particles-canvas');
+        if (pCanvas) {
+            const pCtx = pCanvas.getContext('2d');
+            let pWidth = pCanvas.width = window.innerWidth;
+            let pHeight = pCanvas.height = window.innerHeight;
+
+            const particles = [];
+            const particleCount = Math.min(80, Math.floor(pWidth / 15)); // responsive count
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * pWidth,
+                    y: Math.random() * pHeight,
+                    size: Math.random() * 1.8 + 0.4,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.4
+                });
+            }
+
+            function animateParticles() {
+                pCtx.clearRect(0, 0, pWidth, pHeight);
+                pCtx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+                
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0) p.x = pWidth;
+                    if (p.x > pWidth) p.x = 0;
+                    if (p.y < 0) p.y = pHeight;
+                    if (p.y > pHeight) p.y = 0;
+
+                    pCtx.beginPath();
+                    pCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    pCtx.fill();
+                });
+
+                requestAnimationFrame(animateParticles);
+            }
+            animateParticles();
+
+            window.addEventListener('resize', () => {
+                pWidth = pCanvas.width = window.innerWidth;
+                pHeight = pCanvas.height = window.innerHeight;
+            });
+        }
+
+        // 6. Wavy Hero Background Canvas Script (Sine wave superposition)
+        const wCanvas = document.getElementById('wavy-canvas');
+        if (wCanvas) {
+            const wCtx = wCanvas.getContext('2d');
+            let wWidth = wCanvas.width = window.innerWidth;
+            let wHeight = wCanvas.height = window.innerHeight;
+
+            let nt = 0;
+            const waveColors = ["#7caac2", "#2b6684", "#1a2328", "#4f8eaf", "#d9e9f6", "#0a3a52"];
+
+            function animateWaves() {
+                wCtx.fillStyle = 'black';
+                wCtx.fillRect(0, 0, wWidth, wHeight);
+
+                nt += 0.0018; // Speed
+
+                for (let i = 0; i < 5; i++) {
+                    wCtx.beginPath();
+                    wCtx.lineWidth = 55;
+                    wCtx.strokeStyle = waveColors[i % waveColors.length];
+                    wCtx.globalAlpha = 0.45;
+
+                    for (let x = 0; x < wWidth; x += 10) {
+                        // Blend multiple waves together for a realistic simplex noise imitation
+                        const angle1 = x / 700 + nt + i * 0.45;
+                        const angle2 = x / 300 - nt * 0.6 + i * 0.25;
+                        const angle3 = x / 150 + nt * 0.3 + i * 0.1;
+                        
+                        const y = Math.sin(angle1) * 70 + Math.cos(angle2) * 50 + Math.sin(angle3) * 20;
+                        
+                        if (x === 0) {
+                            wCtx.moveTo(x, y + wHeight * 0.5);
+                        } else {
+                            wCtx.lineTo(x, y + wHeight * 0.5);
+                        }
+                    }
+                    wCtx.stroke();
+                    wCtx.closePath();
+                }
+
+                requestAnimationFrame(animateWaves);
+            }
+            animateWaves();
+
+            window.addEventListener('resize', () => {
+                wWidth = wCanvas.width = window.innerWidth;
+                wHeight = wCanvas.height = window.innerHeight;
+            });
+        }
+    </script>
+</body>
+</html>
