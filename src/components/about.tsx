@@ -1,8 +1,11 @@
 import { motion } from 'framer-motion'
 import { MarqueeDemo } from './techstack-marquee'
 import { FadeText } from './ui/fade'
+import { usePortfolioData } from '@/lib/portfolio-store'
 
 export function About() {
+  const { profile } = usePortfolioData()
+
   return (
     <section id="about" className="min-h-screen py-20 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
@@ -20,7 +23,7 @@ export function About() {
                 framerProps={{
                   show: { transition: { delay: 0.5 } },
                 }}
-                text="where"
+                text={profile.aboutHeadline1 || "where"}
               />
               <span className="block font-bold not-italic">
                 <FadeText
@@ -29,29 +32,12 @@ export function About() {
                   framerProps={{
                     show: { transition: { delay: 0.8 } },
                   }}
-                  text="EXPERIENCE"
+                  text={profile.aboutHeadline2 || "EXPERIENCE BUILDS CHARACTER"}
                 />
-                <FadeText
-                  className="text-white"
-                  direction="right"
-                  framerProps={{
-                    show: { transition: { delay: 1 } },
-                  }}
-                  text="BUILDS"
-                />
-                <FadeText
-                  className="text-white"
-                  direction="down"
-                  framerProps={{
-                    show: { transition: { delay: 1.2 } },
-                  }}
-                  text="CHARACTER"
-                />
-                
               </span>
             </h2>
-            <p className="text-gray-400 text-sm sm:text-base md:text-lg mb-8">
-            I am an Information Technology student at Politeknik Negeri Madiun with experience in Laravel, PHP, JavaScript, React, Kotlin, Python, as well as interests in IoT and cybersecurity. I aim to become a skilled full-stack developer and software engineer while deepening my knowledge of networking, IoT, and secure system design. Through various projects, I’ve integrated Laravel with React and JavaScript, explored mobile app development with Kotlin, and built IoT-based solutions. My passion for technology drives me to keep learning and contribute to creating innovative and secure solutions.
+            <p className="text-gray-400 text-sm sm:text-base md:text-lg mb-8 leading-relaxed">
+              {profile.aboutBio}
             </p>
           </div>
           <div className="relative">
@@ -59,17 +45,20 @@ export function About() {
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="aspect-square bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl"
+              className="aspect-square bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-2xl"
             >
               <img
-                src="/profile.jpg"
-                alt="About section illustration"
+                src={profile.profileImage || "/profile.jpg"}
+                alt="Profile photo"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover rounded-2xl"
               />
             </motion.div>
           </div>
         </motion.div>
       </div>
+
       <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

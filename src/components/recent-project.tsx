@@ -1,8 +1,17 @@
 import { Safari } from "@/components/ui/safari";
 import { motion } from 'framer-motion';
 import { ShineBorder } from "./ui/shine-border";
+import { usePortfolioData } from "@/lib/portfolio-store";
 
 export function SafariDemo() {
+  const { projectsList } = usePortfolioData();
+  const featuredProject = projectsList.find(p => p.isFeatured) || projectsList[0] || {
+    title: 'PONPES MIFTAHUL HUDA | WEBSITE',
+    description: 'Sebuah sistem informasi berbasis web menggunakan Laravel untuk manajemen lembaga pendidikan.',
+    image: '/ponpes.png',
+    link: 'https://miftahulhudadoho.or.id/'
+  };
+
   return (
     <div className="w-full mb-5">
         <motion.h2
@@ -11,14 +20,14 @@ export function SafariDemo() {
           viewport={{ once: true }}
           className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 flex justify-center items-center px-4"
         >
-          Latest Projects
+          {featuredProject.title || "Latest Projects"}
         </motion.h2>
         <motion.p 
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="mt-6 text-sm sm:text-base md:text-lg lg:text-xl text-center text-gray-300 max-w-2xl mb-10 mx-auto px-4">
-                Sebuah sistem informasi berbasis web menggunakan Laravel untuk manajemen lembaga pendidikan. Fitur utama meliputi autentikasi berbasis peran, manajemen konten dinamis, pendaftaran siswa online, antarmuka responsif, dan arsitektur database yang efisien.
+        className="mt-6 text-sm sm:text-base md:text-lg lg:text-xl text-center text-gray-300 max-w-2xl mb-10 mx-auto px-4 leading-relaxed">
+                {featuredProject.description}
         </motion.p>
         <motion.div 
           drag
@@ -37,12 +46,13 @@ export function SafariDemo() {
             color={["#d9e9f6", "#2b6684", "#7caac2"]}
           >
               <Safari
-              url="https://miftahulhudadoho.or.id/"
+              url={featuredProject.link || "https://miftahulhudadoho.or.id/"}
               className="w-full h-auto"
-              imageSrc="/ponpes.png"
+              imageSrc={featuredProject.image || "/ponpes.png"}
                 />
           </ShineBorder>
         </motion.div>
     </div>
   );
 }
+

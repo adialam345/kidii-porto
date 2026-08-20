@@ -143,6 +143,8 @@ export function Safari({
               src={imageSrcUrl}
               width="1200"
               height="700"
+              loading="lazy"
+              decoding="async"
               style={{ width: '100%', height: '100%' }}
               alt="image"
             />

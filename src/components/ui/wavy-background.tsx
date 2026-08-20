@@ -27,53 +27,19 @@ export const WavyBackground = ({
   [key: string]: any;
 }) => {
   const [mounted, setMounted] = useState(false);
-  const [isSafari, setIsSafari] = useState(false);
   const noise = createNoise3D();
-  let w: number,
-    h: number,
-    nt: number,
-    i: number,
-    x: number,
-    ctx: any,
-    canvas: any;
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const getSpeed = () => {
     switch (speed) {
       case "slow":
-        return 0.001;
+        return 0.0008;
       case "fast":
-        return 0.002;
+        return 0.0015;
       default:
         return 0.001;
     }
-  };
-
-  const init = () => {
-    if (typeof window === 'undefined') return;
-    
-    canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    
-    w = ctx.canvas.width = window.innerWidth;
-    h = ctx.canvas.height = window.innerHeight;
-    ctx.filter = `blur(${blur}px)`;
-    nt = 0;
-    
-    const handleResize = () => {
-      if (typeof window === 'undefined') return;
-      w = ctx.canvas.width = window.innerWidth;
-      h = ctx.canvas.height = window.innerHeight;
-      ctx.filter = `blur(${blur}px)`;
-    };
-    
-    window.addEventListener('resize', handleResize);
-    render();
-    
-    return () => window.removeEventListener('resize', handleResize);
   };
 
   const waveColors = colors ?? [
@@ -84,68 +50,117 @@ export const WavyBackground = ({
     "#d9e9f6",
     "#0a3a52",
   ];
-  
-  const drawWave = (n: number) => {
-    nt += getSpeed();
-    for (i = 0; i < n; i++) {
-      ctx.beginPath();
-      ctx.lineWidth = waveWidth || 50;
-      ctx.strokeStyle = waveColors[i % waveColors.length];
-      for (x = 0; x < w; x += 5) {
-        const y = noise(x / 800, 0.3 * i, nt) * 100;
-        ctx.lineTo(x, y + h * 0.5); // adjust for height, currently at 50% of the container
-      }
-      ctx.stroke();
-      ctx.closePath();
-    }
-  };
-
-  let animationId: number;
-  const render = () => {
-    if (!ctx) return;
-    ctx.fillStyle = backgroundFill || "black";
-    ctx.globalAlpha = waveOpacity || 0.5;
-    ctx.fillRect(0, 0, w, h);
-    drawWave(5);
-    animationId = requestAnimationFrame(render);
-  };
 
   useEffect(() => {
     setMounted(true);
-    
-    // Check for Safari after mounting
-    setIsSafari(
-      typeof window !== "undefined" &&
-        navigator.userAgent.includes("Safari") &&
-        !navigator.userAgent.includes("Chrome")
-    );
   }, []);
 
   useEffect(() => {
     if (!mounted) return;
-    
-    const cleanup = init();
-    return () => {
-      if (animationId) {
-        cancelAnimationFrame(animationId);
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d", { alpha: true });
+    if (!ctx) return;
+
+    let w = (canvas.width = window.innerWidth);
+    let h = (canvas.height = window.innerHeight);
+    let nt = 0;
+    let animationId: number;
+    let isVisible = true;
+
+    const drawWave = (n: number) => {
+      if (!ctx) return;
+      nt += getSpeed();
+      for (let i = 0; i < n; i++) {
+        ctx.beginPath();
+        ctx.lineWidth = waveWidth || 45;
+        ctx.strokeStyle = waveColors[i % waveColors.length];
+        // x += 12 step for 60% reduction in per-frame CPU calculations
+        for (let x = 0; x < w + 12; x += 12) {
+          const y = noise(x / 800, 0.3 * i, nt) * 100;
+          ctx.lineTo(x, y + h * 0.5);
+        }
+        ctx.stroke();
+        ctx.closePath();
       }
-      if (cleanup) cleanup();
     };
-  }, [mounted, blur, speed, waveOpacity, backgroundFill, colors, waveWidth]);
+
+    const render = () => {
+      if (!ctx || !isVisible) return;
+      ctx.fillStyle = backgroundFill || "black";
+      ctx.globalAlpha = waveOpacity || 0.5;
+      ctx.fillRect(0, 0, w, h);
+      drawWave(5);
+      animationId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    const handleResize = () => {
+      if (!canvas || !ctx) return;
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        isVisible = false;
+        cancelAnimationFrame(animationId);
+      } else {
+        isVisible = true;
+        render();
+      }
+    };
+
+    // Pause canvas animation loop when hero component is scrolled out of view
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (!isVisible) {
+            isVisible = true;
+            render();
+          }
+        } else {
+          isVisible = false;
+          cancelAnimationFrame(animationId);
+        }
+      },
+      { threshold: 0.05 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    window.addEventListener("resize", handleResize);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      observer.disconnect();
+      window.removeEventListener("resize", handleResize);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [mounted]);
 
   return (
     <div
+      ref={containerRef}
       className={cn(
-        "h-screen flex flex-col items-center justify-center",
+        "h-screen flex flex-col items-center justify-center relative overflow-hidden",
         containerClassName
       )}
     >
       <canvas
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-0 pointer-events-none gpu-accelerated"
         ref={canvasRef}
         id="canvas"
         style={{
-          ...(isSafari ? { filter: `blur(${blur}px)` } : {}),
+          filter: `blur(${blur}px)`,
+          WebkitFilter: `blur(${blur}px)`,
+          transform: "translateZ(0)",
         }}
       ></canvas>
       <div className={cn("relative z-10", className)} {...props}>
@@ -154,3 +169,4 @@ export const WavyBackground = ({
     </div>
   );
 };
+

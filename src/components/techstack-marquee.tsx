@@ -78,7 +78,7 @@ const ReviewCard = ({
             <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger>
-                            <img className="rounded w-16 grayscale brightness-100" alt="" src={image} />
+                            <img className="rounded w-16 grayscale brightness-100" alt={name} src={image} loading="lazy" decoding="async" />
                         </TooltipTrigger>
                             <TooltipContent>{name}</TooltipContent>
                     </Tooltip>

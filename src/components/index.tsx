@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion'
 import { GradualSpacing } from '@/components/ui/gradual-spacing'
 import { WavyBackground } from './ui/wavy-background'
+import { usePortfolioData } from '@/lib/portfolio-store'
 
 export function Hero() {
+  const { profile } = usePortfolioData()
   
   return (
   <WavyBackground id="home">
@@ -17,26 +19,20 @@ export function Hero() {
                       <div className="text-white flex flex-col sm:flex-row gap-2 sm:gap-5 justify-center">
                         <GradualSpacing
                           className="font-display italic font-light -tracking-widesttext-white before:md:leading-[5rem]"
-                          text="I'm a"
+                          text={profile.role1 || "I'm a"}
                         />
                         <GradualSpacing
                           className="font-display block font-bold md:inline -tracking-widesttext-white before:md:leading-[5rem]"
-                          text="FULL-STACK"
+                          text={profile.role2 || "FULL-STACK"}
                         />{' '}
                       </div>
                       <GradualSpacing
                         className="font-display block font-bold -tracking-widesttext-white before:md:leading-[5rem]"
-                        text="DEVELOPER &"
-                      />{' '}
-                      <GradualSpacing
-                        className="font-display block font-bold -tracking-widesttext-white before: md:leading-[5rem]"
-                        text="SOFTWARE ENGINEER"
+                        text={profile.role3 || "DEVELOPER & SOFTWARE ENGINEER"}
                       />
                     </div>
-                    <p className="mt-6 text-sm sm:text-base md:text-xl text-gray-300 max-w-2xl mx-auto px-4">
-                        I am a student at Polytechnic State Madiun, majoring in Information 
-                        Technology. I am currently learning to become a full-stack developer 
-                        and software engineer, with skills in internet networking.
+                    <p className="mt-6 text-sm sm:text-base md:text-xl text-gray-300 max-w-2xl mx-auto px-4 leading-relaxed">
+                        {profile.heroBio}
                     </p>
                     <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 px-4">
                         <a href="#about">
@@ -57,7 +53,7 @@ export function Hero() {
                                 Contact
                             </motion.button>
                         </a>
-                        <a href="/CV_Adi_Alam_Sami_Aji_1.pdf" download="CV_Adi_Alam_Sami_Aji.pdf">
+                        <a href={profile.cvUrl || "/CV_Adi_Alam_Sami_Aji_1.pdf"} download="CV_Adi_Alam_Sami_Aji.pdf">
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
@@ -77,4 +73,5 @@ export function Hero() {
     </WavyBackground>
   )
 }
+
 

@@ -1,0 +1,10 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { AdminDashboard } from '../components/admin-dashboard';
+---
+
+<Layout title="Admin Panel | Portfolio CMS" description="Manage projects, profile, and portfolio content">
+  <main>
+    <AdminDashboard client:only="react" />
+  </main>
+</Layout>
