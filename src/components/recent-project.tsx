@@ -13,7 +13,7 @@ export function SafariDemo() {
   };
 
   return (
-    <div className="w-full mb-5">
+    <div className="w-full py-4 sm:py-12 my-2 sm:my-6">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -30,19 +30,17 @@ export function SafariDemo() {
                 {featuredProject.description}
         </motion.p>
         <motion.div 
-          drag
-          dragTransition={{ bounceStiffness: 100, bounceDamping: 10 }}
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           whileHover={{
-            scale:1.05,
+            scale: 1.02,
             transition: { duration : 0.2}
           }}
           viewport={{ once: true }}
-          className="relative w-full flex items-center justify-center px-4 sm:px-8">
+          className="relative w-full flex items-center justify-center px-3 sm:px-8">
           <ShineBorder
-            borderWidth={3}
-            className="relative flex flex-col items-center justify-center overflow-hidden rounded-lg border bg-background md:shadow-xl w-full lg:w-3/5"
+            borderWidth={2}
+            className="relative flex flex-col items-center justify-center overflow-hidden rounded-lg border bg-background md:shadow-xl w-full max-w-4xl lg:w-3/5"
             color={["#d9e9f6", "#2b6684", "#7caac2"]}
           >
               <Safari

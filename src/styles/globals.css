@@ -12,6 +12,13 @@
   .text-balance {
     text-wrap: balance;
   }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 @layer base {
@@ -73,12 +80,14 @@
 @layer base {
   * {
     @apply border-border;
+    -webkit-tap-highlight-color: transparent;
   }
   body {
     @apply bg-background text-foreground;
   }
   html, body {
     overflow-x: hidden;
+    max-width: 100vw;
     font-family: 'Inter', system-ui, sans-serif;
   }
 }

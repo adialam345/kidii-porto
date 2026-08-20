@@ -149,7 +149,7 @@ export const WavyBackground = ({
     <div
       ref={containerRef}
       className={cn(
-        "h-screen flex flex-col items-center justify-center relative overflow-hidden",
+        "min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden",
         containerClassName
       )}
     >
@@ -163,7 +163,7 @@ export const WavyBackground = ({
           transform: "translateZ(0)",
         }}
       ></canvas>
-      <div className={cn("relative z-10", className)} {...props}>
+      <div className={cn("relative z-10 w-full", className)} {...props}>
         {children}
       </div>
     </div>

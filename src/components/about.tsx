@@ -7,7 +7,7 @@ export function About() {
   const { profile } = usePortfolioData()
 
   return (
-    <section id="about" className="min-h-screen py-20 px-4 sm:px-6">
+    <section id="about" className="py-8 sm:py-20 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -16,8 +16,8 @@ export function About() {
           className="grid md:grid-cols-2 gap-8 md:gap-12 items-center"
         >
           <div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-light italic mb-6">
-            <FadeText
+            <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-light italic mb-4 sm:mb-6">
+              <FadeText
                 className="text-white"
                 direction="up"
                 framerProps={{
@@ -25,7 +25,7 @@ export function About() {
                 }}
                 text={profile.aboutHeadline1 || "where"}
               />
-              <span className="block font-bold not-italic">
+              <span className="block font-bold not-italic mt-1 sm:mt-2">
                 <FadeText
                   className="text-white"
                   direction="right"
@@ -36,16 +36,16 @@ export function About() {
                 />
               </span>
             </h2>
-            <p className="text-gray-400 text-sm sm:text-base md:text-lg mb-8 leading-relaxed">
+            <p className="text-gray-400 text-xs sm:text-base md:text-lg mb-6 sm:mb-8 leading-relaxed">
               {profile.aboutBio}
             </p>
           </div>
-          <div className="relative">
+          <div className="relative flex justify-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="aspect-square bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-2xl"
+              className="w-full max-w-xs sm:max-w-md aspect-square bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-2xl"
             >
               <img
                 src={profile.profileImage || "/profile.jpg"}
@@ -60,13 +60,14 @@ export function About() {
       </div>
 
       <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+      >
         <MarqueeDemo />
       </motion.div>
     </section>
   )
 }
+
 
