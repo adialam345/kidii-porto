@@ -1,6 +1,6 @@
 import { e as createComponent, k as renderComponent, r as renderTemplate, m as maybeRenderHead } from '../chunks/astro/server_DWnod6f9.mjs';
 import 'piccolore';
-import { $ as $$Layout } from '../chunks/Layout_VwhFVB4w.mjs';
+import { $ as $$Layout } from '../chunks/Layout_COgn_6fq.mjs';
 export { renderers } from '../renderers.mjs';
 
 const $$Admin = createComponent(($$result, $$props, $$slots) => {

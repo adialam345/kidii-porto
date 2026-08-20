@@ -1,6 +1,6 @@
 import { renderers } from './renderers.mjs';
-import { c as createExports, s as serverEntrypointModule } from './chunks/_@astrojs-ssr-adapter_DjoCj8lf.mjs';
-import { manifest } from './manifest_DCwtB2nI.mjs';
+import { c as createExports, s as serverEntrypointModule } from './chunks/_@astrojs-ssr-adapter_BPBodaGR.mjs';
+import { manifest } from './manifest_Bu5z-P14.mjs';
 
 const serverIslandMap = new Map();;
 
@@ -29,11 +29,11 @@ const _manifest = Object.assign(manifest, {
     middleware: () => import('./_noop-middleware.mjs')
 });
 const _args = {
-    "mode": "middleware",
+    "mode": "standalone",
     "client": "file:///F:/Portofolio-NextJS-Acernity/dist/client/",
     "server": "file:///F:/Portofolio-NextJS-Acernity/dist/server/",
-    "host": false,
-    "port": 4321,
+    "host": true,
+    "port": 4380,
     "assets": "_astro",
     "experimentalStaticHeaders": false
 };

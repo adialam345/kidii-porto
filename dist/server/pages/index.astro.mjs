@@ -1,29 +1,22 @@
 import { e as createComponent, k as renderComponent, r as renderTemplate, m as maybeRenderHead } from '../chunks/astro/server_DWnod6f9.mjs';
 import 'piccolore';
-import { $ as $$Layout } from '../chunks/Layout_VwhFVB4w.mjs';
+import { $ as $$Layout } from '../chunks/Layout_COgn_6fq.mjs';
 import { jsx, jsxs } from 'react/jsx-runtime';
-import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import * as React from 'react';
 import React__default, { useState, useRef, useEffect, useMemo, createContext, forwardRef, useCallback, useImperativeHandle } from 'react';
+import { AnimatePresence, motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { createNoise3D } from 'simplex-noise';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { Layers, ArrowUpRight, X, Github, Linkedin, Instagram, Mail } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { Slot } from '@radix-ui/react-slot';
 import { cva } from 'class-variance-authority';
 export { renderers } from '../renderers.mjs';
 
 function Nav() {
-  return /* @__PURE__ */ jsx(
-    motion.header,
-    {
-      initial: { y: -100 },
-      animate: { y: 0 },
-      className: "fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4",
-      children: /* @__PURE__ */ jsx("a", { href: "/", className: "text-xl font-bold border rounded-full px-4 py-2", children: "KIDII DEV" })
-    }
-  );
+  return null;
 }
 
 function ParticleBackground() {
@@ -280,95 +273,6 @@ const WavyBackground = ({
   );
 };
 
-function InteractiveButton({
-  children,
-  className = "",
-  variant = "primary",
-  href,
-  download,
-  onClick
-}) {
-  const [ripples, setRipples] = useState([]);
-  const [isSparking, setIsSparking] = useState(false);
-  const handleClick = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height) * 1.5;
-    const x = e.clientX - rect.left - size / 2;
-    const y = e.clientY - rect.top - size / 2;
-    const newRipple = {
-      id: Date.now(),
-      x,
-      y,
-      size
-    };
-    setRipples((prev) => [...prev, newRipple]);
-    setIsSparking(true);
-    setTimeout(() => {
-      setRipples((prev) => prev.filter((r) => r.id !== newRipple.id));
-    }, 600);
-    setTimeout(() => {
-      setIsSparking(false);
-    }, 400);
-    if (onClick) {
-      onClick(e);
-    }
-  };
-  const baseStyles = "relative overflow-hidden inline-flex items-center justify-center font-medium transition-all duration-200 select-none group cursor-pointer focus:outline-none";
-  const variantStyles = {
-    primary: "bg-white text-black hover:bg-neutral-200 shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)]",
-    secondary: "bg-white/10 hover:bg-white/20 border border-white/20 text-white shadow-lg backdrop-blur-md",
-    outline: "border border-white hover:bg-white/10 text-white",
-    ghost: "text-white hover:bg-white/10"
-  };
-  const content = /* @__PURE__ */ jsxs(
-    motion.div,
-    {
-      whileHover: { scale: 1.04, y: -2 },
-      whileTap: { scale: 0.93, y: 2 },
-      transition: { type: "spring", stiffness: 450, damping: 20 },
-      onClick: handleClick,
-      className: cn$1(baseStyles, variantStyles[variant], className),
-      children: [
-        /* @__PURE__ */ jsx(AnimatePresence, { children: isSparking && /* @__PURE__ */ jsx(
-          motion.span,
-          {
-            initial: { opacity: 0.8, scale: 0.8 },
-            animate: { opacity: 0, scale: 1.3 },
-            exit: { opacity: 0 },
-            transition: { duration: 0.4 },
-            className: "absolute inset-0 bg-white/30 rounded-full pointer-events-none z-0"
-          }
-        ) }),
-        ripples.map((ripple) => /* @__PURE__ */ jsx(
-          motion.span,
-          {
-            initial: { scale: 0, opacity: 0.7 },
-            animate: { scale: 1, opacity: 0 },
-            transition: { duration: 0.6, ease: "easeOut" },
-            style: {
-              position: "absolute",
-              left: ripple.x,
-              top: ripple.y,
-              width: ripple.size,
-              height: ripple.size,
-              borderRadius: "50%",
-              backgroundColor: "rgba(255, 255, 255, 0.4)",
-              pointerEvents: "none",
-              zIndex: 1
-            }
-          },
-          ripple.id
-        )),
-        /* @__PURE__ */ jsx("span", { className: "relative z-10 flex items-center justify-center gap-2", children })
-      ]
-    }
-  );
-  if (href) {
-    return /* @__PURE__ */ jsx("a", { href, download, className: "inline-block w-full sm:w-auto", children: content });
-  }
-  return content;
-}
-
 const projects = [
   {
     id: 1,
@@ -543,31 +447,30 @@ function Hero() {
         ] }),
         /* @__PURE__ */ jsx("p", { className: "mt-4 sm:mt-6 text-xs sm:text-base md:text-xl text-gray-300 max-w-2xl mx-auto px-2 sm:px-4 leading-relaxed", children: profile.heroBio }),
         /* @__PURE__ */ jsxs("div", { className: "mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto px-4", children: [
-          /* @__PURE__ */ jsx(
-            InteractiveButton,
+          /* @__PURE__ */ jsx("a", { href: "#about", className: "w-full sm:w-auto", children: /* @__PURE__ */ jsx(
+            motion.button,
             {
-              href: "#about",
-              variant: "primary",
-              className: "w-full sm:w-auto px-6 sm:px-8 py-3 rounded-full text-sm sm:text-base",
+              whileHover: { scale: 1.05 },
+              whileTap: { scale: 0.95 },
+              className: "w-full sm:w-auto bg-white text-black hover:bg-neutral-200 px-6 sm:px-8 py-3 rounded-full font-medium text-sm sm:text-base transition-colors",
               children: "Know more"
             }
-          ),
-          /* @__PURE__ */ jsx(
-            InteractiveButton,
+          ) }),
+          /* @__PURE__ */ jsx("a", { href: "#contact", className: "w-full sm:w-auto", children: /* @__PURE__ */ jsx(
+            motion.button,
             {
-              href: "#contact",
-              variant: "outline",
-              className: "w-full sm:w-auto px-6 sm:px-8 py-3 rounded-full text-sm sm:text-base",
+              whileHover: { scale: 1.05 },
+              whileTap: { scale: 0.95 },
+              className: "w-full sm:w-auto border border-white hover:bg-white/10 text-white px-6 sm:px-8 py-3 rounded-full font-medium text-sm sm:text-base transition-colors",
               children: "Contact"
             }
-          ),
-          /* @__PURE__ */ jsxs(
-            InteractiveButton,
+          ) }),
+          /* @__PURE__ */ jsx("a", { href: profile.cvUrl || "/CV_Adi_Alam_Sami_Aji_1.pdf", download: "CV_Adi_Alam_Sami_Aji.pdf", className: "w-full sm:w-auto", children: /* @__PURE__ */ jsxs(
+            motion.button,
             {
-              href: profile.cvUrl || "/CV_Adi_Alam_Sami_Aji_1.pdf",
-              download: "CV_Adi_Alam_Sami_Aji.pdf",
-              variant: "outline",
-              className: "w-full sm:w-auto px-6 sm:px-8 py-3 rounded-full text-sm sm:text-base",
+              whileHover: { scale: 1.05 },
+              whileTap: { scale: 0.95 },
+              className: "w-full sm:w-auto border border-white hover:bg-white/10 text-white px-6 sm:px-8 py-3 rounded-full font-medium text-sm sm:text-base transition-colors flex items-center justify-center gap-2",
               children: [
                 /* @__PURE__ */ jsxs("svg", { xmlns: "http://www.w3.org/2000/svg", className: "w-4 h-4", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: [
                   /* @__PURE__ */ jsx("path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" }),
@@ -577,7 +480,7 @@ function Hero() {
                 "Download CV"
               ]
             }
-          )
+          ) })
         ] })
       ]
     }
@@ -859,11 +762,15 @@ function Projects() {
           )
         ] }),
         projectsList.length > 6 && /* @__PURE__ */ jsxs(
-          InteractiveButton,
+          motion.button,
           {
-            variant: "secondary",
+            initial: { opacity: 0 },
+            whileInView: { opacity: 1 },
+            viewport: { once: true },
+            whileHover: { scale: 1.03 },
+            whileTap: { scale: 0.97 },
             onClick: () => setIsModalOpen(true),
-            className: "px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl text-xs font-semibold text-white w-full sm:w-auto",
+            className: "flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/15 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl text-xs font-semibold text-white transition-all shadow-lg backdrop-blur-md w-full sm:w-auto",
             children: [
               /* @__PURE__ */ jsx(Layers, { className: "w-4 h-4 text-white" }),
               /* @__PURE__ */ jsxs("span", { children: [
@@ -891,7 +798,7 @@ function Projects() {
           className: "flex-shrink-0 w-[85vw] max-w-[310px] sm:w-auto snap-center group relative flex flex-col justify-between bg-white/5 border border-white/10 rounded-2xl p-4 transition-all duration-300 hover:bg-white/[0.08] hover:border-white/25",
           children: [
             /* @__PURE__ */ jsxs("div", { children: [
-              /* @__PURE__ */ jsx("div", { className: "overflow-hidden rounded-xl h-[170px] sm:h-[200px] mb-3 sm:mb-4 bg-neutral-950", children: /* @__PURE__ */ jsx(
+              /* @__PURE__ */ jsx("div", { className: "overflow-hidden rounded-xl aspect-video mb-3 sm:mb-4 bg-neutral-950", children: /* @__PURE__ */ jsx(
                 "img",
                 {
                   src: project.image || "/ponpes.png",
@@ -962,7 +869,7 @@ function Projects() {
               className: "group relative flex flex-col justify-between bg-white/5 border border-white/10 rounded-2xl p-3.5 sm:p-4 transition-all duration-300 hover:bg-white/[0.08] hover:border-white/25",
               children: [
                 /* @__PURE__ */ jsxs("div", { children: [
-                  /* @__PURE__ */ jsx("div", { className: "overflow-hidden rounded-xl h-[160px] sm:h-[200px] mb-3 sm:mb-4 bg-neutral-950", children: /* @__PURE__ */ jsx(
+                  /* @__PURE__ */ jsx("div", { className: "overflow-hidden rounded-xl aspect-video mb-3 sm:mb-4 bg-neutral-950", children: /* @__PURE__ */ jsx(
                     "img",
                     {
                       src: project.image || "/ponpes.png",
@@ -1018,6 +925,46 @@ function Projects() {
     ) }) })
   ] });
 }
+
+const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline"
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
+        icon: "h-10 w-10"
+      }
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default"
+    }
+  }
+);
+const Button = React.forwardRef(
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button";
+    return /* @__PURE__ */ jsx(
+      Comp,
+      {
+        className: cn$1(buttonVariants({ variant, size, className })),
+        ref,
+        ...props
+      }
+    );
+  }
+);
+Button.displayName = "Button";
 
 const ConfettiContext = createContext({});
 const ConfettiComponent = forwardRef((props, ref) => {
@@ -1083,88 +1030,25 @@ ConfettiComponent.displayName = "Confetti";
 const ConfettiButtonComponent = ({
   options,
   children,
-  className,
   ...props
 }) => {
-  const [ripples, setRipples] = useState([]);
-  const [isSparking, setIsSparking] = useState(false);
   const handleClick = async (event) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height) * 1.5;
-    const x = event.clientX - rect.left - size / 2;
-    const y = event.clientY - rect.top - size / 2;
-    const newRipple = {
-      id: Date.now(),
-      x,
-      y,
-      size
-    };
-    setRipples((prev) => [...prev, newRipple]);
-    setIsSparking(true);
-    setTimeout(() => {
-      setRipples((prev) => prev.filter((r) => r.id !== newRipple.id));
-    }, 600);
-    setTimeout(() => {
-      setIsSparking(false);
-    }, 400);
     try {
-      const originX = rect.left + rect.width / 2;
-      const originY = rect.top + rect.height / 2;
+      const rect = event.currentTarget.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
       await confetti({
         ...options,
         origin: {
-          x: originX / window.innerWidth,
-          y: originY / window.innerHeight
+          x: x / window.innerWidth,
+          y: y / window.innerHeight
         }
       });
     } catch (error) {
       console.error("Confetti button error:", error);
     }
   };
-  return /* @__PURE__ */ jsxs(
-    motion.button,
-    {
-      whileHover: { scale: 1.05, y: -2 },
-      whileTap: { scale: 0.93, y: 2 },
-      transition: { type: "spring", stiffness: 450, damping: 20 },
-      onClick: handleClick,
-      className: `relative overflow-hidden inline-flex items-center justify-center font-medium transition-all duration-200 select-none group cursor-pointer focus:outline-none ${className}`,
-      ...props,
-      children: [
-        /* @__PURE__ */ jsx(AnimatePresence, { children: isSparking && /* @__PURE__ */ jsx(
-          motion.span,
-          {
-            initial: { opacity: 0.8, scale: 0.8 },
-            animate: { opacity: 0, scale: 1.3 },
-            exit: { opacity: 0 },
-            transition: { duration: 0.4 },
-            className: "absolute inset-0 bg-white/30 rounded-full pointer-events-none z-0"
-          }
-        ) }),
-        ripples.map((ripple) => /* @__PURE__ */ jsx(
-          motion.span,
-          {
-            initial: { scale: 0, opacity: 0.7 },
-            animate: { scale: 1, opacity: 0 },
-            transition: { duration: 0.6, ease: "easeOut" },
-            style: {
-              position: "absolute",
-              left: ripple.x,
-              top: ripple.y,
-              width: ripple.size,
-              height: ripple.size,
-              borderRadius: "50%",
-              backgroundColor: "rgba(255, 255, 255, 0.4)",
-              pointerEvents: "none",
-              zIndex: 1
-            }
-          },
-          ripple.id
-        )),
-        /* @__PURE__ */ jsx("span", { className: "relative z-10 flex items-center justify-center gap-2", children })
-      ]
-    }
-  );
+  return /* @__PURE__ */ jsx(Button, { onClick: handleClick, ...props, children });
 };
 ConfettiButtonComponent.displayName = "ConfettiButton";
 const ConfettiButton = ConfettiButtonComponent;

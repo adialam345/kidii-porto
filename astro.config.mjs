@@ -8,9 +8,13 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
+  server: {
+    port: 4380,
+    host: true,
+  },
   output: 'server',
   adapter: node({
-    mode: 'middleware',
+    mode: 'standalone',
   }),
   integrations: [
     react(),
