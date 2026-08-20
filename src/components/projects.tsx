@@ -71,7 +71,7 @@ export function Projects() {
               className="flex-shrink-0 w-[85vw] max-w-[310px] sm:w-auto snap-center group relative flex flex-col justify-between bg-white/5 border border-white/10 rounded-2xl p-4 transition-all duration-300 hover:bg-white/[0.08] hover:border-white/25"
             >
               <div>
-                <div className="overflow-hidden rounded-xl h-[170px] sm:h-[200px] mb-3 sm:mb-4 bg-neutral-950">
+                <div className="overflow-hidden rounded-xl aspect-video mb-3 sm:mb-4 bg-neutral-950">
                   <img
                     src={project.image || '/ponpes.png'}
                     alt={project.title}
@@ -150,7 +150,7 @@ export function Projects() {
                       className="group relative flex flex-col justify-between bg-white/5 border border-white/10 rounded-2xl p-3.5 sm:p-4 transition-all duration-300 hover:bg-white/[0.08] hover:border-white/25"
                     >
                       <div>
-                        <div className="overflow-hidden rounded-xl h-[160px] sm:h-[200px] mb-3 sm:mb-4 bg-neutral-950">
+                        <div className="overflow-hidden rounded-xl aspect-video mb-3 sm:mb-4 bg-neutral-950">
                           <img
                             src={project.image || '/ponpes.png'}
                             alt={project.title}

@@ -518,7 +518,7 @@ export function AdminDashboard() {
                 >
                   <div>
                     {/* Image Preview */}
-                    <div className="relative h-44 rounded-xl overflow-hidden mb-4 border border-white/10 bg-neutral-950">
+                    <div className="relative aspect-video w-full rounded-xl overflow-hidden mb-4 border border-white/10 bg-neutral-950">
                       <img src={proj.image || '/ponpes.png'} alt={proj.title} className="w-full h-full object-cover" />
                       {proj.isFeatured && (
                         <div className="absolute top-3 left-3 bg-amber-500 text-black font-bold text-[10px] uppercase px-3 py-1 rounded-full flex items-center gap-1 shadow-md">
@@ -933,7 +933,7 @@ export function AdminDashboard() {
                       </label>
                     </div>
                     {projectForm.image && (
-                      <div className="h-20 w-full rounded-xl overflow-hidden border border-white/15 bg-neutral-950 relative">
+                      <div className="aspect-video w-full max-h-48 rounded-xl overflow-hidden border border-white/15 bg-neutral-950 relative">
                         <img src={projectForm.image} alt="Preview" className="w-full h-full object-cover" />
                         <span className="absolute bottom-1 right-2 bg-black/80 text-[10px] text-neutral-400 px-1.5 py-0.5 rounded">Preview</span>
                       </div>
