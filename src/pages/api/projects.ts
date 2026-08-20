@@ -8,7 +8,7 @@ export const ALL: APIRoute = async () => {
 export const GET: APIRoute = async () => {
   try {
     await initDatabase();
-    const [rows]: any = await pool.query('SELECT * FROM projects ORDER BY is_featured DESC, id DESC');
+    const [rows]: any = await pool.query('SELECT * FROM projects ORDER BY display_order ASC, id DESC');
     
     const projects = rows.map((r: any) => ({
       id: r.id,
@@ -17,7 +17,8 @@ export const GET: APIRoute = async () => {
       tags: typeof r.tags === 'string' ? JSON.parse(r.tags) : (r.tags || []),
       image: r.image,
       link: r.link,
-      isFeatured: Boolean(r.is_featured)
+      isFeatured: Boolean(r.is_featured),
+      displayOrder: r.display_order ?? 0
     }));
 
     return new Response(JSON.stringify(projects), {
@@ -36,7 +37,7 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     await initDatabase();
     const body = await request.json();
-    const { title, description, tags, image, link, isFeatured } = body;
+    const { title, description, tags, image, link, isFeatured, displayOrder } = body;
 
     const tagsJson = JSON.stringify(tags || []);
     const isFeaturedVal = isFeatured ? 1 : 0;
@@ -46,8 +47,8 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const [result]: any = await pool.query(
-      'INSERT INTO projects (title, description, tags, image, link, is_featured) VALUES (?, ?, ?, ?, ?, ?)',
-      [title, description, tagsJson, image || '/ponpes.png', link || '', isFeaturedVal]
+      'INSERT INTO projects (title, description, tags, image, link, is_featured, display_order) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [title, description, tagsJson, image || '/ponpes.png', link || '', isFeaturedVal, displayOrder ?? 0]
     );
 
     return new Response(JSON.stringify({ success: true, id: result.insertId }), {
@@ -66,7 +67,18 @@ export const PUT: APIRoute = async ({ request }) => {
   try {
     await initDatabase();
     const body = await request.json();
-    const { id, title, description, tags, image, link, isFeatured, toggleFeaturedOnly } = body;
+
+    if (body.reorder && Array.isArray(body.orders)) {
+      for (const item of body.orders) {
+        await pool.query('UPDATE projects SET display_order = ? WHERE id = ?', [item.displayOrder, item.id]);
+      }
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    const { id, title, description, tags, image, link, isFeatured, toggleFeaturedOnly, displayOrder } = body;
 
     if (toggleFeaturedOnly) {
       await pool.query('UPDATE projects SET is_featured = 0');

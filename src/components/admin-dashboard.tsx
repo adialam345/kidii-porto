@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { 
   Plus, Edit, Trash2, Star, Save, RotateCcw, Download, Upload, 
   Lock, LogOut, ArrowLeft, CheckCircle2, ShieldCheck, LayoutGrid, 
-  User, Link as LinkIcon, ExternalLink, Image as ImageIcon
+  User, Link as LinkIcon, ExternalLink, Image as ImageIcon,
+  ChevronUp, ChevronDown, GripVertical
 } from 'lucide-react';
 import { 
   ProjectItem, ProfileData, getStoredProjects, saveProjects, 
@@ -20,6 +21,8 @@ export function AdminDashboard() {
   
   // Data State
   const [projectsList, setProjectsList] = useState<ProjectItem[]>([]);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [profile, setProfile] = useState<ProfileData>({
     name: '', role1: '', role2: '', role3: '', heroBio: '',
     aboutHeadline1: '', aboutHeadline2: '', aboutBio: '',
@@ -248,6 +251,70 @@ export function AdminDashboard() {
     } catch (err) {}
 
     showToast('Featured project diperbarui!');
+  };
+
+  const handleMoveProject = async (index: number, direction: 'up' | 'down') => {
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= projectsList.length) return;
+
+    const newList = [...projectsList];
+    const temp = newList[index];
+    newList[index] = newList[targetIndex];
+    newList[targetIndex] = temp;
+
+    const updatedList = newList.map((item, idx) => ({
+      ...item,
+      displayOrder: idx
+    }));
+
+    setProjectsList(updatedList);
+    saveProjects(updatedList);
+
+    try {
+      await fetch('/api/projects', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reorder: true,
+          orders: updatedList.map((p, idx) => ({ id: p.id, displayOrder: idx }))
+        })
+      });
+      showToast('Urutan proyek berhasil diperbarui!');
+    } catch (err) {
+      showToast('Urutan diperbarui secara lokal.');
+    }
+  };
+
+  const handleDrop = async (targetIndex: number) => {
+    if (draggedIndex === null || draggedIndex === targetIndex) return;
+
+    const newList = [...projectsList];
+    const [movedItem] = newList.splice(draggedIndex, 1);
+    newList.splice(targetIndex, 0, movedItem);
+
+    const updatedList = newList.map((item, idx) => ({
+      ...item,
+      displayOrder: idx
+    }));
+
+    setProjectsList(updatedList);
+    saveProjects(updatedList);
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+
+    try {
+      await fetch('/api/projects', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reorder: true,
+          orders: updatedList.map((p, idx) => ({ id: p.id, displayOrder: idx }))
+        })
+      });
+      showToast('Urutan proyek berhasil diperbarui via Drag & Drop!');
+    } catch (err) {
+      showToast('Urutan diperbarui secara lokal.');
+    }
   };
 
   // Profile Save
@@ -497,7 +564,7 @@ export function AdminDashboard() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
               <div>
                 <h2 className="text-xl font-bold">Daftar Proyek Portofolio</h2>
-                <p className="text-xs text-neutral-400">Tambah, ubah, atau hapus karya proyek portofolio Anda.</p>
+                <p className="text-xs text-neutral-400">Tarik & Lepas (Drag & Drop) card proyek atau gunakan tombol (▲/▼) untuk merubah urutan secara realtime.</p>
               </div>
               <button
                 onClick={openNewProjectModal}
@@ -509,22 +576,82 @@ export function AdminDashboard() {
 
             {/* Projects Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projectsList.map((proj) => (
+              {projectsList.map((proj, index) => (
                 <div 
                   key={proj.id} 
+                  draggable
+                  onDragStart={(e) => {
+                    setDraggedIndex(index);
+                    e.dataTransfer.effectAllowed = 'move';
+                  }}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    if (dragOverIndex !== index) {
+                      setDragOverIndex(index);
+                    }
+                  }}
+                  onDragLeave={() => {
+                    if (dragOverIndex === index) {
+                      setDragOverIndex(null);
+                    }
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    handleDrop(index);
+                  }}
+                  onDragEnd={() => {
+                    setDraggedIndex(null);
+                    setDragOverIndex(null);
+                  }}
                   className={`relative bg-neutral-900/60 border rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 ${
-                    proj.isFeatured ? 'border-amber-500/50 bg-amber-500/[0.03]' : 'border-white/10 hover:border-white/30'
+                    draggedIndex === index 
+                      ? 'opacity-40 border-purple-500 scale-95 shadow-2xl ring-2 ring-purple-500/50' 
+                      : dragOverIndex === index 
+                      ? 'border-2 border-emerald-400 bg-emerald-500/20 scale-[1.02] shadow-2xl ring-2 ring-emerald-400/50' 
+                      : proj.isFeatured 
+                      ? 'border-amber-500/50 bg-amber-500/[0.03]' 
+                      : 'border-white/10 hover:border-white/30'
                   }`}
                 >
                   <div>
                     {/* Image Preview */}
                     <div className="relative aspect-video w-full rounded-xl overflow-hidden mb-4 border border-white/10 bg-neutral-950">
-                      <img src={proj.image || '/ponpes.png'} alt={proj.title} className="w-full h-full object-cover" />
+                      <img src={proj.image || '/ponpes.png'} alt={proj.title} className="w-full h-full object-cover pointer-events-none" />
                       {proj.isFeatured && (
                         <div className="absolute top-3 left-3 bg-amber-500 text-black font-bold text-[10px] uppercase px-3 py-1 rounded-full flex items-center gap-1 shadow-md">
-                          <Star className="w-3 h-3 fill-black" /> Featured Mockup
+                          <Star className="w-3 h-3 fill-black" /> Featured
                         </div>
                       )}
+
+                      {/* Reorder & Drag Handle */}
+                      <div className="absolute top-3 right-3 flex items-center gap-0.5 bg-black/80 backdrop-blur-md border border-white/20 rounded-full px-2 py-0.5 shadow-xl z-10 select-none">
+                        <div 
+                          className="cursor-grab active:cursor-grabbing p-1 text-purple-400 hover:text-white flex items-center gap-0.5" 
+                          title="Tahan & Drag card untuk menggeser posisi"
+                        >
+                          <GripVertical className="w-4 h-4" />
+                          <span className="text-[11px] font-mono font-bold text-white pr-0.5">#{index + 1}</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); handleMoveProject(index, 'up'); }}
+                          disabled={index === 0}
+                          className="p-1 rounded-full text-neutral-300 hover:text-white hover:bg-white/20 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                          title="Geser Ke Atas"
+                        >
+                          <ChevronUp className="w-4 h-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); handleMoveProject(index, 'down'); }}
+                          disabled={index === projectsList.length - 1}
+                          className="p-1 rounded-full text-neutral-300 hover:text-white hover:bg-white/20 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                          title="Geser Ke Bawah"
+                        >
+                          <ChevronDown className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
 
                     <div className="flex items-start justify-between gap-2 mb-2">

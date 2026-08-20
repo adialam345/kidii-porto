@@ -29,9 +29,16 @@ export async function initDatabase() {
         image VARCHAR(512) NOT NULL,
         link VARCHAR(512),
         is_featured TINYINT(1) DEFAULT 0,
+        display_order INT DEFAULT 0,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `);
+
+    try {
+      await connection.query(`ALTER TABLE projects ADD COLUMN display_order INT DEFAULT 0`);
+    } catch (e) {
+      // Ignore if column already exists
+    }
 
     // Create profile table
     await connection.query(`
