@@ -1,7 +1,4 @@
-'use client'
-
 import { motion } from 'framer-motion'
-import Link from 'next/link'
 import { GradualSpacing } from '@/components/ui/gradual-spacing'
 import { WavyBackground } from './ui/wavy-background'
 
@@ -42,29 +39,29 @@ export function Hero() {
                         and software engineer, with skills in internet networking.
                     </p>
                     <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 px-4">
-                        <Link href="#about">
+                        <a href="#about">
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="bg-white text-black px-6 sm:px-8 py-3 rounded-full font-medium text-sm sm:text-base"
+                                className="bg-white text-black hover:bg-neutral-200 px-6 sm:px-8 py-3 rounded-full font-medium text-sm sm:text-base transition-colors"
                             >
                                 Know more
                             </motion.button>
-                        </Link>
-                        <Link href="#contact">
+                        </a>
+                        <a href="#contact">
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="border border-white px-6 sm:px-8 py-3 rounded-full font-medium text-sm sm:text-base"
+                                className="border border-white hover:bg-white/10 text-white px-6 sm:px-8 py-3 rounded-full font-medium text-sm sm:text-base transition-colors"
                             >
                                 Contact
                             </motion.button>
-                        </Link>
+                        </a>
                         <a href="/CV_Adi_Alam_Sami_Aji_1.pdf" download="CV_Adi_Alam_Sami_Aji.pdf">
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="flex items-center gap-2 border border-white/50 bg-white/10 backdrop-blur-sm px-6 sm:px-8 py-3 rounded-full font-medium text-sm sm:text-base hover:border-white hover:bg-white/20 transition-colors"
+                                className="border border-white hover:bg-white/10 text-white px-6 sm:px-8 py-3 rounded-full font-medium text-sm sm:text-base transition-colors flex items-center gap-2"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>

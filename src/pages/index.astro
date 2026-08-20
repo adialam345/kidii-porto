@@ -1,0 +1,26 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Nav } from '../components/nav';
+import { ParticleBackground } from '../components/particles';
+import { Hero } from '../components/index';
+import { About } from '../components/about';
+import { Projects } from '../components/projects';
+import { Contact } from '../components/contact';
+import { Footer } from '../components/footer';
+import { DockDemo } from '../components/dock';
+import { SafariDemo } from '../components/recent-project';
+---
+
+<Layout title="Adi Alam | Portfolio" description="Personal portfolio website">
+	<main>
+		<ParticleBackground client:load />
+		<Nav client:load />
+		<DockDemo client:load />
+		<Hero client:load />
+		<About client:load />
+		<SafariDemo client:load />
+		<Projects client:load />
+		<Contact client:load />
+		<Footer client:load />
+	</main>
+</Layout>

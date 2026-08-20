@@ -1,10 +1,6 @@
-'use client'
-
 import { motion } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
-import {projects} from '@/components/global-project'
-import Image from 'next/image'
-import Link from 'next/link'
+import { projects } from '@/components/global-project'
 
 export function Projects() {
   return (
@@ -28,8 +24,8 @@ export function Projects() {
               className="group relative"
             >
               <div className="overflow-hidden rounded-2xl">
-                <Image
-                  src={Object.values(project.image)[0]}
+                <img
+                  src={typeof project.image === 'string' ? project.image : (project.image as any)?.src || Object.values(project.image)[0]}
                   alt={project.title}
                   className="w-full h-[200px] object-cover transition-transform duration-500 group-hover:scale-110"
                 />
@@ -37,7 +33,7 @@ export function Projects() {
               <div className="mt-4">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-lg font-semibold">{project.title}</h3>
-                  <Link href={project.link}>
+                  <a href={project.link} target="_blank" rel="noopener noreferrer">
                       <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
@@ -45,8 +41,7 @@ export function Projects() {
                         >
                         <ArrowUpRight className="w-5 h-5" />
                       </motion.button>
-                  </Link>
-
+                  </a>
                 </div>
                 <p className="text-gray-400 mb-3 text-sm">{project.description}</p>
                 <div className="flex gap-2 flex-wrap">

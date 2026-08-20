@@ -1,8 +1,5 @@
-"use client"
-
-import { Safari} from "@/components/ui/safari";
+import { Safari } from "@/components/ui/safari";
 import { motion } from 'framer-motion';
-import ponpes from '@/public/ponpes.png';
 import { ShineBorder } from "./ui/shine-border";
 
 export function SafariDemo() {
@@ -42,7 +39,7 @@ export function SafariDemo() {
               <Safari
               url="https://miftahulhudadoho.or.id/"
               className="w-full h-auto"
-              imageSrc={ponpes}
+              imageSrc="/ponpes.png"
                 />
           </ShineBorder>
         </motion.div>

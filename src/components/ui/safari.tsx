@@ -1,9 +1,8 @@
-import Image, { StaticImageData } from "next/image";
 import { SVGProps } from "react";
 
 export interface SafariProps extends SVGProps<SVGSVGElement> {
   url?: string;
-  imageSrc?: string | StaticImageData;
+  imageSrc?: string | any;
   videoSrc?: string;
   width?: number;
   height?: number;
@@ -17,6 +16,7 @@ export function Safari({
   height = 753,
   ...props
 }: SafariProps) {
+  const imageSrcUrl = typeof imageSrc === 'string' ? imageSrc : imageSrc?.src;
   return (
     <svg
       width={width}
@@ -139,8 +139,8 @@ export function Safari({
             preserveAspectRatio="xMidYMid slice"
             clipPath="url(#roundedBottom)"
           >
-            <Image
-              src={imageSrc}
+            <img
+              src={imageSrcUrl}
               width="1200"
               height="700"
               style={{ width: '100%', height: '100%' }}

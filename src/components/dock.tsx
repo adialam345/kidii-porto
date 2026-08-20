@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 
 import { Dock, DockIcon } from "@/components/ui/dock-menu";
@@ -9,7 +7,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import Link from "next/link";
 
 export type IconProps = React.HTMLAttributes<SVGElement>;
 
@@ -22,9 +19,9 @@ export function DockDemo() {
             <TooltipProvider>
                 <Tooltip>
                     <TooltipTrigger>
-                     <Link href="#home">
+                     <a href="#home">
                         <Icons.gitHub className="size-full" />
-                    </Link>
+                    </a>
                     </TooltipTrigger>
                     <TooltipContent>HOME</TooltipContent>
                 </Tooltip>
@@ -34,9 +31,9 @@ export function DockDemo() {
             <TooltipProvider>
                 <Tooltip>
                     <TooltipTrigger>
-                    <Link href="#about">
+                    <a href="#about">
                         <Icons.notion className="size-full" />
-                    </Link>
+                    </a>
                     </TooltipTrigger>
                     <TooltipContent>ABOUT</TooltipContent>
                 </Tooltip>
@@ -46,9 +43,9 @@ export function DockDemo() {
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger>
-                        <Link href="#work">
+                        <a href="#work">
                             <Icons.googleDrive className="size-full" />
-                        </Link>
+                        </a>
                         </TooltipTrigger>
                         <TooltipContent>PROJECT</TooltipContent>
                     </Tooltip>
@@ -58,9 +55,9 @@ export function DockDemo() {
             <TooltipProvider>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <Link href="#contact">
+                        <a href="#contact">
                             <Icons.whatsapp className="size-full" />
-                        </Link>
+                        </a>
                     </TooltipTrigger>
                     <TooltipContent>CONTACT</TooltipContent>
                 </Tooltip>
@@ -107,10 +104,10 @@ const Icons = {
     </svg>
   ),
   download: (props: IconProps) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-      <polyline points="7 10 12 15 17 10"/>
-      <line x1="12" y1="15" x2="12" y2="3"/>
+    <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" {...props}>
+      <path fill="#fff" d="M14,0H5C2.239,0,0,2.239,0,5V19c0,2.761,2.239,5,5,5H19c2.761,0,5-2.239,5-5V10L14,0Zm-2,17c-.256,0-.512-.098-.707-.293l-3.5-3.5c-.391-.391-.391-1.023,0-1.414s1.023-.391,1.414,0l1.793,1.793V8c0-.552,.448-1,1-1s1,.448,1,1v5.586l1.793-1.793c.391-.391,1.023-.391,1.414,0s.391,1.023,0,1.414l-3.5,3.5c-.195,.195-.451,.293-.707,.293ZM14,8V2.5L19.5,8H14Z"/>
     </svg>
   ),
 };
+
+

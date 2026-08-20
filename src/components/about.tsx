@@ -1,9 +1,5 @@
-'use client'
-
 import { motion } from 'framer-motion'
 import { MarqueeDemo } from './techstack-marquee'
-import profile from "@/public/profile.jpg";
-import Image from 'next/image';
 import { FadeText } from './ui/fade'
 
 export function About() {
@@ -65,8 +61,8 @@ export function About() {
               viewport={{ once: true }}
               className="aspect-square bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl"
             >
-              <Image
-                src={profile}
+              <img
+                src="/profile.jpg"
                 alt="About section illustration"
                 className="w-full h-full object-cover rounded-2xl"
               />
