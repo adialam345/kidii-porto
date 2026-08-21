@@ -10,15 +10,18 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP)
 }
 
-// ─── Helper: scatter chars to wild random positions ──────────────────────────
+// ─── Helper: scatter chars to wild random 3D positions ───────────────────────
 function scatterSet(chars: Element[]) {
   gsap.set(chars, {
     opacity: 0,
-    x: () => gsap.utils.random(-220, 220),
-    y: () => gsap.utils.random(-90, 90),
-    rotation: () => gsap.utils.random(-120, 120),
-    scale: () => gsap.utils.random(0.5, 1.8),
-    z: () => gsap.utils.random(-150, 150),     // depth axis for 3D feel
+    x: () => gsap.utils.random(-500, 500),
+    y: () => gsap.utils.random(-250, 250),
+    z: () => gsap.utils.random(-600, 600),     // deep 3D perspective axis
+    rotationX: () => gsap.utils.random(-360, 360),
+    rotationY: () => gsap.utils.random(-360, 360),
+    rotationZ: () => gsap.utils.random(-360, 360),
+    scale: () => gsap.utils.random(0.3, 3.2),
+    filter: 'blur(10px)',
     force3D: true,
   })
 }
@@ -30,11 +33,14 @@ function scatterAssemble(chars: Element[], delay = 0) {
     x: 0,
     y: 0,
     z: 0,
-    rotation: 0,
+    rotationX: 0,
+    rotationY: 0,
+    rotationZ: 0,
     scale: 1,
-    duration: 1.1,
-    ease: 'back.out(2.2)',              // overshoots then snaps in — feels explosive
-    stagger: { each: 0.03, from: 'random' },   // wider stagger = more chaos
+    filter: 'blur(0px)',
+    duration: 1.35,
+    ease: 'back.out(2.8)',              // massive explosive snap-in effect
+    stagger: { each: 0.04, from: 'random' },   // wide chaos scatter
     delay,
     force3D: true,
     overwrite: true,
@@ -281,7 +287,7 @@ export function EducationCertificates() {
     <section
       id="education-certificates"
       ref={sectionRef}
-      className="py-8 sm:py-20 px-4 sm:px-6 overflow-hidden"
+      className="py-8 sm:py-20 px-4 sm:px-6 overflow-visible"
     >
       <div className="max-w-6xl mx-auto">
 
