@@ -1,4 +1,4 @@
-import { i as initDatabase, p as pool } from '../../chunks/db_BSCICgsb.mjs';
+import { i as initDatabase, p as pool } from '../../chunks/db_C69qOCMq.mjs';
 export { renderers } from '../../renderers.mjs';
 
 const GET = async () => {
@@ -20,6 +20,7 @@ const GET = async () => {
       githubUrl: r.github_url || "https://github.com/adialam345",
       linkedinUrl: r.linkedin_url || "https://www.linkedin.com/in/adi-alam-sami-aji-a62234334/",
       instagramUrl: r.instagram_url || "https://www.instagram.com/kidiepie_/",
+      whatsappUrl: r.whatsapp_url || "https://wa.me/6287823872633",
       email: r.email || "adialam347@gmail.com"
     };
     return new Response(JSON.stringify(profile), {
@@ -51,6 +52,7 @@ const PUT = async ({ request }) => {
       githubUrl,
       linkedinUrl,
       instagramUrl,
+      whatsappUrl,
       email
     } = body;
     await pool.query(
@@ -58,7 +60,7 @@ const PUT = async ({ request }) => {
         name = ?, role1 = ?, role2 = ?, role3 = ?, hero_bio = ?,
         about_headline1 = ?, about_headline2 = ?, about_bio = ?,
         profile_image = ?, cv_url = ?, github_url = ?, linkedin_url = ?,
-        instagram_url = ?, email = ?
+        instagram_url = ?, whatsapp_url = ?, email = ?
        WHERE id = 1`,
       [
         name || "Adi Alam Sami Aji",
@@ -74,6 +76,7 @@ const PUT = async ({ request }) => {
         githubUrl,
         linkedinUrl,
         instagramUrl,
+        whatsappUrl || "https://wa.me/6287823872633",
         email
       ]
     );
