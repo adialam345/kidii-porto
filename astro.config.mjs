@@ -24,7 +24,10 @@ export default defineConfig({
   ],
   vite: {
     ssr: {
-      noExternal: ['gsap'],
+      noExternal: ['gsap', '@gsap/react'],
+    },
+    optimizeDeps: {
+      include: ['gsap', '@gsap/react'],
     },
   },
 });
