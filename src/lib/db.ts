@@ -220,6 +220,17 @@ export async function initDatabase() {
       }
     }
 
+    // Auto-migrate existing database records to use compressed .webp image paths
+    try {
+      await connection.query(`UPDATE certificates SET image = REPLACE(image, '.png', '.webp') WHERE image LIKE '%.png'`);
+      await connection.query(`UPDATE certificates SET image = REPLACE(image, '.jpg', '.webp') WHERE image LIKE '%.jpg'`);
+      await connection.query(`UPDATE projects SET image = REPLACE(image, '.png', '.webp') WHERE image LIKE '%.png'`);
+      await connection.query(`UPDATE projects SET image = REPLACE(image, '.jpg', '.webp') WHERE image LIKE '%.jpg'`);
+      await connection.query(`UPDATE profile SET profile_image = REPLACE(profile_image, '.jpg', '.webp') WHERE profile_image LIKE '%.jpg'`);
+    } catch (e) {
+      console.log('WebP auto-migration query executed');
+    }
+
     connection.release();
     initialized = true;
   } catch (err) {

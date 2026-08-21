@@ -38,7 +38,7 @@ export const initialProfileData: ProfileData = {
   aboutHeadline1: "where",
   aboutHeadline2: "EXPERIENCE BUILDS CHARACTER",
   aboutBio: "Saya adalah mahasiswa D3 Teknik Informatika di Politeknik Negeri Madiun (2023–2026) dengan fondasi yang kuat dalam pengembangan aplikasi web & mobile (frontend dan backend), jaringan komputer, serta keamanan siber. Berpengalaman kerja sebagai IT & Network Engineer Intern di Amins Project Teknologi Indonesia dan Technical Support Intern di Notepro Teknikatama, mencakup konfigurasi router MikroTik, penataan infrastruktur jaringan, pengawasan sistem CCTV, serta pengembangan aplikasi web modern menggunakan Laravel, Node.js, Next.js, Python, Tailwind CSS, Firebase, dan Kotlin. Didukung oleh sertifikasi BNSP sebagai Junior Web Developer dan Junior Cyber Security, saya berkomitmen untuk menciptakan solusi perangkat lunak yang aman, responsif, dan inovatif.",
-  profileImage: "/profile.jpg",
+  profileImage: "/profile.webp",
   cvUrl: "/CV_Adi_Alam_Sami_Aji_1.pdf",
   githubUrl: "https://github.com/adialam345",
   linkedinUrl: "https://www.linkedin.com/in/adi-alam-sami-aji-a62234334/",
@@ -89,7 +89,7 @@ export const initialCertificates: CertificateItem[] = [
     skills: ["Laravel", "React", "Node.js", "MySQL", "PHP", "Software Engineering"],
     credentialUrl: "/junior-web-developer.pdf",
     pdfUrl: "/junior-web-developer.pdf",
-    image: "/junior-web-developer.png"
+    image: "/junior-web-developer.webp"
   },
   {
     id: 2,
@@ -99,7 +99,7 @@ export const initialCertificates: CertificateItem[] = [
     skills: ["Networking", "Cyber Security", "Penetration Testing", "Security Audit"],
     credentialUrl: "/junior-cyber-security.pdf",
     pdfUrl: "/junior-cyber-security.pdf",
-    image: "/junior-cyber-security.png"
+    image: "/junior-cyber-security.webp"
   },
   {
     id: 3,
