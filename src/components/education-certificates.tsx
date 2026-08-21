@@ -14,11 +14,11 @@ if (typeof window !== 'undefined') {
 function scatterSet(chars: Element[]) {
   gsap.set(chars, {
     opacity: 0,
-    x: () => gsap.utils.random(-700, 700),
-    y: () => gsap.utils.random(-500, 500),
-    rotation: () => gsap.utils.random(-360, 360),
-    scale: () => gsap.utils.random(0.05, 3),
-    z: () => gsap.utils.random(-400, 400),     // depth axis for 3D feel
+    x: () => gsap.utils.random(-220, 220),
+    y: () => gsap.utils.random(-90, 90),
+    rotation: () => gsap.utils.random(-120, 120),
+    scale: () => gsap.utils.random(0.5, 1.8),
+    z: () => gsap.utils.random(-150, 150),     // depth axis for 3D feel
     force3D: true,
   })
 }
@@ -32,9 +32,9 @@ function scatterAssemble(chars: Element[], delay = 0) {
     z: 0,
     rotation: 0,
     scale: 1,
-    duration: 1.2,
-    ease: 'back.out(2.5)',              // overshoots then snaps in — feels explosive
-    stagger: { each: 0.04, from: 'random' },   // wider stagger = more chaos
+    duration: 1.1,
+    ease: 'back.out(2.2)',              // overshoots then snaps in — feels explosive
+    stagger: { each: 0.03, from: 'random' },   // wider stagger = more chaos
     delay,
     force3D: true,
     overwrite: true,
