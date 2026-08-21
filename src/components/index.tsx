@@ -12,17 +12,22 @@ if (typeof window !== 'undefined') {
 // ─── Roles that cycle like a morphing typewriter ───────────────────────────
 const CYCLING_ROLES = ['FULL-STACK', 'FRONTEND', 'BACKEND', 'SOFTWARE']
 
-// ─── Split string into individual letter spans ─────────────────────────────
+// ─── Split string into individual letter spans grouped by word ────────────
 function SplitText({ text, className }: { text: string; className?: string }) {
+  const words = text.split(' ')
   return (
     <>
-      {text.split('').map((ch, i) => (
-        <span
-          key={i}
-          className={`split-char inline-block ${className ?? ''}`}
-          style={{ whiteSpace: ch === ' ' ? 'pre' : undefined }}
-        >
-          {ch === ' ' ? '\u00a0' : ch}
+      {words.map((word, wIdx) => (
+        <span key={wIdx} className="inline-block whitespace-nowrap">
+          {word.split('').map((ch, cIdx) => (
+            <span
+              key={cIdx}
+              className={`split-char inline-block ${className ?? ''}`}
+            >
+              {ch}
+            </span>
+          ))}
+          {wIdx < words.length - 1 && <span className="inline-block">&nbsp;</span>}
         </span>
       ))}
     </>
@@ -164,14 +169,14 @@ export function Hero() {
           {/* Line 1: italic role label + cycling word */}
           <div
             ref={line1Ref}
-            className="hero-line1 text-2xl sm:text-4xl md:text-6xl lg:text-8xl font-display font-extrabold tracking-tight leading-none flex flex-wrap justify-center items-baseline gap-3 sm:gap-4"
+            className="hero-line1 text-xl sm:text-3xl md:text-5xl lg:text-7xl font-display font-extrabold tracking-tight leading-none flex flex-wrap justify-center items-baseline gap-2 sm:gap-4"
           >
             <span className="italic font-light text-neutral-400 text-[0.65em]">
               <SplitText text={profile.role1 || "I'm a"} />
             </span>
             <span
               ref={roleWordRef}
-              className="text-white"
+              className="text-white inline-block whitespace-nowrap"
               style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)' }}
             >
               {profile.role2 || 'FULL-STACK'}
@@ -181,7 +186,7 @@ export function Hero() {
           {/* Line 2: DEVELOPER & SOFTWARE ENGINEER */}
           <div
             ref={line2Ref}
-            className="hero-line2 mt-2 sm:mt-3 text-2xl sm:text-4xl md:text-6xl lg:text-8xl font-display font-extrabold tracking-tight leading-none text-white"
+            className="hero-line2 mt-2 sm:mt-3 text-xl sm:text-3xl md:text-5xl lg:text-7xl font-display font-extrabold tracking-tight leading-tight text-white flex flex-wrap justify-center items-center gap-x-3 gap-y-1"
           >
             <SplitText text={profile.role3 || 'DEVELOPER & ENGINEER'} />
           </div>

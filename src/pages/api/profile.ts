@@ -21,6 +21,7 @@ export const GET: APIRoute = async () => {
       githubUrl: r.github_url || 'https://github.com/adialam345',
       linkedinUrl: r.linkedin_url || 'https://www.linkedin.com/in/adi-alam-sami-aji-a62234334/',
       instagramUrl: r.instagram_url || 'https://www.instagram.com/kidiepie_/',
+      whatsappUrl: r.whatsapp_url || 'https://wa.me/6287823872633',
       email: r.email || 'adialam347@gmail.com'
     };
 
@@ -43,7 +44,7 @@ export const PUT: APIRoute = async ({ request }) => {
     const {
       name, role1, role2, role3, heroBio,
       aboutHeadline1, aboutHeadline2, aboutBio,
-      profileImage, cvUrl, githubUrl, linkedinUrl, instagramUrl, email
+      profileImage, cvUrl, githubUrl, linkedinUrl, instagramUrl, whatsappUrl, email
     } = body;
 
     await pool.query(
@@ -51,13 +52,13 @@ export const PUT: APIRoute = async ({ request }) => {
         name = ?, role1 = ?, role2 = ?, role3 = ?, hero_bio = ?,
         about_headline1 = ?, about_headline2 = ?, about_bio = ?,
         profile_image = ?, cv_url = ?, github_url = ?, linkedin_url = ?,
-        instagram_url = ?, email = ?
+        instagram_url = ?, whatsapp_url = ?, email = ?
        WHERE id = 1`,
       [
         name || 'Adi Alam Sami Aji',
         role1, role2, role3, heroBio,
         aboutHeadline1, aboutHeadline2, aboutBio,
-        profileImage, cvUrl, githubUrl, linkedinUrl, instagramUrl, email
+        profileImage, cvUrl, githubUrl, linkedinUrl, instagramUrl, whatsappUrl || 'https://wa.me/6287823872633', email
       ]
     );
 

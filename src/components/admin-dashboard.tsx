@@ -3,12 +3,15 @@ import {
   Plus, Edit, Trash2, Star, Save, RotateCcw, Download, Upload, 
   Lock, LogOut, ArrowLeft, CheckCircle2, ShieldCheck, LayoutGrid, 
   User, Link as LinkIcon, ExternalLink, Image as ImageIcon,
-  ChevronUp, ChevronDown, GripVertical
+  ChevronUp, ChevronDown, GripVertical, GraduationCap, Award, FileText
 } from 'lucide-react';
 import { 
-  ProjectItem, ProfileData, getStoredProjects, saveProjects, 
-  getStoredProfile, saveProfile, resetAllData, 
-  isAdminAuthenticated, setAdminAuthenticated 
+  ProjectItem, ProfileData, EducationItem, CertificateItem,
+  getStoredProjects, saveProjects, 
+  getStoredProfile, saveProfile,
+  getStoredEducation, saveEducation,
+  getStoredCertificates, saveCertificates,
+  resetAllData, isAdminAuthenticated, setAdminAuthenticated 
 } from '@/lib/portfolio-store';
 
 export function AdminDashboard() {
@@ -17,10 +20,12 @@ export function AdminDashboard() {
   const [passwordInput, setPasswordInput] = useState('');
   const [authError, setAuthError] = useState('');
 
-  const [activeTab, setActiveTab] = useState<'projects' | 'profile' | 'socials' | 'backup'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'education' | 'certificates' | 'profile' | 'socials' | 'backup'>('projects');
   
   // Data State
   const [projectsList, setProjectsList] = useState<ProjectItem[]>([]);
+  const [educationList, setEducationList] = useState<EducationItem[]>([]);
+  const [certificatesList, setCertificatesList] = useState<CertificateItem[]>([]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [profile, setProfile] = useState<ProfileData>({
@@ -47,6 +52,33 @@ export function AdminDashboard() {
   });
   const [tagsInput, setTagsInput] = useState('');
 
+  // Form Fields for Education Modal
+  const [editingEdu, setEditingEdu] = useState<EducationItem | null>(null);
+  const [isEduModalOpen, setIsEduModalOpen] = useState(false);
+  const [eduForm, setEduForm] = useState<Omit<EducationItem, 'id'>>({
+    institution: '',
+    degree: '',
+    period: '',
+    description: '',
+    location: '',
+    skills: []
+  });
+  const [eduSkillsInput, setEduSkillsInput] = useState('');
+
+  // Form Fields for Certificates Modal
+  const [editingCert, setEditingCert] = useState<CertificateItem | null>(null);
+  const [isCertModalOpen, setIsCertModalOpen] = useState(false);
+  const [certForm, setCertForm] = useState<Omit<CertificateItem, 'id'>>({
+    title: '',
+    issuer: '',
+    issueDate: '',
+    credentialUrl: '',
+    pdfUrl: '',
+    image: '',
+    skills: []
+  });
+  const [certSkillsInput, setCertSkillsInput] = useState('');
+
   const handleFileUpload = async (file: File, onSuccess: (url: string) => void) => {
     setUploading(true);
     try {
@@ -70,11 +102,12 @@ export function AdminDashboard() {
     }
   };
 
-
   useEffect(() => {
     setAuthenticated(isAdminAuthenticated());
     setProjectsList(getStoredProjects());
     setProfile(getStoredProfile());
+    setEducationList(getStoredEducation());
+    setCertificatesList(getStoredCertificates());
 
     // Fetch from MySQL API
     fetch('/api/projects')
@@ -85,6 +118,16 @@ export function AdminDashboard() {
     fetch('/api/profile')
       .then(res => res.json())
       .then(data => { if (data && data.role2) setProfile(data); })
+      .catch(() => {});
+
+    fetch('/api/education')
+      .then(res => res.json())
+      .then(data => { if (Array.isArray(data)) setEducationList(data); })
+      .catch(() => {});
+
+    fetch('/api/certificates')
+      .then(res => res.json())
+      .then(data => { if (Array.isArray(data)) setCertificatesList(data); })
       .catch(() => {});
   }, []);
 
@@ -317,6 +360,166 @@ export function AdminDashboard() {
     }
   };
 
+  // ── EDUCATION CRUD ────────────────────────────────────────────────────────
+  const openNewEduModal = () => {
+    setEditingEdu(null);
+    setEduForm({
+      institution: '',
+      degree: '',
+      period: '',
+      description: '',
+      location: '',
+      skills: []
+    });
+    setEduSkillsInput('');
+    setIsEduModalOpen(true);
+  };
+
+  const openEditEduModal = (item: EducationItem) => {
+    setEditingEdu(item);
+    setEduForm({
+      institution: item.institution,
+      degree: item.degree,
+      period: item.period,
+      description: item.description || '',
+      location: item.location || '',
+      skills: item.skills || []
+    });
+    setEduSkillsInput((item.skills || []).join(', '));
+    setIsEduModalOpen(true);
+  };
+
+  const handleSaveEducation = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const skillsArray = eduSkillsInput.split(',').map(s => s.trim()).filter(s => s.length > 0);
+    let updatedList: EducationItem[];
+
+    if (editingEdu) {
+      updatedList = educationList.map(item => item.id === editingEdu.id ? { ...item, ...eduForm, skills: skillsArray } : item);
+      try {
+        await fetch('/api/education', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: editingEdu.id, ...eduForm, skills: skillsArray })
+        });
+      } catch (err) {}
+      showToast('Pendidikan berhasil diperbarui di Database!');
+    } else {
+      try {
+        const res = await fetch('/api/education', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...eduForm, skills: skillsArray })
+        });
+        const data = await res.json();
+        const newEdu: EducationItem = { id: data.id || Date.now(), ...eduForm, skills: skillsArray };
+        updatedList = [newEdu, ...educationList];
+      } catch (err) {
+        const newId = educationList.length > 0 ? Math.max(...educationList.map(e => e.id)) + 1 : 1;
+        const newEdu: EducationItem = { id: newId, ...eduForm, skills: skillsArray };
+        updatedList = [newEdu, ...educationList];
+      }
+      showToast('Pendidikan baru berhasil ditambahkan!');
+    }
+
+    setEducationList(updatedList);
+    saveEducation(updatedList);
+    setIsEduModalOpen(false);
+  };
+
+  const handleDeleteEducation = async (id: number) => {
+    if (confirm('Apakah Anda yakin ingin menghapus data pendidikan ini?')) {
+      const updated = educationList.filter(e => e.id !== id);
+      setEducationList(updated);
+      saveEducation(updated);
+      try {
+        await fetch(`/api/education?id=${id}`, { method: 'DELETE' });
+      } catch (err) {}
+      showToast('Data pendidikan telah dihapus.');
+    }
+  };
+
+  // ── CERTIFICATES CRUD ─────────────────────────────────────────────────────
+  const openNewCertModal = () => {
+    setEditingCert(null);
+    setCertForm({
+      title: '',
+      issuer: '',
+      issueDate: '',
+      credentialUrl: '',
+      pdfUrl: '',
+      image: '',
+      skills: []
+    });
+    setCertSkillsInput('');
+    setIsCertModalOpen(true);
+  };
+
+  const openEditCertModal = (item: CertificateItem) => {
+    setEditingCert(item);
+    setCertForm({
+      title: item.title,
+      issuer: item.issuer,
+      issueDate: item.issueDate,
+      credentialUrl: item.credentialUrl || '',
+      pdfUrl: item.pdfUrl || '',
+      image: item.image || '',
+      skills: item.skills || []
+    });
+    setCertSkillsInput((item.skills || []).join(', '));
+    setIsCertModalOpen(true);
+  };
+
+  const handleSaveCertificate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const skillsArray = certSkillsInput.split(',').map(s => s.trim()).filter(s => s.length > 0);
+    let updatedList: CertificateItem[];
+
+    if (editingCert) {
+      updatedList = certificatesList.map(item => item.id === editingCert.id ? { ...item, ...certForm, skills: skillsArray } : item);
+      try {
+        await fetch('/api/certificates', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: editingCert.id, ...certForm, skills: skillsArray })
+        });
+      } catch (err) {}
+      showToast('Sertifikat berhasil diperbarui di Database!');
+    } else {
+      try {
+        const res = await fetch('/api/certificates', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...certForm, skills: skillsArray })
+        });
+        const data = await res.json();
+        const newCert: CertificateItem = { id: data.id || Date.now(), ...certForm, skills: skillsArray };
+        updatedList = [newCert, ...certificatesList];
+      } catch (err) {
+        const newId = certificatesList.length > 0 ? Math.max(...certificatesList.map(c => c.id)) + 1 : 1;
+        const newCert: CertificateItem = { id: newId, ...certForm, skills: skillsArray };
+        updatedList = [newCert, ...certificatesList];
+      }
+      showToast('Sertifikat baru berhasil ditambahkan!');
+    }
+
+    setCertificatesList(updatedList);
+    saveCertificates(updatedList);
+    setIsCertModalOpen(false);
+  };
+
+  const handleDeleteCertificate = async (id: number) => {
+    if (confirm('Apakah Anda yakin ingin menghapus sertifikat ini?')) {
+      const updated = certificatesList.filter(c => c.id !== id);
+      setCertificatesList(updated);
+      saveCertificates(updated);
+      try {
+        await fetch(`/api/certificates?id=${id}`, { method: 'DELETE' });
+      } catch (err) {}
+      showToast('Sertifikat telah dihapus.');
+    }
+  };
+
   // Profile Save
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -527,6 +730,26 @@ export function AdminDashboard() {
             <LayoutGrid className="w-4 h-4" /> Manajemen Proyek ({projectsList.length})
           </button>
           <button
+            onClick={() => setActiveTab('education')}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${
+              activeTab === 'education'
+                ? 'bg-white text-black font-semibold shadow-lg'
+                : 'bg-white/5 border border-white/10 text-neutral-400 hover:bg-white/10 hover:text-white'
+            }`}
+          >
+            <GraduationCap className="w-4 h-4" /> Pendidikan ({educationList.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('certificates')}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${
+              activeTab === 'certificates'
+                ? 'bg-white text-black font-semibold shadow-lg'
+                : 'bg-white/5 border border-white/10 text-neutral-400 hover:bg-white/10 hover:text-white'
+            }`}
+          >
+            <Award className="w-4 h-4" /> Sertifikat & PDF ({certificatesList.length})
+          </button>
+          <button
             onClick={() => setActiveTab('profile')}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${
               activeTab === 'profile'
@@ -694,6 +917,156 @@ export function AdminDashboard() {
                         onClick={() => handleDeleteProject(proj.id)}
                         className="p-2 rounded-lg border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-colors"
                         title="Hapus Proyek"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 2: EDUCATION MANAGEMENT */}
+        {activeTab === 'education' && (
+          <div>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              <div>
+                <h2 className="text-xl font-bold">Daftar Riwayat Pendidikan</h2>
+                <p className="text-xs text-neutral-400">Kelola riwayat pendidikan perguruan tinggi, sekolah, atau institusi lain.</p>
+              </div>
+              <button
+                onClick={openNewEduModal}
+                className="flex items-center justify-center gap-2 bg-white text-black font-semibold px-5 py-2.5 rounded-xl text-sm hover:bg-neutral-200 transition-all shadow-lg active:scale-95"
+              >
+                <Plus className="w-4 h-4" /> Tambah Pendidikan Baru
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {educationList.map((item) => (
+                <div key={item.id} className="bg-neutral-900/60 border border-white/10 rounded-2xl p-6 flex flex-col justify-between hover:border-white/20 transition-all">
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <span className="text-[11px] font-mono uppercase tracking-widest text-emerald-400 font-semibold">{item.period}</span>
+                      <span className="text-xs text-neutral-500 font-medium">{item.location}</span>
+                    </div>
+                    <h3 className="font-bold text-lg text-white mb-1">{item.institution}</h3>
+                    <h4 className="text-sm font-semibold text-neutral-300 mb-3">{item.degree}</h4>
+                    <p className="text-xs text-neutral-400 leading-relaxed mb-4">{item.description}</p>
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                      {item.skills?.map((s, idx) => (
+                        <span key={idx} className="text-[10px] bg-white/5 border border-white/10 px-2 py-0.5 rounded-md text-neutral-300">{s}</span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-white/10 flex justify-end gap-2">
+                    <button
+                      onClick={() => openEditEduModal(item)}
+                      className="p-2 rounded-lg border border-white/10 text-neutral-300 hover:text-white hover:bg-white/10 transition-colors"
+                      title="Edit Pendidikan"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteEducation(item.id)}
+                      className="p-2 rounded-lg border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-colors"
+                      title="Hapus Pendidikan"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 3: CERTIFICATES MANAGEMENT */}
+        {activeTab === 'certificates' && (
+          <div>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              <div>
+                <h2 className="text-xl font-bold">Daftar Sertifikasi & Berkas PDF</h2>
+                <p className="text-xs text-neutral-400">Kelola sertifikat kompetensi (BNSP, dsb.), upload berkas PDF, serta gambar pratinjau sertifikat.</p>
+              </div>
+              <button
+                onClick={openNewCertModal}
+                className="flex items-center justify-center gap-2 bg-white text-black font-semibold px-5 py-2.5 rounded-xl text-sm hover:bg-neutral-200 transition-all shadow-lg active:scale-95"
+              >
+                <Plus className="w-4 h-4" /> Tambah Sertifikat Baru
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {certificatesList.map((item) => (
+                <div key={item.id} className="bg-neutral-900/60 border border-white/10 rounded-2xl p-5 flex flex-col justify-between hover:border-white/20 transition-all">
+                  <div>
+                    {/* Thumbnail / PDF indicator */}
+                    <div className="relative aspect-[1.414/1] w-full rounded-xl overflow-hidden mb-4 border border-white/10 bg-neutral-950 flex items-center justify-center">
+                      {item.image ? (
+                        <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                      ) : item.pdfUrl ? (
+                        <div className="flex flex-col items-center justify-center text-center p-4">
+                          <FileText className="w-10 h-10 text-emerald-400 mb-2" />
+                          <span className="text-xs font-mono text-emerald-400">PDF Document</span>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center text-center p-4">
+                          <Award className="w-10 h-10 text-amber-400 mb-2" />
+                          <span className="text-xs text-neutral-500">No Document File</span>
+                        </div>
+                      )}
+
+                      {item.pdfUrl && (
+                        <span className="absolute top-2 right-2 bg-emerald-500/90 text-black font-bold text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md">
+                          <FileText className="w-3 h-3" /> PDF Loaded
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400 font-semibold">{item.issuer}</span>
+                      <span className="text-xs font-mono text-neutral-400">{item.issueDate}</span>
+                    </div>
+
+                    <h3 className="font-bold text-base text-white mb-3 line-clamp-2">{item.title}</h3>
+
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                      {item.skills?.map((s, idx) => (
+                        <span key={idx} className="text-[10px] bg-white/5 border border-white/10 px-2 py-0.5 rounded-md text-neutral-300">{s}</span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-2">
+                    {item.pdfUrl || item.credentialUrl ? (
+                      <a
+                        href={item.pdfUrl || item.credentialUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-blue-400 hover:underline flex items-center gap-1 font-mono"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" /> Buka PDF
+                      </a>
+                    ) : (
+                      <span className="text-xs text-neutral-600 font-mono">Tanpa PDF</span>
+                    )}
+
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => openEditCertModal(item)}
+                        className="p-2 rounded-lg border border-white/10 text-neutral-300 hover:text-white hover:bg-white/10 transition-colors"
+                        title="Edit Sertifikat"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteCertificate(item.id)}
+                        className="p-2 rounded-lg border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-colors"
+                        title="Hapus Sertifikat"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -915,6 +1288,17 @@ export function AdminDashboard() {
               </div>
 
               <div>
+                <label className="block text-xs text-neutral-400 mb-2 font-medium">URL WhatsApp (`https://wa.me/6287823872633`)</label>
+                <input
+                  type="text"
+                  placeholder="https://wa.me/6287823872633"
+                  value={profile.whatsappUrl || ''}
+                  onChange={e => setProfile({...profile, whatsappUrl: e.target.value})}
+                  className="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none focus:border-white"
+                />
+              </div>
+
+              <div>
                 <label className="block text-xs text-neutral-400 mb-2 font-medium">Alamat Email Contact</label>
                 <input
                   type="email"
@@ -1115,6 +1499,270 @@ export function AdminDashboard() {
                   className="px-6 py-2.5 rounded-xl bg-white text-black font-semibold text-xs hover:bg-neutral-200 transition-colors"
                 >
                   Simpan Proyek
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* EDUCATION EDIT/ADD MODAL */}
+      {isEduModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-neutral-900 border border-white/15 w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 my-8 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <h3 className="text-lg font-bold">
+                {editingEdu ? 'Edit Data Pendidikan' : 'Tambah Pendidikan Baru'}
+              </h3>
+              <button
+                onClick={() => setIsEduModalOpen(false)}
+                className="text-neutral-400 hover:text-white text-sm px-3 py-1 rounded-lg border border-white/10"
+              >
+                Tutup
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEducation} className="space-y-4">
+              <div>
+                <label className="block text-xs text-neutral-400 mb-1.5 font-medium">Nama Institusi / Universitas / Sekolah</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Contoh: Politeknik Negeri Madiun"
+                  value={eduForm.institution}
+                  onChange={e => setEduForm({...eduForm, institution: e.target.value})}
+                  className="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-white"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs text-neutral-400 mb-1.5 font-medium">Gelar / Jurusan</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Contoh: D3 Teknik Informatika"
+                    value={eduForm.degree}
+                    onChange={e => setEduForm({...eduForm, degree: e.target.value})}
+                    className="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-neutral-400 mb-1.5 font-medium">Periode Tahun</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Contoh: 2022 - Sekarang"
+                    value={eduForm.period}
+                    onChange={e => setEduForm({...eduForm, period: e.target.value})}
+                    className="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-white font-mono"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs text-neutral-400 mb-1.5 font-medium">Lokasi Kota / Provinsi</label>
+                <input
+                  type="text"
+                  placeholder="Contoh: Madiun, Jawa Timur"
+                  value={eduForm.location}
+                  onChange={e => setEduForm({...eduForm, location: e.target.value})}
+                  className="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-white"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs text-neutral-400 mb-1.5 font-medium">Deskripsi Kegiatan / Fokus Pembelajaran</label>
+                <textarea
+                  rows={3}
+                  placeholder="Fokus pada Software Engineering, Web Development, Kotlin, dsb..."
+                  value={eduForm.description}
+                  onChange={e => setEduForm({...eduForm, description: e.target.value})}
+                  className="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-white leading-relaxed"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs text-neutral-400 mb-1.5 font-medium">Keterampilan / Topik Utama (Pisahkan dengan koma)</label>
+                <input
+                  type="text"
+                  placeholder="Laravel, React, Kotlin, IoT, Cybersecurity"
+                  value={eduSkillsInput}
+                  onChange={e => setEduSkillsInput(e.target.value)}
+                  className="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-white"
+                />
+              </div>
+
+              <div className="pt-4 border-t border-white/10 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsEduModalOpen(false)}
+                  className="px-5 py-2.5 rounded-xl border border-white/15 text-xs text-neutral-300 hover:text-white"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 rounded-xl bg-white text-black font-semibold text-xs hover:bg-neutral-200 transition-colors"
+                >
+                  Simpan Pendidikan
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* CERTIFICATE EDIT/ADD MODAL */}
+      {isCertModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-neutral-900 border border-white/15 w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 my-8 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <h3 className="text-lg font-bold">
+                {editingCert ? 'Edit Sertifikat & Dokumen' : 'Tambah Sertifikat Baru'}
+              </h3>
+              <button
+                onClick={() => setIsCertModalOpen(false)}
+                className="text-neutral-400 hover:text-white text-sm px-3 py-1 rounded-lg border border-white/10"
+              >
+                Tutup
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveCertificate} className="space-y-4">
+              <div>
+                <label className="block text-xs text-neutral-400 mb-1.5 font-medium">Judul Sertifikat / Sertifikasi Kompetensi</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Contoh: Junior Web Developer"
+                  value={certForm.title}
+                  onChange={e => setCertForm({...certForm, title: e.target.value})}
+                  className="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-white"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs text-neutral-400 mb-1.5 font-medium">Penerbit / Organisasi (Issuer)</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Contoh: Sertifikasi Kompetensi / BNSP"
+                    value={certForm.issuer}
+                    onChange={e => setCertForm({...certForm, issuer: e.target.value})}
+                    className="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-neutral-400 mb-1.5 font-medium">Tahun / Tanggal Terbit</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Contoh: 2024"
+                    value={certForm.issueDate}
+                    onChange={e => setCertForm({...certForm, issueDate: e.target.value})}
+                    className="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-white font-mono"
+                  />
+                </div>
+              </div>
+
+              {/* PDF Document Upload */}
+              <div>
+                <label className="block text-xs text-neutral-400 mb-1.5 font-medium">Berkas PDF Sertifikat (`/junior-web-developer.pdf` atau Upload File PDF Baru)</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="/junior-web-developer.pdf"
+                    value={certForm.pdfUrl}
+                    onChange={e => setCertForm({...certForm, pdfUrl: e.target.value})}
+                    className="flex-1 bg-black/60 border border-white/15 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none focus:border-white"
+                  />
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    id="cert-pdf-picker"
+                    className="hidden"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        handleFileUpload(e.target.files[0], (url) => setCertForm(prev => ({ ...prev, pdfUrl: url, credentialUrl: url })));
+                      }
+                    }}
+                  />
+                  <label
+                    htmlFor="cert-pdf-picker"
+                    className="cursor-pointer bg-white/10 hover:bg-white/20 text-white px-3 py-2.5 rounded-xl text-xs flex items-center gap-1.5 border border-white/15 whitespace-nowrap transition-all active:scale-95"
+                  >
+                    <Upload className="w-4 h-4 text-emerald-400" />
+                    <span>Upload PDF</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Image Preview Upload */}
+              <div>
+                <label className="block text-xs text-neutral-400 mb-1.5 font-medium">Gambar Pratinjau Sertifikat (`/junior-web-developer.png` atau Upload PNG Baru)</label>
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="/junior-web-developer.png"
+                      value={certForm.image}
+                      onChange={e => setCertForm({...certForm, image: e.target.value})}
+                      className="flex-1 bg-black/60 border border-white/15 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none focus:border-white"
+                    />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      id="cert-image-picker"
+                      className="hidden"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          handleFileUpload(e.target.files[0], (url) => setCertForm(prev => ({ ...prev, image: url })));
+                        }
+                      }}
+                    />
+                    <label
+                      htmlFor="cert-image-picker"
+                      className="cursor-pointer bg-white/10 hover:bg-white/20 text-white px-3 py-2.5 rounded-xl text-xs flex items-center gap-1.5 border border-white/15 whitespace-nowrap transition-all active:scale-95"
+                    >
+                      <Upload className="w-4 h-4 text-purple-400" />
+                      <span>Upload Gambar</span>
+                    </label>
+                  </div>
+                  {certForm.image && (
+                    <div className="aspect-[1.414/1] w-full max-h-48 rounded-xl overflow-hidden border border-white/15 bg-neutral-950 relative flex items-center justify-center">
+                      <img src={certForm.image} alt="Preview" className="w-full h-full object-contain" />
+                      <span className="absolute bottom-1 right-2 bg-black/80 text-[10px] text-neutral-400 px-1.5 py-0.5 rounded">Pratinjau Instant Fit</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs text-neutral-400 mb-1.5 font-medium">Skill / Topik Terkait (Pisahkan dengan koma)</label>
+                <input
+                  type="text"
+                  placeholder="Laravel, React, Node.js, MySQL"
+                  value={certSkillsInput}
+                  onChange={e => setCertSkillsInput(e.target.value)}
+                  className="w-full bg-black/60 border border-white/15 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-white"
+                />
+              </div>
+
+              <div className="pt-4 border-t border-white/10 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsCertModalOpen(false)}
+                  className="px-5 py-2.5 rounded-xl border border-white/15 text-xs text-neutral-300 hover:text-white"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 rounded-xl bg-white text-black font-semibold text-xs hover:bg-neutral-200 transition-colors"
+                >
+                  Simpan Sertifikat
                 </button>
               </div>
             </form>

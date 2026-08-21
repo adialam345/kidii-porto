@@ -1,23 +1,24 @@
-import { e as createComponent, k as renderComponent, r as renderTemplate, m as maybeRenderHead } from '../chunks/astro/server_DWnod6f9.mjs';
+import { e as createComponent, k as renderComponent, l as renderScript, r as renderTemplate, m as maybeRenderHead } from '../chunks/astro/server_CzcP1_xN.mjs';
 import 'piccolore';
-import { $ as $$Layout } from '../chunks/Layout_BmwJySYD.mjs';
+import { $ as $$Layout } from '../chunks/Layout_BMghxs4L.mjs';
 import { jsx, jsxs, Fragment } from 'react/jsx-runtime';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import * as React from 'react';
 import React__default, { useState, useRef, useEffect, createContext, forwardRef, useCallback, useMemo, useImperativeHandle } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Flip } from 'gsap/Flip';
-import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { useGSAP } from '@gsap/react';
-import { Sparkles, ChevronUp, ChevronDown, GraduationCap, Award, BadgeCheck, Calendar, MapPin, ExternalLink, Layers, ArrowUpRight, X, Github, Linkedin, Instagram, Mail, Home, User, Briefcase, FileDown } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { createNoise3D } from 'simplex-noise';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
+import { SplitText as SplitText$1 } from 'gsap/SplitText';
+import { GraduationCap, Award, BadgeCheck, Calendar, MapPin, ExternalLink, Layers, ArrowUpRight, X, Github, Linkedin, Instagram, Mail, Home, User, Briefcase, FileDown } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Slot } from '@radix-ui/react-slot';
 import { cva } from 'class-variance-authority';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+import { Flip } from 'gsap/Flip';
 export { renderers } from '../renderers.mjs';
 
 function Nav() {
@@ -122,230 +123,6 @@ function ParticleBackground() {
       className: "fixed inset-0 pointer-events-none gpu-accelerated z-0"
     }
   );
-}
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, Flip, ScrollToPlugin, useGSAP);
-}
-const SLIDES = [
-  {
-    id: "home",
-    label: "HERO",
-    number: "01",
-    title: "Overview & Roles",
-    sharedText: "ADI ALAM // CREATIVE SOFTWARE ENGINEER",
-    tagline: "Crafting Next-Gen Digital Experiences"
-  },
-  {
-    id: "about",
-    label: "ABOUT",
-    number: "02",
-    title: "Experience & Character",
-    sharedText: "EXPERIENCE BUILDS CHARACTER // ADI ALAM",
-    tagline: "Architecting Scalable Solutions"
-  },
-  {
-    id: "education-certificates",
-    label: "EDUCATION",
-    number: "03",
-    title: "Degrees & Certifications",
-    sharedText: "ACADEMIC MASTERY & CERTIFIED SKILLS",
-    tagline: "Continuous Professional Learning"
-  },
-  {
-    id: "recent-showcase",
-    label: "SHOWCASE",
-    number: "04",
-    title: "Featured Case Study",
-    sharedText: "PONPES MIFTAHUL HUDA // WEB SYSTEM",
-    tagline: "Featured Institutional Platform"
-  },
-  {
-    id: "work",
-    label: "PROJECTS",
-    number: "05",
-    title: "Software Engineering Work",
-    sharedText: "PORTFOLIO OF WEB & MOBILE APPS",
-    tagline: "Full-Stack Software Engineering"
-  },
-  {
-    id: "contact",
-    label: "CONTACT",
-    number: "06",
-    title: "Get in Touch",
-    sharedText: "LET'S BUILD SOMETHING EXTRAORDINARY",
-    tagline: "Available for Global Opportunities"
-  }
-];
-function GSAPSharedTransition() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const containerRef = useRef(null);
-  const sharedTextRef = useRef(null);
-  const progressLineRef = useRef(null);
-  const isAnimatingRef = useRef(false);
-  useGSAP(
-    () => {
-      if (!containerRef.current) return;
-      gsap.to(progressLineRef.current, {
-        scaleX: 1,
-        ease: "none",
-        scrollTrigger: {
-          trigger: document.body,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 0.3
-        }
-      });
-      SLIDES.forEach((slide, idx) => {
-        const sectionEl = document.getElementById(slide.id);
-        if (!sectionEl) return;
-        ScrollTrigger.create({
-          trigger: sectionEl,
-          start: "top 45%",
-          end: "bottom 45%",
-          onEnter: () => transitionToSlide(idx),
-          onEnterBack: () => transitionToSlide(idx)
-        });
-      });
-    },
-    { scope: containerRef }
-  );
-  const transitionToSlide = (newIndex) => {
-    if (newIndex === activeIndex && sharedTextRef.current) return;
-    const currentTextEl = sharedTextRef.current;
-    if (!currentTextEl) {
-      setActiveIndex(newIndex);
-      return;
-    }
-    const state = Flip.getState(currentTextEl, {
-      props: "transform,opacity,backgroundColor,borderRadius"
-    });
-    setActiveIndex(newIndex);
-    requestAnimationFrame(() => {
-      Flip.from(state, {
-        duration: 0.85,
-        ease: "power3.inOut",
-        scale: true,
-        absolute: false,
-        onStart: () => {
-          isAnimatingRef.current = true;
-          const chars = currentTextEl.querySelectorAll(".shared-char");
-          if (chars.length > 0) {
-            gsap.fromTo(
-              chars,
-              { opacity: 0, y: 14, skewX: -18, scale: 0.85 },
-              {
-                opacity: 1,
-                y: 0,
-                skewX: 0,
-                scale: 1,
-                stagger: 0.02,
-                duration: 0.45,
-                ease: "back.out(1.8)"
-              }
-            );
-          }
-        },
-        onComplete: () => {
-          isAnimatingRef.current = false;
-        }
-      });
-    });
-  };
-  const navigateToSlide = (index) => {
-    const targetSlide = SLIDES[index];
-    const targetEl = document.getElementById(targetSlide.id);
-    if (targetEl) {
-      gsap.to(window, {
-        duration: 1.1,
-        scrollTo: { y: targetEl, offsetY: 40 },
-        ease: "power3.inOut"
-      });
-    }
-  };
-  const currentSlide = SLIDES[activeIndex] || SLIDES[0];
-  return /* @__PURE__ */ jsxs("div", { ref: containerRef, className: "relative", children: [
-    /* @__PURE__ */ jsx("div", { className: "fixed top-0 left-0 right-0 h-1 bg-neutral-900 z-50 overflow-hidden pointer-events-none", children: /* @__PURE__ */ jsx(
-      "div",
-      {
-        ref: progressLineRef,
-        className: "h-full w-full bg-gradient-to-r from-emerald-400 via-purple-500 to-white origin-left transform scale-x-0 shadow-[0_0_15px_rgba(168,85,247,0.8)]"
-      }
-    ) }),
-    /* @__PURE__ */ jsx("div", { className: "fixed top-4 right-4 sm:top-5 sm:right-6 z-50 flex items-center gap-3 pointer-events-none", children: /* @__PURE__ */ jsxs(
-      "div",
-      {
-        ref: sharedTextRef,
-        className: "pointer-events-auto flex items-center gap-2.5 px-4 py-2 rounded-full bg-neutral-950/85 border border-white/20 backdrop-blur-2xl shadow-[0_10px_35px_rgba(0,0,0,0.85)] text-xs text-neutral-200 transition-all hover:border-white/40",
-        children: [
-          /* @__PURE__ */ jsxs("span", { className: "relative flex h-2.5 w-2.5 items-center justify-center", children: [
-            /* @__PURE__ */ jsx("span", { className: "animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75" }),
-            /* @__PURE__ */ jsx("span", { className: "relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_8px_#34d399]" })
-          ] }),
-          /* @__PURE__ */ jsxs("span", { className: "font-mono font-extrabold text-white text-[11px] bg-white/10 px-2 py-0.5 rounded-md border border-white/15 tracking-wider", children: [
-            "SLIDE ",
-            currentSlide.number
-          ] }),
-          /* @__PURE__ */ jsx("div", { className: "flex items-center gap-1 font-mono text-[11px] sm:text-xs font-semibold tracking-wide text-white uppercase", children: currentSlide.sharedText.split("").map((char, i) => /* @__PURE__ */ jsx(
-            "span",
-            {
-              className: "shared-char inline-block",
-              style: { whiteSpace: char === " " ? "pre" : void 0 },
-              children: char === " " ? " " : char
-            },
-            `${currentSlide.id}-${i}`
-          )) }),
-          /* @__PURE__ */ jsx(Sparkles, { className: "w-3.5 h-3.5 text-purple-400 animate-spin-slow hidden md:inline-block" })
-        ]
-      }
-    ) }),
-    /* @__PURE__ */ jsx("div", { className: "fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col items-center gap-3 pointer-events-none", children: /* @__PURE__ */ jsxs("div", { className: "pointer-events-auto bg-neutral-950/85 border border-white/20 backdrop-blur-2xl p-2.5 rounded-full flex flex-col items-center gap-2 shadow-[0_15px_40px_rgba(0,0,0,0.9)]", children: [
-      /* @__PURE__ */ jsx(
-        "button",
-        {
-          onClick: () => navigateToSlide(Math.max(0, activeIndex - 1)),
-          disabled: activeIndex === 0,
-          className: "p-2 rounded-full text-neutral-400 hover:text-white hover:bg-white/10 disabled:opacity-20 disabled:hover:bg-transparent transition-all",
-          title: "Previous Section",
-          children: /* @__PURE__ */ jsx(ChevronUp, { className: "w-4 h-4" })
-        }
-      ),
-      /* @__PURE__ */ jsx("div", { className: "flex flex-col gap-2.5 my-1", children: SLIDES.map((slide, idx) => {
-        const isActive = activeIndex === idx;
-        return /* @__PURE__ */ jsxs(
-          "button",
-          {
-            onClick: () => navigateToSlide(idx),
-            className: "group relative flex items-center justify-center p-1.5 focus:outline-none",
-            title: `${slide.number}. ${slide.title}`,
-            children: [
-              /* @__PURE__ */ jsx(
-                "span",
-                {
-                  className: `block rounded-full transition-all duration-500 ${isActive ? "w-3.5 h-3.5 bg-gradient-to-r from-white to-purple-300 shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110" : "w-2.5 h-2.5 bg-neutral-600 hover:bg-neutral-300 hover:scale-110"}`
-                }
-              ),
-              /* @__PURE__ */ jsxs("span", { className: "absolute right-9 px-3 py-1.5 rounded-xl bg-neutral-900/95 border border-white/20 text-[11px] font-mono text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none shadow-2xl backdrop-blur-md flex items-center gap-2", children: [
-                /* @__PURE__ */ jsx("span", { className: "text-purple-400 font-bold", children: slide.number }),
-                /* @__PURE__ */ jsx("span", { children: slide.title })
-              ] })
-            ]
-          },
-          slide.id
-        );
-      }) }),
-      /* @__PURE__ */ jsx(
-        "button",
-        {
-          onClick: () => navigateToSlide(Math.min(SLIDES.length - 1, activeIndex + 1)),
-          disabled: activeIndex === SLIDES.length - 1,
-          className: "p-2 rounded-full text-neutral-400 hover:text-white hover:bg-white/10 disabled:opacity-20 disabled:hover:bg-transparent transition-all",
-          title: "Next Section",
-          children: /* @__PURE__ */ jsx(ChevronDown, { className: "w-4 h-4" })
-        }
-      )
-    ] }) })
-  ] });
 }
 
 function cn$1(...inputs) {
@@ -831,10 +608,11 @@ function Hero() {
             "Download CV"
           ] }) })
         ] }),
-        /* @__PURE__ */ jsxs("div", { ref: scrollHintRef, className: "opacity-0 mt-12 sm:mt-16 flex flex-col items-center gap-2", children: [
+        /* @__PURE__ */ jsxs("div", { ref: scrollHintRef, className: "opacity-0 mt-12 sm:mt-16 flex flex-col items-center gap-2 relative z-10", children: [
           /* @__PURE__ */ jsx("span", { className: "text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-mono", children: "Scroll" }),
           /* @__PURE__ */ jsx("div", { className: "w-px h-10 bg-gradient-to-b from-neutral-500 to-transparent" })
-        ] })
+        ] }),
+        /* @__PURE__ */ jsx("div", { id: "hero-shared-origin", className: "absolute bottom-10 left-1/2 -translate-x-1/2 text-[9vw] font-display font-black text-white/5 whitespace-nowrap pointer-events-none tracking-tighter select-none z-0", children: "CRAFTING DIGITAL EXPERIENCES" })
       ] })
     }
   ) });
@@ -1032,10 +810,7 @@ function About() {
   return /* @__PURE__ */ jsxs("section", { id: "about", ref: sectionRef, className: "py-12 sm:py-28 px-4 sm:px-6 overflow-hidden", children: [
     /* @__PURE__ */ jsx("div", { className: "max-w-6xl mx-auto", children: /* @__PURE__ */ jsxs("div", { className: "grid md:grid-cols-2 gap-12 md:gap-16 items-center", children: [
       /* @__PURE__ */ jsxs("div", { ref: textColRef, children: [
-        /* @__PURE__ */ jsxs("span", { className: "about-label opacity-0 inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-500 mb-5", children: [
-          /* @__PURE__ */ jsx("span", { className: "w-8 h-px bg-neutral-600 inline-block" }),
-          "About me"
-        ] }),
+        /* @__PURE__ */ jsx("div", { id: "about-shared-target", className: "min-h-[24px] mb-5 flex items-center", children: /* @__PURE__ */ jsx("span", { className: "w-8 h-px bg-emerald-500 inline-block mr-3 opacity-0", id: "shared-line" }) }),
         /* @__PURE__ */ jsxs("h2", { className: "text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-display tracking-tight leading-[1.05] mb-5 sm:mb-6", children: [
           /* @__PURE__ */ jsx("span", { className: "about-h-italic opacity-0 block font-light italic text-neutral-300", children: profile.aboutHeadline1 || "where" }),
           /* @__PURE__ */ jsx("span", { className: "about-h-bold opacity-0 block font-extrabold text-white mt-1.5", children: profile.aboutHeadline2 || "EXPERIENCE BUILDS CHARACTER" })
@@ -1095,43 +870,111 @@ function About() {
 }
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, useGSAP);
+  gsap.registerPlugin(ScrollTrigger, SplitText$1, useGSAP);
 }
 function EducationCertificates() {
   const [educationList] = useState(initialEducation);
   const [certificatesList] = useState(initialCertificates);
   const [activeTab, setActiveTab] = useState("all");
   const sectionRef = useRef(null);
+  const headingRef = useRef(null);
+  const particlesRef = useRef(null);
   useGSAP(() => {
-    if (!sectionRef.current) return;
-    const tl = gsap.timeline({
+    if (!sectionRef.current || !headingRef.current) return;
+    const split = SplitText$1.create(headingRef.current, {
+      type: "chars,words",
+      charsClass: "edu-char"
+    });
+    const chars = split.chars;
+    const scatterVectors = chars.map((_, i) => {
+      const angle = i / chars.length * Math.PI * 2 + Math.random() * 1.2;
+      const radius = 180 + Math.random() * 320;
+      return {
+        x: Math.cos(angle) * radius,
+        y: Math.sin(angle) * radius - 80,
+        rotation: (Math.random() - 0.5) * 540,
+        scale: 0.1 + Math.random() * 0.5,
+        opacity: 0
+      };
+    });
+    chars.forEach((char, i) => {
+      gsap.set(char, {
+        x: scatterVectors[i].x,
+        y: scatterVectors[i].y,
+        rotation: scatterVectors[i].rotation,
+        scale: scatterVectors[i].scale,
+        opacity: scatterVectors[i].opacity,
+        display: "inline-block"
+      });
+    });
+    const particleTl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
-        start: "top 78%",
+        start: "top 90%",
+        end: "top 20%",
+        scrub: 1.2
+      }
+    });
+    chars.forEach((char, i) => {
+      const progress = i / chars.length;
+      particleTl.to(
+        char,
+        {
+          x: 0,
+          y: 0,
+          rotation: 0,
+          scale: 1,
+          opacity: 1,
+          ease: "back.out(1.7)",
+          duration: 0.6
+        },
+        progress * 0.7
+        // stagger start positions across 70% of timeline
+      );
+    });
+    if (particlesRef.current) {
+      const dots = Array.from(particlesRef.current.querySelectorAll(".edu-dot"));
+      dots.forEach((dot, i) => {
+        const angle = i / dots.length * Math.PI * 2;
+        const radius = 80 + i % 3 * 40;
+        gsap.set(dot, {
+          x: Math.cos(angle) * radius,
+          y: Math.sin(angle) * radius,
+          opacity: 0,
+          scale: 0
+        });
+        gsap.to(dot, {
+          opacity: 0.4 + i % 2 * 0.3,
+          scale: 0.6 + i % 3 * 0.3,
+          duration: 0.4 + i * 0.06,
+          ease: "back.out(2)",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 60%",
+            toggleActions: "play none none reverse"
+          }
+        });
+        gsap.to(dot, {
+          x: Math.cos(angle + Math.PI) * radius * 0.8,
+          y: Math.sin(angle + Math.PI) * radius * 0.8,
+          rotation: 360,
+          repeat: -1,
+          yoyo: true,
+          duration: 3 + i % 5,
+          ease: "sine.inOut",
+          delay: i * 0.15
+        });
+      });
+    }
+    const entryTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top 75%",
         toggleActions: "play none none reverse"
       },
       defaults: { ease: "power3.out" }
     });
-    tl.fromTo(
-      ".edu-label",
-      { opacity: 0, x: -20 },
-      { opacity: 1, x: 0, duration: 0.5 }
-    ).fromTo(
-      ".edu-heading",
-      { opacity: 0, y: 40, skewX: -5 },
-      { opacity: 1, y: 0, skewX: 0, duration: 0.8 },
-      "-=0.2"
-    ).fromTo(
-      ".edu-subheading",
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.6 },
-      "-=0.4"
-    ).fromTo(
-      ".edu-tabs",
-      { opacity: 0, y: 15 },
-      { opacity: 1, y: 0, duration: 0.5 },
-      "-=0.3"
-    );
+    entryTl.fromTo(".edu-label", { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.5 }).fromTo(".edu-subheading", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.55 }, "-=0.2").fromTo(".edu-tabs", { opacity: 0, y: 12, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.5 }, "-=0.3");
     gsap.set(".gsap-cert-card", {
       clipPath: "circle(0% at 50% 50%)",
       opacity: 0,
@@ -1177,10 +1020,8 @@ function EducationCertificates() {
       const el = card;
       const handleMove = (e) => {
         const rect = el.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-        const dx = (e.clientX - cx) / (rect.width / 2);
-        const dy = (e.clientY - cy) / (rect.height / 2);
+        const dx = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
+        const dy = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
         gsap.to(el, {
           rotationY: dx * 8,
           rotationX: -dy * 8,
@@ -1191,163 +1032,150 @@ function EducationCertificates() {
           overwrite: "auto"
         });
       };
-      const handleLeave = () => {
-        gsap.to(el, { rotationY: 0, rotationX: 0, scale: 1, duration: 0.55, ease: "power3.out", overwrite: "auto" });
-      };
+      const handleLeave = () => gsap.to(el, { rotationY: 0, rotationX: 0, scale: 1, duration: 0.55, ease: "power3.out", overwrite: "auto" });
       el.addEventListener("mousemove", handleMove);
       el.addEventListener("mouseleave", handleLeave);
     });
   }, { scope: sectionRef, dependencies: [activeTab] });
-  return /* @__PURE__ */ jsx("section", { id: "education-certificates", ref: sectionRef, className: "py-8 sm:py-20 px-4 sm:px-6", children: /* @__PURE__ */ jsxs("div", { className: "max-w-6xl mx-auto", children: [
+  const DOT_COUNT = 14;
+  return /* @__PURE__ */ jsx("section", { id: "education-certificates", ref: sectionRef, className: "py-8 sm:py-20 px-4 sm:px-6 relative", children: /* @__PURE__ */ jsxs("div", { className: "max-w-6xl mx-auto", children: [
     /* @__PURE__ */ jsxs("div", { className: "flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 gap-4", children: [
-      /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsxs("div", { className: "relative", children: [
+        /* @__PURE__ */ jsx(
+          "div",
+          {
+            ref: particlesRef,
+            "aria-hidden": "true",
+            className: "absolute inset-0 pointer-events-none overflow-visible",
+            children: Array.from({ length: DOT_COUNT }).map((_, i) => /* @__PURE__ */ jsx(
+              "span",
+              {
+                className: "edu-dot absolute rounded-full",
+                style: {
+                  width: `${3 + i % 4 * 2}px`,
+                  height: `${3 + i % 4 * 2}px`,
+                  background: i % 3 === 0 ? "radial-gradient(circle, #a78bfa, transparent)" : i % 3 === 1 ? "radial-gradient(circle, #34d399, transparent)" : "radial-gradient(circle, #60a5fa, transparent)",
+                  top: "50%",
+                  left: "40%"
+                }
+              },
+              i
+            ))
+          }
+        ),
         /* @__PURE__ */ jsxs("span", { className: "edu-label opacity-0 inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-500 mb-3", children: [
           /* @__PURE__ */ jsx("span", { className: "w-6 h-px bg-neutral-600 inline-block" }),
           "Background"
         ] }),
-        /* @__PURE__ */ jsx("h2", { className: "edu-heading opacity-0 text-2xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight font-display", children: "Education & Certifications" }),
+        /* @__PURE__ */ jsx(
+          "h2",
+          {
+            ref: headingRef,
+            className: "edu-heading text-2xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight font-display leading-tight overflow-visible",
+            style: { perspective: "600px" },
+            children: "Education & Certifications"
+          }
+        ),
         /* @__PURE__ */ jsx("p", { className: "edu-subheading opacity-0 text-neutral-400 text-xs sm:text-sm mt-1 sm:mt-2", children: "Latar belakang akademis dan lisensi sertifikasi profesional" })
       ] }),
-      /* @__PURE__ */ jsxs("div", { className: "edu-tabs opacity-0 flex flex-wrap gap-2", children: [
-        /* @__PURE__ */ jsxs(
-          "button",
-          {
-            onClick: () => setActiveTab("all"),
-            className: `px-4 py-2 rounded-xl text-xs font-semibold transition-all ${activeTab === "all" ? "bg-white text-black shadow-lg scale-105" : "bg-white/5 border border-white/10 text-neutral-400 hover:text-white hover:bg-white/10"}`,
-            children: [
-              "Semua (",
-              educationList.length + certificatesList.length,
-              ")"
-            ]
-          }
-        ),
-        /* @__PURE__ */ jsxs(
-          "button",
-          {
-            onClick: () => setActiveTab("education"),
-            className: `px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${activeTab === "education" ? "bg-white text-black shadow-lg scale-105" : "bg-white/5 border border-white/10 text-neutral-400 hover:text-white hover:bg-white/10"}`,
-            children: [
-              /* @__PURE__ */ jsx(GraduationCap, { className: "w-3.5 h-3.5" }),
-              " Education (",
-              educationList.length,
-              ")"
-            ]
-          }
-        ),
-        /* @__PURE__ */ jsxs(
-          "button",
-          {
-            onClick: () => setActiveTab("certificates"),
-            className: `px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${activeTab === "certificates" ? "bg-white text-black shadow-lg scale-105" : "bg-white/5 border border-white/10 text-neutral-400 hover:text-white hover:bg-white/10"}`,
-            children: [
-              /* @__PURE__ */ jsx(Award, { className: "w-3.5 h-3.5" }),
-              " Certifications (",
-              certificatesList.length,
-              ")"
-            ]
-          }
-        )
-      ] })
+      /* @__PURE__ */ jsx("div", { className: "edu-tabs opacity-0 flex flex-wrap gap-2", children: [
+        { key: "all", label: `Semua (${educationList.length + certificatesList.length})`, icon: null },
+        { key: "education", label: `Education (${educationList.length})`, icon: /* @__PURE__ */ jsx(GraduationCap, { className: "w-3.5 h-3.5" }) },
+        { key: "certificates", label: `Certifications (${certificatesList.length})`, icon: /* @__PURE__ */ jsx(Award, { className: "w-3.5 h-3.5" }) }
+      ].map(({ key, label, icon }) => /* @__PURE__ */ jsxs(
+        "button",
+        {
+          onClick: () => setActiveTab(key),
+          className: `px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${activeTab === key ? "bg-white text-black shadow-lg scale-105" : "bg-white/5 border border-white/10 text-neutral-400 hover:text-white hover:bg-white/10"}`,
+          children: [
+            icon,
+            label
+          ]
+        },
+        key
+      )) })
     ] }),
     /* @__PURE__ */ jsxs("div", { className: "space-y-12 sm:space-y-16", children: [
-      (activeTab === "all" || activeTab === "education") && /* @__PURE__ */ jsxs(
-        motion.div,
-        {
-          initial: { opacity: 0, y: 20 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true },
-          children: [
-            /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 mb-6", children: [
-              /* @__PURE__ */ jsx("div", { className: "w-9 h-9 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-white", children: /* @__PURE__ */ jsx(GraduationCap, { className: "w-4 h-4" }) }),
-              /* @__PURE__ */ jsx("h3", { className: "text-xl sm:text-2xl font-bold text-white", children: "Pendidikan Akademis" })
-            ] }),
-            /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 gap-6", children: educationList.map((edu) => /* @__PURE__ */ jsxs(
-              motion.div,
-              {
-                whileHover: { y: -3 },
-                className: "gsap-cert-card relative bg-neutral-900/60 border border-white/10 hover:border-white/30 rounded-2xl p-6 sm:p-8 backdrop-blur-xl transition-all duration-300",
-                children: [
-                  /* @__PURE__ */ jsxs("div", { className: "flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4", children: [
-                    /* @__PURE__ */ jsxs("div", { children: [
-                      /* @__PURE__ */ jsxs("span", { className: "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-white/10 border border-white/15 text-white mb-3", children: [
-                        /* @__PURE__ */ jsx(BadgeCheck, { className: "w-3.5 h-3.5 text-white" }),
-                        "Official Degree"
-                      ] }),
-                      /* @__PURE__ */ jsx("h4", { className: "text-xl sm:text-2xl font-bold text-white", children: edu.institution }),
-                      /* @__PURE__ */ jsx("p", { className: "text-sm sm:text-base font-medium text-neutral-300 mt-1", children: edu.degree })
-                    ] }),
-                    /* @__PURE__ */ jsxs("div", { className: "flex flex-col sm:items-end gap-1.5 text-xs text-neutral-400", children: [
-                      /* @__PURE__ */ jsxs("span", { className: "inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-neutral-300 font-mono", children: [
-                        /* @__PURE__ */ jsx(Calendar, { className: "w-3.5 h-3.5 text-neutral-400" }),
-                        edu.period
-                      ] }),
-                      edu.location && /* @__PURE__ */ jsxs("span", { className: "inline-flex items-center gap-1 text-neutral-400 mt-1", children: [
-                        /* @__PURE__ */ jsx(MapPin, { className: "w-3.5 h-3.5 text-neutral-400" }),
-                        edu.location
-                      ] })
-                    ] })
+      (activeTab === "all" || activeTab === "education") && /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 mb-6", children: [
+          /* @__PURE__ */ jsx("div", { className: "w-9 h-9 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-white", children: /* @__PURE__ */ jsx(GraduationCap, { className: "w-4 h-4" }) }),
+          /* @__PURE__ */ jsx("h3", { className: "text-xl sm:text-2xl font-bold text-white", children: "Pendidikan Akademis" })
+        ] }),
+        /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 gap-6", children: educationList.map((edu) => /* @__PURE__ */ jsxs(
+          "div",
+          {
+            className: "gsap-cert-card relative bg-neutral-900/60 border border-white/10 hover:border-white/30 rounded-2xl p-6 sm:p-8 backdrop-blur-xl transition-colors duration-300",
+            children: [
+              /* @__PURE__ */ jsxs("div", { className: "flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4", children: [
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsxs("span", { className: "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-white/10 border border-white/15 text-white mb-3", children: [
+                    /* @__PURE__ */ jsx(BadgeCheck, { className: "w-3.5 h-3.5 text-white" }),
+                    "Official Degree"
                   ] }),
-                  /* @__PURE__ */ jsx("p", { className: "text-neutral-400 text-xs sm:text-sm leading-relaxed border-t border-white/10 pt-4", children: edu.description })
-                ]
-              },
-              edu.id
-            )) })
-          ]
-        }
-      ),
-      (activeTab === "all" || activeTab === "certificates") && /* @__PURE__ */ jsxs(
-        motion.div,
-        {
-          initial: { opacity: 0, y: 20 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true },
-          children: [
-            /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 mb-6", children: [
-              /* @__PURE__ */ jsx("div", { className: "w-9 h-9 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-white", children: /* @__PURE__ */ jsx(Award, { className: "w-4 h-4" }) }),
-              /* @__PURE__ */ jsx("h3", { className: "text-xl sm:text-2xl font-bold text-white", children: "Sertifikasi & Lisensi" })
-            ] }),
-            /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6", children: certificatesList.map((cert) => /* @__PURE__ */ jsxs(
-              motion.div,
-              {
-                whileHover: { y: -4 },
-                className: "gsap-cert-card group relative flex flex-col justify-between bg-neutral-900/60 border border-white/10 hover:border-white/30 rounded-2xl p-6 backdrop-blur-xl transition-all duration-300",
-                children: [
-                  /* @__PURE__ */ jsxs("div", { children: [
-                    /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-2 mb-3", children: [
-                      /* @__PURE__ */ jsx("span", { className: "px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-white/10 border border-white/15 text-white", children: cert.issueDate }),
-                      cert.credentialUrl && /* @__PURE__ */ jsx(
-                        "a",
-                        {
-                          href: cert.credentialUrl,
-                          target: "_blank",
-                          rel: "noopener noreferrer",
-                          className: "p-1.5 rounded-full border border-white/10 hover:border-white/30 text-neutral-400 hover:text-white transition-colors",
-                          title: "Lihat Sertifikat",
-                          children: /* @__PURE__ */ jsx(ExternalLink, { className: "w-3.5 h-3.5" })
-                        }
-                      )
-                    ] }),
-                    /* @__PURE__ */ jsx("h4", { className: "text-base sm:text-lg font-bold text-white mb-1.5 group-hover:text-neutral-200 transition-colors line-clamp-2", children: cert.title }),
-                    /* @__PURE__ */ jsxs("p", { className: "text-xs text-neutral-400 mb-4 font-medium flex items-center gap-1", children: [
-                      /* @__PURE__ */ jsx(BadgeCheck, { className: "w-3.5 h-3.5 text-neutral-400 flex-shrink-0" }),
-                      /* @__PURE__ */ jsx("span", { children: cert.issuer })
-                    ] })
+                  /* @__PURE__ */ jsx("h4", { className: "text-xl sm:text-2xl font-bold text-white", children: edu.institution }),
+                  /* @__PURE__ */ jsx("p", { className: "text-sm sm:text-base font-medium text-neutral-300 mt-1", children: edu.degree })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "flex flex-col sm:items-end gap-1.5 text-xs text-neutral-400", children: [
+                  /* @__PURE__ */ jsxs("span", { className: "inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-neutral-300 font-mono", children: [
+                    /* @__PURE__ */ jsx(Calendar, { className: "w-3.5 h-3.5 text-neutral-400" }),
+                    edu.period
                   ] }),
-                  /* @__PURE__ */ jsx("div", { className: "pt-4 border-t border-white/10", children: /* @__PURE__ */ jsx("div", { className: "flex flex-wrap gap-1.5", children: cert.skills?.map((skill, idx) => /* @__PURE__ */ jsx(
-                    "span",
+                  edu.location && /* @__PURE__ */ jsxs("span", { className: "inline-flex items-center gap-1 text-neutral-400 mt-1", children: [
+                    /* @__PURE__ */ jsx(MapPin, { className: "w-3.5 h-3.5 text-neutral-400" }),
+                    edu.location
+                  ] })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsx("p", { className: "text-neutral-400 text-xs sm:text-sm leading-relaxed border-t border-white/10 pt-4", children: edu.description })
+            ]
+          },
+          edu.id
+        )) })
+      ] }),
+      (activeTab === "all" || activeTab === "certificates") && /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 mb-6", children: [
+          /* @__PURE__ */ jsx("div", { className: "w-9 h-9 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-white", children: /* @__PURE__ */ jsx(Award, { className: "w-4 h-4" }) }),
+          /* @__PURE__ */ jsx("h3", { className: "text-xl sm:text-2xl font-bold text-white", children: "Sertifikasi & Lisensi" })
+        ] }),
+        /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6", children: certificatesList.map((cert) => /* @__PURE__ */ jsxs(
+          "div",
+          {
+            className: "gsap-cert-card group relative flex flex-col justify-between bg-neutral-900/60 border border-white/10 hover:border-white/30 rounded-2xl p-6 backdrop-blur-xl transition-colors duration-300",
+            children: [
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-2 mb-3", children: [
+                  /* @__PURE__ */ jsx("span", { className: "px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-white/10 border border-white/15 text-white", children: cert.issueDate }),
+                  cert.credentialUrl && /* @__PURE__ */ jsx(
+                    "a",
                     {
-                      className: "px-2 py-0.5 rounded-md text-[10px] bg-white/5 border border-white/10 text-neutral-300 font-mono",
-                      children: skill
-                    },
-                    idx
-                  )) }) })
-                ]
-              },
-              cert.id
-            )) })
-          ]
-        }
-      )
+                      href: cert.credentialUrl,
+                      target: "_blank",
+                      rel: "noopener noreferrer",
+                      className: "p-1.5 rounded-full border border-white/10 hover:border-white/30 text-neutral-400 hover:text-white transition-colors",
+                      title: "Lihat Sertifikat",
+                      children: /* @__PURE__ */ jsx(ExternalLink, { className: "w-3.5 h-3.5" })
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsx("h4", { className: "text-base sm:text-lg font-bold text-white mb-1.5 group-hover:text-neutral-200 transition-colors line-clamp-2", children: cert.title }),
+                /* @__PURE__ */ jsxs("p", { className: "text-xs text-neutral-400 mb-4 font-medium flex items-center gap-1", children: [
+                  /* @__PURE__ */ jsx(BadgeCheck, { className: "w-3.5 h-3.5 text-neutral-400 flex-shrink-0" }),
+                  /* @__PURE__ */ jsx("span", { children: cert.issuer })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsx("div", { className: "pt-4 border-t border-white/10", children: /* @__PURE__ */ jsx("div", { className: "flex flex-wrap gap-1.5", children: cert.skills?.map((skill, idx) => /* @__PURE__ */ jsx(
+                "span",
+                {
+                  className: "px-2 py-0.5 rounded-md text-[10px] bg-white/5 border border-white/10 text-neutral-300 font-mono",
+                  children: skill
+                },
+                idx
+              )) }) })
+            ]
+          },
+          cert.id
+        )) })
+      ] })
     ] })
   ] }) });
 }
@@ -2500,7 +2328,7 @@ function SafariDemo() {
     el.addEventListener("mousemove", handleMove);
     el.addEventListener("mouseleave", handleLeave);
   }, { scope: containerRef });
-  return /* @__PURE__ */ jsxs("div", { id: "recent-showcase", ref: containerRef, className: "w-full py-4 sm:py-12 my-2 sm:my-6", children: [
+  return /* @__PURE__ */ jsxs("div", { ref: containerRef, className: "w-full py-4 sm:py-12 my-2 sm:my-6", children: [
     /* @__PURE__ */ jsx("h2", { className: "safari-heading opacity-0 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight font-display mb-3 flex justify-center items-center px-4 text-center text-white", children: featuredProject.title || "Latest Projects" }),
     /* @__PURE__ */ jsx("p", { className: "safari-sub opacity-0 mt-6 text-sm sm:text-base md:text-lg lg:text-xl text-center text-neutral-300 max-w-2xl mb-10 mx-auto px-4 leading-relaxed text-balance", children: featuredProject.description }),
     /* @__PURE__ */ jsx(
@@ -2530,7 +2358,7 @@ function SafariDemo() {
 }
 
 const $$Index = createComponent(($$result, $$props, $$slots) => {
-  return renderTemplate`${renderComponent($$result, "Layout", $$Layout, { "title": "Adi Alam | Portfolio", "description": "Personal portfolio website" }, { "default": ($$result2) => renderTemplate` ${maybeRenderHead()}<main> ${renderComponent($$result2, "ParticleBackground", ParticleBackground, { "client:idle": true, "client:component-hydration": "idle", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/particles", "client:component-export": "ParticleBackground" })} ${renderComponent($$result2, "Nav", Nav, { "client:load": true, "client:component-hydration": "load", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/nav", "client:component-export": "Nav" })} ${renderComponent($$result2, "GSAPSharedTransition", GSAPSharedTransition, { "client:load": true, "client:component-hydration": "load", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/gsap-shared-transition", "client:component-export": "GSAPSharedTransition" })} ${renderComponent($$result2, "DockDemo", DockDemo, { "client:load": true, "client:component-hydration": "load", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/dock", "client:component-export": "DockDemo" })} ${renderComponent($$result2, "Hero", Hero, { "client:load": true, "client:component-hydration": "load", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/index", "client:component-export": "Hero" })} ${renderComponent($$result2, "About", About, { "client:load": true, "client:component-hydration": "load", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/about", "client:component-export": "About" })} ${renderComponent($$result2, "EducationCertificates", EducationCertificates, { "client:load": true, "client:component-hydration": "load", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/education-certificates", "client:component-export": "EducationCertificates" })} ${renderComponent($$result2, "SafariDemo", SafariDemo, { "client:load": true, "client:component-hydration": "load", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/recent-project", "client:component-export": "SafariDemo" })} ${renderComponent($$result2, "Projects", Projects, { "client:load": true, "client:component-hydration": "load", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/projects", "client:component-export": "Projects" })} ${renderComponent($$result2, "Contact", Contact, { "client:load": true, "client:component-hydration": "load", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/contact", "client:component-export": "Contact" })} ${renderComponent($$result2, "Footer", Footer, { "client:load": true, "client:component-hydration": "load", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/footer", "client:component-export": "Footer" })} </main> ` })}`;
+  return renderTemplate`${renderComponent($$result, "Layout", $$Layout, { "title": "Adi Alam | Portfolio", "description": "Personal portfolio website" }, { "default": ($$result2) => renderTemplate` ${maybeRenderHead()}<main> ${renderComponent($$result2, "ParticleBackground", ParticleBackground, { "client:idle": true, "client:component-hydration": "idle", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/particles", "client:component-export": "ParticleBackground" })} ${renderComponent($$result2, "Nav", Nav, { "client:load": true, "client:component-hydration": "load", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/nav", "client:component-export": "Nav" })} ${renderComponent($$result2, "DockDemo", DockDemo, { "client:load": true, "client:component-hydration": "load", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/dock", "client:component-export": "DockDemo" })} ${renderComponent($$result2, "Hero", Hero, { "client:load": true, "client:component-hydration": "load", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/index", "client:component-export": "Hero" })} ${renderComponent($$result2, "About", About, { "client:load": true, "client:component-hydration": "load", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/about", "client:component-export": "About" })} ${renderComponent($$result2, "EducationCertificates", EducationCertificates, { "client:load": true, "client:component-hydration": "load", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/education-certificates", "client:component-export": "EducationCertificates" })} ${renderComponent($$result2, "SafariDemo", SafariDemo, { "client:load": true, "client:component-hydration": "load", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/recent-project", "client:component-export": "SafariDemo" })} ${renderComponent($$result2, "Projects", Projects, { "client:load": true, "client:component-hydration": "load", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/projects", "client:component-export": "Projects" })} ${renderComponent($$result2, "Contact", Contact, { "client:load": true, "client:component-hydration": "load", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/contact", "client:component-export": "Contact" })} ${renderComponent($$result2, "Footer", Footer, { "client:load": true, "client:component-hydration": "load", "client:component-path": "F:/Portofolio-NextJS-Acernity/src/components/footer", "client:component-export": "Footer" })} </main> ` })} ${renderScript($$result, "F:/Portofolio-NextJS-Acernity/src/pages/index.astro?astro&type=script&index=0&lang.ts")}`;
 }, "F:/Portofolio-NextJS-Acernity/src/pages/index.astro", void 0);
 
 const $$file = "F:/Portofolio-NextJS-Acernity/src/pages/index.astro";

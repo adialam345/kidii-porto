@@ -1,4 +1,4 @@
-import { e as createComponent, g as addAttribute, l as renderHead, k as renderComponent, n as renderSlot, r as renderTemplate, h as createAstro } from './astro/server_DWnod6f9.mjs';
+import { e as createComponent, g as addAttribute, n as renderHead, k as renderComponent, o as renderSlot, r as renderTemplate, h as createAstro } from './astro/server_CzcP1_xN.mjs';
 import 'piccolore';
 /* empty css                         */
 import { useEffect } from 'react';

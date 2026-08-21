@@ -57,9 +57,15 @@ export async function initDatabase() {
         github_url VARCHAR(512),
         linkedin_url VARCHAR(512),
         instagram_url VARCHAR(512),
+        whatsapp_url VARCHAR(512),
         email VARCHAR(255)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `);
+
+    // Auto-migrate whatsapp_url column if missing
+    try {
+      await connection.query(`ALTER TABLE profile ADD COLUMN whatsapp_url VARCHAR(512) DEFAULT 'https://wa.me/6287823872633';`);
+    } catch (e) {}
 
     // Check if initial profile exists
     const [profileRows]: any = await connection.query('SELECT COUNT(*) as count FROM profile');
@@ -68,22 +74,23 @@ export async function initDatabase() {
         INSERT INTO profile (
           id, name, role1, role2, role3, hero_bio, 
           about_headline1, about_headline2, about_bio, 
-          profile_image, cv_url, github_url, linkedin_url, instagram_url, email
+          profile_image, cv_url, github_url, linkedin_url, instagram_url, whatsapp_url, email
         ) VALUES (
           1,
           'Adi Alam Sami Aji',
           'Teknik Informatika Student',
           'FULL-STACK DEVELOPER',
           '& SOFTWARE ENGINEER',
-          'Information Technology student at Politeknik Negeri Madiun with experience in Laravel, PHP, JavaScript, React, Kotlin, Python, and IoT.',
+          'Saya adalah mahasiswa Teknik Informatika Politeknik Negeri Madiun yang berfokus menjadi Full-Stack Developer dan Software Engineer, dengan keahlian dalam pengembangan web/mobile, jaringan MikroTik, serta cybersecurity.',
           'where',
           'EXPERIENCE BUILDS CHARACTER',
-          'I am an Information Technology student at Politeknik Negeri Madiun with experience in Laravel, PHP, JavaScript, React, Kotlin, Python, as well as interests in IoT and cybersecurity. I aim to become a skilled full-stack developer and software engineer while deepening my knowledge of networking, IoT, and secure system design. Through various projects, I’ve integrated Laravel with React and JavaScript, explored mobile app development with Kotlin, and built IoT-based solutions. My passion for technology drives me to keep learning and contribute to creating innovative and secure solutions.',
+          'Saya adalah mahasiswa D3 Teknik Informatika di Politeknik Negeri Madiun (2023–2026) dengan fondasi yang kuat dalam pengembangan aplikasi web & mobile (frontend dan backend), jaringan komputer, serta keamanan siber. Berpengalaman kerja sebagai IT & Network Engineer Intern di Amins Project Teknologi Indonesia dan Technical Support Intern di Notepro Teknikatama, mencakup konfigurasi router MikroTik, penataan infrastruktur jaringan, pengawasan sistem CCTV, serta pengembangan aplikasi web modern menggunakan Laravel, Node.js, Next.js, Python, Tailwind CSS, Firebase, dan Kotlin. Didukung oleh sertifikasi BNSP sebagai Junior Web Developer dan Junior Cyber Security, saya berkomitmen untuk menciptakan solusi perangkat lunak yang aman, responsif, dan inovatif.',
           '/profile.jpg',
           '/CV_Adi_Alam_Sami_Aji_1.pdf',
           'https://github.com/adialam345',
           'https://www.linkedin.com/in/adi-alam-sami-aji-a62234334/',
           'https://www.instagram.com/kidiepie_/',
+          'https://wa.me/6287823872633',
           'adialam347@gmail.com'
         );
       `);
@@ -123,6 +130,92 @@ export async function initDatabase() {
         await connection.query(
           `INSERT INTO projects (title, description, tags, image, link, is_featured) VALUES (?, ?, ?, ?, ?, ?)`,
           [p.title, p.description, p.tags, p.image, p.link, p.is_featured]
+        );
+      }
+    }
+
+    // Create education table
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS education (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        institution VARCHAR(255) NOT NULL,
+        degree VARCHAR(255) NOT NULL,
+        period VARCHAR(100) NOT NULL,
+        description TEXT,
+        location VARCHAR(255),
+        skills JSON,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    `);
+
+    // Check if initial education exists
+    const [eduRows]: any = await connection.query('SELECT COUNT(*) as count FROM education');
+    if (eduRows[0]?.count === 0) {
+      await connection.query(
+        `INSERT INTO education (institution, degree, period, description, location, skills) VALUES (?, ?, ?, ?, ?, ?)`,
+        [
+          "Politeknik Negeri Madiun",
+          "D3 Teknik Informatika (Information Technology)",
+          "2022 - Sekarang",
+          "Fokus pada Software Engineering, Full-Stack Web Development (Laravel & React), Mobile App Development (Kotlin), Internet of Things (IoT), serta Computer Networking & Cybersecurity.",
+          "Madiun, Jawa Timur",
+          JSON.stringify(["Laravel", "React", "Kotlin", "Python", "IoT", "Cybersecurity", "MySQL", "Node.js"])
+        ]
+      );
+    }
+
+    // Create certificates table
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS certificates (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        issuer VARCHAR(255) NOT NULL,
+        issue_date VARCHAR(100) NOT NULL,
+        credential_url VARCHAR(512),
+        pdf_url VARCHAR(512),
+        image VARCHAR(512),
+        skills JSON,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    `);
+
+    // Check if initial certificates exist
+    const [certRows]: any = await connection.query('SELECT COUNT(*) as count FROM certificates');
+    if (certRows[0]?.count === 0) {
+      const initialCerts = [
+        {
+          title: "Junior Web Developer",
+          issuer: "Sertifikasi Kompetensi / BNSP",
+          issueDate: "2024",
+          skills: JSON.stringify(["Laravel", "React", "Node.js", "MySQL", "PHP", "Software Engineering"]),
+          credentialUrl: "/junior-web-developer.pdf",
+          pdfUrl: "/junior-web-developer.pdf",
+          image: "/junior-web-developer.png"
+        },
+        {
+          title: "Junior Cyber Security",
+          issuer: "Sertifikasi Kompetensi / BNSP",
+          issueDate: "2024",
+          skills: JSON.stringify(["Networking", "Cyber Security", "Penetration Testing", "Security Audit"]),
+          credentialUrl: "/junior-cyber-security.pdf",
+          pdfUrl: "/junior-cyber-security.pdf",
+          image: "/junior-cyber-security.png"
+        },
+        {
+          title: "IoT & Mobile Application Development with Kotlin",
+          issuer: "Politeknik Negeri Madiun",
+          issueDate: "2023",
+          skills: JSON.stringify(["Kotlin", "Firebase", "IoT Sensors", "Material Design"]),
+          credentialUrl: "https://github.com/adialam345",
+          pdfUrl: "",
+          image: ""
+        }
+      ];
+
+      for (const c of initialCerts) {
+        await connection.query(
+          `INSERT INTO certificates (title, issuer, issue_date, credential_url, pdf_url, image, skills) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+          [c.title, c.issuer, c.issueDate, c.credentialUrl, c.pdfUrl, c.image, c.skills]
         );
       }
     }
