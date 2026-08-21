@@ -424,8 +424,7 @@ export function Projects() {
                   }}
                   onClick={(e) => {
                     e.stopPropagation()
-                    const itemW = typeof window !== 'undefined' && window.innerWidth < 768 ? 100 : 210
-                    handleOpen(project, itemW, i)
+                    handleOpen(project, i)
                   }}
                   onMouseEnter={() => {
                     if (!sphere.current.moved) {
