@@ -3,6 +3,8 @@ import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
 import node from '@astrojs/node';
 
+import compress from 'astro-compress';
+
 // https://astro.build/config
 export default defineConfig({
   devToolbar: {
@@ -20,6 +22,13 @@ export default defineConfig({
     react(),
     tailwind({
       applyBaseStyles: false,
+    }),
+    compress({
+      CSS: true,
+      HTML: false,
+      Image: true,
+      JavaScript: true,
+      SVG: true,
     }),
   ],
   vite: {
