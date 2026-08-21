@@ -233,7 +233,7 @@ export function Hero() {
           </div>
 
           {/* GSAP Shared Transition Origin */}
-          <div id="hero-shared-origin" className="absolute bottom-10 left-1/2 -translate-x-1/2 text-[9vw] font-display font-black text-white/5 whitespace-nowrap pointer-events-none tracking-tighter select-none z-0">
+          <div id="hero-shared-origin" className="absolute bottom-10 left-1/2 -translate-x-1/2 text-[7vw] sm:text-[9vw] font-display font-black text-white/5 whitespace-nowrap pointer-events-none tracking-tighter select-none z-0 overflow-visible py-2 leading-normal">
             CRAFTING DIGITAL EXPERIENCES
           </div>
         </div>

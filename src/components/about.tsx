@@ -56,8 +56,8 @@ export function About() {
           {/* ── Text Column ──────────────────────────────────── */}
           <div>
             {/* Target for GSAP Shared Transition (Flip) */}
-            <div id="about-shared-target" className="min-h-[24px] mb-5 flex items-center">
-              <span className="w-8 h-px bg-emerald-500 inline-block mr-3 opacity-60" id="shared-line" />
+            <div id="about-shared-target" className="min-h-[36px] mb-5 flex items-center gap-3 overflow-visible py-1">
+              <span className="w-8 sm:w-12 h-px bg-emerald-500 inline-block opacity-60 shrink-0" id="shared-line" />
             </div>
 
             <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-display tracking-tight leading-[1.05] mb-5 sm:mb-6">
