@@ -22,6 +22,11 @@ export default defineConfig({
       applyBaseStyles: false,
     }),
   ],
+  vite: {
+    ssr: {
+      noExternal: ['gsap'],
+    },
+  },
 });
 
 
