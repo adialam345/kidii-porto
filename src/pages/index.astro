@@ -4,6 +4,7 @@ import { Nav } from '../components/nav';
 import { ParticleBackground } from '../components/particles';
 import { Hero } from '../components/index';
 import { About } from '../components/about';
+import { EducationCertificates } from '../components/education-certificates';
 import { Projects } from '../components/projects';
 import { Contact } from '../components/contact';
 import { Footer } from '../components/footer';
@@ -18,11 +19,64 @@ import { SafariDemo } from '../components/recent-project';
 		<DockDemo client:load />
 		<Hero client:load />
 		<About client:load />
+		<EducationCertificates client:load />
 		<SafariDemo client:load />
 		<Projects client:load />
 		<Contact client:load />
 		<Footer client:load />
 	</main>
 </Layout>
+
+<script>
+	import gsap from 'gsap';
+	import { ScrollTrigger } from 'gsap/ScrollTrigger';
+	import { Flip } from 'gsap/Flip';
+
+	gsap.registerPlugin(ScrollTrigger, Flip);
+
+	window.addEventListener('load', () => {
+		setTimeout(() => {
+			const origin = document.getElementById('hero-shared-origin');
+			const target = document.getElementById('about-shared-target');
+			const line = document.getElementById('shared-line');
+
+			if (origin && target) {
+				// 1. Capture the initial state (large text in Hero)
+				const state = Flip.getState(origin);
+
+				// 2. Move element in the DOM to the target in About
+				target.appendChild(origin);
+				
+				// 3. Apply the destination styles
+				origin.className = "text-[11px] sm:text-[13px] font-mono uppercase tracking-widest text-emerald-400 font-bold m-0 p-0 leading-none";
+
+				// 4. Animate the transition via ScrollTrigger
+				Flip.from(state, {
+					scale: true,
+					ease: 'power2.inOut',
+					scrollTrigger: {
+						trigger: '#about',
+						start: 'top bottom', // when about enters viewport from bottom
+						end: 'top 30%',      // finish transition slightly before top
+						scrub: 1,
+					}
+				});
+
+				// Fade in the decorative line
+				if (line) {
+					gsap.to(line, {
+						opacity: 1,
+						scrollTrigger: {
+							trigger: '#about',
+							start: 'top 35%',
+							end: 'top 20%',
+							scrub: true,
+						}
+					});
+				}
+			}
+		}, 500); // Wait for React hydration
+	});
+</script>
 
 

@@ -1,36 +1,123 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useGSAP } from '@gsap/react'
 import { ArrowUpRight, X, Layers } from 'lucide-react'
 import { usePortfolioData } from '@/lib/portfolio-store'
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger, useGSAP)
+}
 
 export function Projects() {
   const { projectsList } = usePortfolioData()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const sectionRef = useRef<HTMLElement>(null)
 
   // Show max 6 on main page
   const mainPageProjects = projectsList.slice(0, 6)
 
+  useGSAP(() => {
+    if (!sectionRef.current) return
+
+    // ── Heading entrance timeline ─────────────────────────────────────────
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: 'top 78%',
+        toggleActions: 'play none none reverse',
+      },
+      defaults: { ease: 'power3.out' },
+    })
+    tl.fromTo('.projects-label', { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.5 })
+      .fromTo('.projects-heading', { opacity: 0, y: 40, skewX: -5 }, { opacity: 1, y: 0, skewX: 0, duration: 0.8 }, '-=0.2')
+      .fromTo('.projects-subheading', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6 }, '-=0.4')
+
+    // Set initial 3D transform & Iris Shutter clip-path hidden state on client
+    gsap.set('.gsap-project-card', {
+      clipPath: 'circle(0% at 50% 50%)',
+      opacity: 0,
+      y: 90,
+      scale: 0.75,
+      rotationX: -35,
+      rotationY: 15,
+      transformPerspective: 1000,
+    })
+
+    // ── Cards: 3D Sci-Fi Shutter Morph + Elastic Unfold ────────────────────
+    ScrollTrigger.batch('.gsap-project-card', {
+      start: 'top 88%',
+      interval: 0.08,
+      batchMax: 3,
+      onEnter: (batch) => {
+        gsap.to(batch, {
+          clipPath: 'circle(150% at 50% 50%)',
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          rotationX: 0,
+          rotationY: 0,
+          duration: 0.95,
+          stagger: 0.15,
+          ease: 'back.out(1.4)',
+          overwrite: true,
+        })
+      },
+      onLeaveBack: (batch) => {
+        gsap.to(batch, {
+          clipPath: 'circle(0% at 50% 50%)',
+          opacity: 0,
+          y: 60,
+          scale: 0.8,
+          rotationX: -20,
+          duration: 0.5,
+          stagger: 0.07,
+          ease: 'power2.in',
+          overwrite: true,
+        })
+      },
+    })
+
+    // ── Magnetic 3D tilt on hover ─────────────────────────────────────────
+    const cards = sectionRef.current.querySelectorAll('.gsap-project-card')
+    cards.forEach((card) => {
+      const el = card as HTMLElement
+      const handleMove = (e: MouseEvent) => {
+        const rect = el.getBoundingClientRect()
+        const cx   = rect.left + rect.width / 2
+        const cy   = rect.top  + rect.height / 2
+        const dx   = (e.clientX - cx) / (rect.width  / 2)
+        const dy   = (e.clientY - cy) / (rect.height / 2)
+        gsap.to(el, {
+          rotationY: dx * 9, rotationX: -dy * 9,
+          transformPerspective: 700, scale: 1.035,
+          duration: 0.35, ease: 'power2.out', overwrite: 'auto',
+        })
+      }
+      const handleLeave = () => {
+        gsap.to(el, { rotationY: 0, rotationX: 0, scale: 1, duration: 0.55, ease: 'power3.out', overwrite: 'auto' })
+      }
+      el.addEventListener('mousemove', handleMove)
+      el.addEventListener('mouseleave', handleLeave)
+    })
+  }, { scope: sectionRef })
+
   return (
-    <section id="work" className="py-8 sm:py-20 px-4 sm:px-6">
+    <section id="work" ref={sectionRef} className="py-8 sm:py-20 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 sm:mb-12 gap-4">
           <div>
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-2xl sm:text-4xl md:text-5xl font-bold"
-            >
+            <span className="projects-label opacity-0 inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-neutral-500 mb-3">
+              <span className="w-6 h-px bg-neutral-600 inline-block" />
+              Portfolio
+            </span>
+            <h2 className="projects-heading opacity-0 text-2xl sm:text-4xl md:text-5xl font-extrabold font-display tracking-tight text-white">
               All Projects
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-neutral-400 text-xs sm:text-sm mt-1 sm:mt-2"
-            >
+            </h2>
+            <p className="projects-subheading opacity-0 text-neutral-400 text-xs sm:text-sm mt-1 sm:mt-2">
               Kumpulan karya & proyek pengembangan perangkat lunak
-            </motion.p>
+            </p>
           </div>
 
           {projectsList.length > 6 && (
@@ -65,10 +152,7 @@ export function Projects() {
           {mainPageProjects.map((project) => (
             <motion.div
               key={project.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="flex-shrink-0 w-[85vw] max-w-[310px] sm:w-auto snap-center group relative flex flex-col justify-between bg-white/5 border border-white/10 rounded-2xl p-4 transition-all duration-300 hover:bg-white/[0.08] hover:border-white/25"
+              className="gsap-project-card flex-shrink-0 w-[85vw] max-w-[310px] sm:w-auto snap-center group relative flex flex-col justify-between bg-neutral-900/60 border border-white/10 rounded-2xl p-4 transition-colors duration-300 hover:bg-neutral-900/90 hover:border-white/25 shadow-xl backdrop-blur-xl"
             >
               <div>
                 <div className="overflow-hidden rounded-xl aspect-video mb-3 sm:mb-4 bg-neutral-950">

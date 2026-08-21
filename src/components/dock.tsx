@@ -1,5 +1,9 @@
-import React from "react";
-
+import React, { useEffect, useState, useRef } from "react";
+import gsap from "gsap";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import { Flip } from "gsap/Flip";
+import { useGSAP } from "@gsap/react";
+import { Home, User, GraduationCap, Briefcase, Mail, FileDown } from "lucide-react";
 import { Dock, DockIcon } from "@/components/ui/dock-menu";
 import {
   Tooltip,
@@ -8,104 +12,146 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export type IconProps = React.HTMLAttributes<SVGElement>;
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollToPlugin, Flip, useGSAP);
+}
+
+const NAV_ITEMS = [
+  { id: "home", label: "HOME", icon: Home },
+  { id: "about", label: "ABOUT", icon: User },
+  { id: "education-certificates", label: "EDUCATION & CERTIFICATES", icon: GraduationCap },
+  { id: "work", label: "PROJECT", icon: Briefcase },
+  { id: "contact", label: "CONTACT", icon: Mail },
+];
 
 export function DockDemo() {
+  const [activeSection, setActiveSection] = useState("home");
+  const previousSection = useRef("home");
+  const dockRef = useRef<HTMLDivElement>(null);
+
+  // Smooth GSAP ScrollTo on navigation click + section morphing zoom
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+    e.preventDefault();
+    const target = document.getElementById(targetId);
+    if (!target) return;
+
+    // PPT Morph Section Transition: Zoom out current section briefly, scroll, then zoom in
+    const currentSectionEl = document.getElementById(activeSection);
+    if (currentSectionEl) {
+      gsap.to(currentSectionEl, {
+        scale: 0.97,
+        opacity: 0.85,
+        duration: 0.3,
+        ease: "power2.in",
+        onComplete: () => {
+          gsap.to(currentSectionEl, { scale: 1, opacity: 1, duration: 0.4, ease: "power2.out" });
+        }
+      });
+    }
+
+    gsap.to(window, {
+      duration: 1.1,
+      scrollTo: { y: target, offsetY: 20 },
+      ease: "power3.inOut",
+    });
+  };
+
+  // ScrollSpy to update active section & trigger Flip morph
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 300;
+      for (const item of NAV_ITEMS) {
+        const el = document.getElementById(item.id);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPosition >= top && scrollPosition < top + height) {
+            if (previousSection.current !== item.id) {
+              // Morph FLIP active indicator
+              const activePill = document.querySelector(".dock-active-pill");
+              if (activePill) {
+                const state = Flip.getState(activePill);
+                setActiveSection(item.id);
+                previousSection.current = item.id;
+                requestAnimationFrame(() => {
+                  Flip.from(state, {
+                    duration: 0.45,
+                    ease: "power3.out",
+                    absolute: true,
+                  });
+                });
+              } else {
+                setActiveSection(item.id);
+                previousSection.current = item.id;
+              }
+            }
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div className="fixed bottom-2 sm:bottom-5 left-0 right-0 z-50 px-2 sm:px-0 flex justify-center">
-      <Dock iconMagnification={54} iconDistance={70} iconSize={36}>
-       
-        <DockIcon className="bg-black/10  dark:bg-white/10">
-            <TooltipProvider>
+    <div ref={dockRef} className="fixed bottom-3 sm:bottom-6 left-0 right-0 z-50 px-2 sm:px-0 flex justify-center">
+      <Dock iconMagnification={54} iconDistance={70} iconSize={38} className="bg-neutral-900/80 backdrop-blur-xl border-white/15 shadow-2xl relative">
+        {NAV_ITEMS.map((item) => {
+          const Icon = item.icon;
+          const isActive = activeSection === item.id;
+          return (
+            <DockIcon
+              key={item.id}
+              className="relative bg-white/5 hover:bg-white/15 transition-colors"
+            >
+              {isActive && (
+                <div
+                  className="dock-active-pill absolute inset-0 rounded-full bg-white/20 border border-white/30 shadow-[0_0_15px_rgba(255,255,255,0.2)] pointer-events-none z-0"
+                />
+              )}
+              <TooltipProvider>
                 <Tooltip>
-                    <TooltipTrigger>
-                     <a href="#home">
-                        <Icons.gitHub className="size-full" />
+                  <TooltipTrigger asChild>
+                    <a
+                      href={`#${item.id}`}
+                      onClick={(e) => handleNavClick(e, item.id)}
+                      aria-label={`${item.label} section`}
+                      className="p-2 flex items-center justify-center size-full relative z-10"
+                    >
+                      <Icon className="w-5 h-5 text-white" />
                     </a>
-                    </TooltipTrigger>
-                    <TooltipContent>HOME</TooltipContent>
+                  </TooltipTrigger>
+                  <TooltipContent>{item.label}</TooltipContent>
                 </Tooltip>
-            </TooltipProvider>
-        </DockIcon>
-        <DockIcon className="bg-black/10 dark:bg-white/10">
-            <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger>
-                    <a href="#about">
-                        <Icons.notion className="size-full" />
-                    </a>
-                    </TooltipTrigger>
-                    <TooltipContent>ABOUT</TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
-        </DockIcon>
-            <DockIcon className="bg-black/10 dark:bg-white/10">
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger>
-                        <a href="#work">
-                            <Icons.googleDrive className="size-full" />
-                        </a>
-                        </TooltipTrigger>
-                        <TooltipContent>PROJECT</TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
+              </TooltipProvider>
             </DockIcon>
-        <DockIcon className="bg-black/10 dark:bg-white/10">
-            <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <a href="#contact">
-                            <Icons.whatsapp className="size-full" />
-                        </a>
-                    </TooltipTrigger>
-                    <TooltipContent>CONTACT</TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
-        </DockIcon>
-        <DockIcon className="bg-black/10 dark:bg-white/10">
-            <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger>
-                    <a href="/CV_Adi_Alam_Sami_Aji_1.pdf" download="CV_Adi_Alam_Sami_Aji.pdf">
-                        <Icons.download className="size-full" />
-                    </a>
-                    </TooltipTrigger>
-                    <TooltipContent>DOWNLOAD CV</TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
+          );
+        })}
+
+        {/* Download CV item */}
+        <DockIcon className="bg-white/5 hover:bg-white/15 transition-colors">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <a
+                  href="/CV_Adi_Alam_Sami_Aji_1.pdf"
+                  download="CV_Adi_Alam_Sami_Aji.pdf"
+                  aria-label="Download CV"
+                  className="p-2 flex items-center justify-center size-full"
+                >
+                  <FileDown className="w-5 h-5 text-white" />
+                </a>
+              </TooltipTrigger>
+              <TooltipContent>DOWNLOAD CV</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </DockIcon>
       </Dock>
     </div>
   );
 }
-
-const Icons = {
-  gitHub: (props: IconProps) => (
-    <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="512" height="512" {...props}><path fill="#fff" d="M22,5.724V2c0-.552-.447-1-1-1s-1,.448-1,1v2.366L14.797,.855c-1.699-1.146-3.895-1.146-5.594,0L2.203,5.579c-1.379,.931-2.203,2.48-2.203,4.145v9.276c0,2.757,2.243,5,5,5h2c.553,0,1-.448,1-1V14c0-.551,.448-1,1-1h6c.552,0,1,.449,1,1v9c0,.552,.447,1,1,1h2c2.757,0,5-2.243,5-5V9.724c0-1.581-.744-3.058-2-4Z"/></svg>
-  ),
-  notion: (props: IconProps) => (
-    <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" {...props}>
-    <path fill="#fff" d="M12.006,12.309c3.611-.021,5.555-1.971,5.622-5.671-.062-3.56-2.111-5.614-5.634-5.637-3.561,.022-5.622,2.122-5.622,5.672s2.062,5.615,5.634,5.636Z"/>
-    <path fill="#fff" d="M11.994,13.661c-5.328,.034-8.195,2.911-8.291,8.322-.004,.268,.099,.527,.287,.718s.445,.299,.713,.299h14.595c.268,0,.525-.108,.713-.299,.188-.191,.291-.45,.287-.718-.092-5.333-3.036-8.288-8.304-8.322Z"/>
-    </svg>
-  ),
-  googleDrive: (props: IconProps) => (
-    <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" {...props}>
-    <path fill="#fff" d="M23.899,6H0v-1C0,2.243,2.243,0,5,0h2.528c.463,0,.927,.109,1.341,.316l3.156,1.578c.138,.069,.293,.105,.447,.105h6.528c2.414,0,4.434,1.721,4.899,4Zm-.778,14.928c-1.157,1.916-3.25,3.196-5.484,3.063-3.145-.188-5.637-2.797-5.637-5.989,0-1.139,.882-3.11,1.465-4.139,.32-.566,.812-.498,1.062,.103,.208,.501,.428,2.035,1.104,2.035,1.82,0,1.433-3.302,2.37-5.492,.234-.548,.637-.61,1.083-.215,2.6,2.303,6.736,6.168,4.038,10.636Zm-3.794-2.43l-.769-1.097c-.308-.308-.807-.308-1.115,0l-.77,1.096c-.754,.754-.889,1.99-.195,2.8,.802,.937,2.242,.937,3.044,0,.693-.809,.559-2.046-.195-2.8ZM0,17c0,2.757,2.243,5,5,5h6.083c-.684-1.181-1.083-2.545-1.083-3.999,0-2.019,1.548-4.812,1.724-5.124,.528-.935,1.429-1.456,2.399-1.399,.513,.031,.987,.22,1.383,.537,.147-.749,.334-1.544,.655-2.293,.498-1.163,1.374-1.503,1.847-1.623,.183-.046,.375-.088,.585-.099H0v9ZM18.77,8c.423,.023,.934,.204,1.638,.794h0c.951,.844,2.401,2.138,3.591,3.758v-4.552h-5.23Z"/>
-    </svg>
-  ),
-  whatsapp: (props: IconProps) => (
-    <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" {...props}>
-    <path fill="#fff" d="M22.246,7.479c-.898-2.647-3.028-4.758-5.695-5.645-2.984-.992-6.109-.992-9.094,0-2.671,.888-4.801,3-5.697,5.647-1.016,2.998-1.016,6.038,0,9.036,.897,2.649,3.027,4.761,5.697,5.648,1.492,.496,3.022,.748,4.547,.748s3.054-.251,4.545-.747c.786-.261,1.212-1.11,.951-1.896-.263-.785-1.112-1.213-1.896-.95-2.374,.789-4.829,.787-7.201,0-1.783-.593-3.204-2-3.801-3.764-.799-2.359-.799-4.751,0-7.111,.597-1.763,2.018-3.17,3.802-3.763,2.372-.788,4.829-.789,7.2,0,1.782,.593,3.203,1.999,3.802,3.762,.687,2.026,.778,4.092,.274,6.146-.175,.201-.43,.317-.707,.317-.46,0-.844-.329-.916-.759,.411-1.726,.326-3.466-.257-5.187-.433-1.275-1.458-2.292-2.741-2.719-2.026-.674-4.083-.674-6.11,0-1.285,.427-2.31,1.443-2.742,2.72-.683,2.017-.683,4.062,0,6.078,.432,1.276,1.457,2.293,2.742,2.72,1.013,.337,2.034,.505,3.055,.505s2.042-.168,3.055-.505c.508-.169,.976-.431,1.383-.765,.679,.57,1.561,.912,2.531,.912,1.381,0,2.676-.734,3.381-1.915,.07-.118,.125-.246,.16-.379,.729-2.716,.64-5.452-.268-8.132Zm-7.288,6.597c-.132,.391-.449,.704-.847,.836-1.418,.471-2.797,.472-4.216,0-.397-.132-.714-.444-.846-.835-.474-1.398-.474-2.756,0-4.154,.132-.391,.449-.703,.846-.835,.709-.236,1.409-.354,2.108-.354s1.399,.118,2.108,.354c.397,.132,.715,.445,.847,.835,.473,1.397,.473,2.757,0,4.153Z"/>
-    </svg>
-  ),
-  download: (props: IconProps) => (
-    <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" {...props}>
-      <path fill="#fff" d="M14,0H5C2.239,0,0,2.239,0,5V19c0,2.761,2.239,5,5,5H19c2.761,0,5-2.239,5-5V10L14,0Zm-2,17c-.256,0-.512-.098-.707-.293l-3.5-3.5c-.391-.391-.391-1.023,0-1.414s1.023-.391,1.414,0l1.793,1.793V8c0-.552,.448-1,1-1s1,.448,1,1v5.586l1.793-1.793c.391-.391,1.023-.391,1.414,0s.391,1.023,0,1.414l-3.5,3.5c-.195,.195-.451,.293-.707,.293ZM14,8V2.5L19.5,8H14Z"/>
-    </svg>
-  ),
-};
 
 
 

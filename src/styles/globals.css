@@ -82,13 +82,21 @@
     @apply border-border;
     -webkit-tap-highlight-color: transparent;
   }
+  *:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.7);
+    outline-offset: 2px;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[#090a0f] text-foreground font-sans;
   }
   html, body {
     overflow-x: hidden;
     max-width: 100vw;
     font-family: 'Inter', system-ui, sans-serif;
+    scroll-behavior: smooth;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', 'Inter', system-ui, sans-serif;
   }
 }
 

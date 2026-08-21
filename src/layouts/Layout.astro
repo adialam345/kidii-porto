@@ -25,14 +25,14 @@ const {
 		<title>{title}</title>
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 	</head>
-	<body class="bg-black text-white font-sans antialiased selection:bg-purple-500 selection:text-white">
+	<body class="bg-[#090a0f] text-white font-sans antialiased selection:bg-purple-500 selection:text-white relative overflow-x-hidden min-h-screen">
+		{/* Ambient backdrop glow */}
+		<div className="fixed inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.15),rgba(255,255,255,0))] pointer-events-none z-0"></div>
 		<SmoothScroll client:load />
 		<slot />
 	</body>
-
-
 </html>
 
 

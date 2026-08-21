@@ -25,7 +25,7 @@ export function SmoothScroll() {
 
     animationFrameId = requestAnimationFrame(raf)
 
-    // Smooth scroll support for hash links (#about, #work, #contact, etc.)
+    // Smooth scroll support for hash links (#about, #work, #contact, #education-certificates, etc.)
     const handleAnchorClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null
       const anchor = target?.closest('a')
@@ -35,16 +35,22 @@ export function SmoothScroll() {
           const targetEl = document.querySelector(href)
           if (targetEl) {
             e.preventDefault()
-            lenis.scrollTo(targetEl as HTMLElement, { offset: -20 })
+            e.stopPropagation()
+            lenis.scrollTo(targetEl as HTMLElement, { 
+              offset: -40, 
+              duration: 1.5,
+              easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+            })
           }
         }
       }
     }
 
-    document.addEventListener('click', handleAnchorClick)
+    // Use capture phase (true) to intercept anchor clicks BEFORE native browser instant jumps occur
+    document.addEventListener('click', handleAnchorClick, true)
 
     return () => {
-      document.removeEventListener('click', handleAnchorClick)
+      document.removeEventListener('click', handleAnchorClick, true)
       cancelAnimationFrame(animationFrameId)
       lenis.destroy()
     }

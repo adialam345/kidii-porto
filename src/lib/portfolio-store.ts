@@ -45,6 +45,63 @@ export const initialProfileData: ProfileData = {
   email: "adialam347@gmail.com"
 };
 
+export interface EducationItem {
+  id: number;
+  institution: string;
+  degree: string;
+  period: string;
+  description: string;
+  location?: string;
+}
+
+export interface CertificateItem {
+  id: number;
+  title: string;
+  issuer: string;
+  issueDate: string;
+  credentialUrl?: string;
+  image?: string;
+  skills?: string[];
+}
+
+export const initialEducation: EducationItem[] = [
+  {
+    id: 1,
+    institution: "Politeknik Negeri Madiun",
+    degree: "D3 Teknik Informatika (Information Technology)",
+    period: "2022 - Sekarang",
+    description: "Fokus pada Software Engineering, Full-Stack Web Development (Laravel & React), Mobile App Development (Kotlin), Internet of Things (IoT), serta Computer Networking & Cybersecurity.",
+    location: "Madiun, Jawa Timur"
+  }
+];
+
+export const initialCertificates: CertificateItem[] = [
+  {
+    id: 1,
+    title: "Full-Stack Web Development",
+    issuer: "Dicoding Indonesia / Sertifikasi Kompetensi",
+    issueDate: "2024",
+    skills: ["Laravel", "React", "Node.js", "MySQL"],
+    credentialUrl: "https://github.com/adialam345"
+  },
+  {
+    id: 2,
+    title: "Cyber Security & Computer Networking Essentials",
+    issuer: "Cisco Networking Academy",
+    issueDate: "2024",
+    skills: ["Networking", "Cyber Security", "Routing & Switching"],
+    credentialUrl: "https://github.com/adialam345"
+  },
+  {
+    id: 3,
+    title: "IoT & Mobile Application Development with Kotlin",
+    issuer: "Politeknik Negeri Madiun",
+    issueDate: "2023",
+    skills: ["Kotlin", "Firebase", "IoT Sensors", "Material Design"],
+    credentialUrl: "https://github.com/adialam345"
+  }
+];
+
 const PROJECTS_KEY = 'portfolio_projects_data_v1';
 const PROFILE_KEY = 'portfolio_profile_data_v1';
 const ADMIN_AUTH_KEY = 'portfolio_admin_auth_v1';
