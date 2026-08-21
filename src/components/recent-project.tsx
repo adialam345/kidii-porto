@@ -88,7 +88,7 @@ export function SafariDemo() {
 
   return (
     <div ref={containerRef} className="w-full py-4 sm:py-12 my-2 sm:my-6">
-      <h2 className="safari-heading opacity-0 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight font-display mb-3 flex justify-center items-center px-4 text-center text-white">
+      <h2 className="safari-heading opacity-0 text-xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight font-display mb-3 flex justify-center items-center px-4 text-center text-white break-words leading-snug">
         {featuredProject.title || "Latest Projects"}
       </h2>
       <p className="safari-sub opacity-0 mt-6 text-sm sm:text-base md:text-lg lg:text-xl text-center text-neutral-300 max-w-2xl mb-10 mx-auto px-4 leading-relaxed text-balance">

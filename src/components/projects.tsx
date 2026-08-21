@@ -455,14 +455,14 @@ export function Projects() {
 
                   {/* Hover label */}
                   <div
-                    className="absolute -bottom-9 left-0 right-0 text-center pointer-events-none transition-all duration-300"
+                    className="absolute -bottom-12 md:-bottom-9 -left-6 -right-6 md:left-0 md:right-0 text-center pointer-events-none transition-all duration-300"
                     style={{
                       opacity: hoveredIdx === i ? 1 : 0,
                       transform: hoveredIdx === i ? 'translateY(0)' : 'translateY(4px)',
                     }}
                   >
-                    <p className="text-[9px] font-mono uppercase tracking-widest text-neutral-500">{project.tags?.[0]}</p>
-                    <h3 className="text-xs font-bold text-white leading-tight mt-0.5 line-clamp-1 px-1">{project.title}</h3>
+                    <p className="text-[8px] md:text-[9px] font-mono uppercase tracking-widest text-neutral-500">{project.tags?.[0]}</p>
+                    <h3 className="text-[10px] md:text-xs font-bold text-white leading-tight mt-0.5 line-clamp-2 break-words px-1">{project.title}</h3>
                   </div>
 
                   {/* Expand icon */}
@@ -523,8 +523,8 @@ export function Projects() {
             style={{ opacity: 0 }}
           >
             <div className="max-w-3xl mx-auto">
-              <p className="text-[11px] font-mono uppercase tracking-widest text-neutral-400 mb-1">{detail.project.tags?.[0]}</p>
-              <h2 className="text-2xl sm:text-4xl font-extrabold text-white font-display tracking-tight mb-2">{detail.project.title}</h2>
+              <p className="text-[10px] sm:text-[11px] font-mono uppercase tracking-widest text-neutral-400 mb-1">{detail.project.tags?.[0]}</p>
+              <h2 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-white font-display tracking-tight mb-2 break-words leading-snug">{detail.project.title}</h2>
               <p className="text-neutral-300 text-sm sm:text-base leading-relaxed mb-4 max-w-2xl">{detail.project.description}</p>
               <div className="flex flex-wrap items-center gap-3">
                 <div className="flex flex-wrap gap-2">
