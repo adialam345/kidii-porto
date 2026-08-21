@@ -79,9 +79,67 @@ export function AdminDashboard() {
   });
   const [certSkillsInput, setCertSkillsInput] = useState('');
 
-  const handleFileUpload = async (file: File, onSuccess: (url: string) => void) => {
+  // ── Helper: Automatically compress images (PNG/JPG/JPEG) to lightweight WebP ──
+  const compressImageFile = (file: File): Promise<File> => {
+    return new Promise((resolve) => {
+      if (!file.type.startsWith('image/')) {
+        resolve(file);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const maxDimension = 1200;
+          if (width > maxDimension || height > maxDimension) {
+            if (width > height) {
+              height = Math.round((height * maxDimension) / width);
+              width = maxDimension;
+            } else {
+              width = Math.round((width * maxDimension) / height);
+              height = maxDimension;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            resolve(file);
+            return;
+          }
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) {
+                resolve(file);
+                return;
+              }
+              const cleanName = file.name.replace(/\.[^/.]+$/, "") + '.webp';
+              const compressedFile = new File([blob], cleanName, {
+                type: 'image/webp',
+                lastModified: Date.now(),
+              });
+              resolve(compressedFile);
+            },
+            'image/webp',
+            0.82
+          );
+        };
+        img.onerror = () => resolve(file);
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => resolve(file);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleFileUpload = async (rawFile: File, onSuccess: (url: string) => void) => {
     setUploading(true);
     try {
+      const file = await compressImageFile(rawFile);
       const formData = new FormData();
       formData.append('file', file);
       const res = await fetch('/api/upload', {
@@ -91,7 +149,7 @@ export function AdminDashboard() {
       const data = await res.json();
       if (data.success && data.url) {
         onSuccess(data.url);
-        showToast('File berhasil di-upload ke server!');
+        showToast('File berhasil di-upload & dikompresi!');
       } else {
         alert('Gagal mengunggah file: ' + (data.error || 'Unknown error'));
       }
