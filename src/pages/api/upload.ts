@@ -35,7 +35,13 @@ export const POST: APIRoute = async ({ request }) => {
       fileName = `${cleanName}_${Date.now()}${ext}`;
     }
 
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
+    // In Astro standalone mode, static files are served from dist/client/
+    // In dev mode, they're served from public/
+    const isDev = process.env.NODE_ENV === 'development';
+    const uploadsDir = isDev
+      ? path.join(process.cwd(), 'public', 'uploads')
+      : path.join(process.cwd(), 'dist', 'client', 'uploads');
+
     if (!fs.existsSync(uploadsDir)) {
       fs.mkdirSync(uploadsDir, { recursive: true });
     }
