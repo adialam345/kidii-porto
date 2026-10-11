@@ -7,8 +7,12 @@ import compress from 'astro-compress';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://kidiepie.web.id',
   devToolbar: {
     enabled: false,
+  },
+  security: {
+    checkOrigin: false,
   },
   server: {
     port: 4380,
