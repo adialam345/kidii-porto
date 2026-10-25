@@ -1,15 +1,14 @@
-import { e as createComponent, k as renderComponent, l as renderScript, r as renderTemplate, m as maybeRenderHead } from '../chunks/astro/server_CzcP1_xN.mjs';
+import { f as createComponent, k as renderComponent, l as renderScript, r as renderTemplate, m as maybeRenderHead } from '../chunks/astro/server_DA5Sgb9R.mjs';
 import 'piccolore';
-import { $ as $$Layout } from '../chunks/Layout_CJgNVL8v.mjs';
+import { $ as $$Layout } from '../chunks/Layout_DW5_s94L.mjs';
 import { jsx, jsxs, Fragment } from 'react/jsx-runtime';
 import * as React from 'react';
-import { useState, useRef, useEffect, useCallback, createContext, forwardRef, useMemo, useImperativeHandle } from 'react';
-import { useGSAP } from '@gsap/react';
+import { useState, useRef, useEffect, useLayoutEffect, useCallback, createContext, forwardRef, useMemo, useImperativeHandle } from 'react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { createNoise3D } from 'simplex-noise';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
-import { GraduationCap, Award, BadgeCheck, Calendar, MapPin, FileText, Eye, ExternalLink, X, Download, ArrowUpRight, Github, Linkedin, Instagram, Mail } from 'lucide-react';
+import { GraduationCap, Award, BadgeCheck, Calendar, MapPin, FileText, Eye, ExternalLink, ChevronUp, ChevronDown, X, Download, ArrowUpRight, Github, Linkedin, Instagram, Mail } from 'lucide-react';
 import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { Slot } from '@radix-ui/react-slot';
@@ -4202,7 +4201,7 @@ var MatchMedia = /*#__PURE__*/function () {
  */
 
 
-var _gsap = {
+var _gsap$1 = {
   registerPlugin: function registerPlugin() {
     for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
       args[_key2] = arguments[_key2];
@@ -4427,12 +4426,12 @@ var _gsap = {
 };
 
 _forEachName("to,from,fromTo,delayedCall,set,killTweensOf", function (name) {
-  return _gsap[name] = Tween[name];
+  return _gsap$1[name] = Tween[name];
 });
 
 _ticker.add(Timeline.updateRoot);
 
-_quickTween = _gsap.to({}, {
+_quickTween = _gsap$1.to({}, {
   duration: 0
 }); // ---- EXTRA PLUGINS --------------------------------------------------------
 
@@ -4506,7 +4505,7 @@ var _getPluginPropTween = function _getPluginPropTween(plugin, prop) {
 }; //register core plugins
 
 
-var gsap$3 = _gsap.registerPlugin({
+var gsap$3 = _gsap$1.registerPlugin({
   name: "attr",
   init: function init(target, vars, tween, index, targets) {
     var p, pt, v;
@@ -4540,7 +4539,7 @@ var gsap$3 = _gsap.registerPlugin({
       this.add(target, i, target[i] || 0, value[i], 0, 0, 0, 0, 0, 1);
     }
   }
-}, _buildModifierPlugin("roundProps", _roundModifier), _buildModifierPlugin("modifiers"), _buildModifierPlugin("snap", snap)) || _gsap; //to prevent the core plugins from being dropped via aggressive tree shaking, we must include them in the variable declaration in this way.
+}, _buildModifierPlugin("roundProps", _roundModifier), _buildModifierPlugin("modifiers"), _buildModifierPlugin("snap", snap)) || _gsap$1; //to prevent the core plugins from being dropped via aggressive tree shaking, we must include them in the variable declaration in this way.
 
 Tween.version = Timeline.version = gsap$3.version = "3.15.0";
 _coreReady = 1;
@@ -9570,6 +9569,54 @@ ScrollTrigger.core = {
 };
 _getGSAP() && gsap$1.registerPlugin(ScrollTrigger);
 
+/*!
+ * @gsap/react 2.1.2
+ * https://gsap.com
+ *
+ * Copyright 2008-2025, GreenSock. All rights reserved.
+ * Subject to the terms at https://gsap.com/standard-license or for
+ * Club GSAP members, the agreement issued with that membership.
+ * @author: Jack Doyle, jack@greensock.com
+*/
+/* eslint-disable */
+
+let useIsomorphicLayoutEffect = typeof document !== "undefined" ? useLayoutEffect : useEffect,
+    isConfig = value => value && !Array.isArray(value) && typeof(value) === "object",
+    emptyArray = [],
+    defaultConfig = {},
+    _gsap = gsapWithCSS; // accommodates situations where different versions of GSAP may be loaded, so a user can gsap.registerPlugin(useGSAP);
+
+const useGSAP = (callback, dependencies = emptyArray) => {
+  let config = defaultConfig;
+  if (isConfig(callback)) {
+    config = callback;
+    callback = null;
+    dependencies = "dependencies" in config ? config.dependencies : emptyArray;
+  } else if (isConfig(dependencies)) {
+    config = dependencies;
+    dependencies = "dependencies" in config ? config.dependencies : emptyArray;
+  }
+  (callback && typeof callback !== "function") && console.warn("First parameter must be a function or config object");
+  const { scope, revertOnUpdate } = config,
+        mounted = useRef(false),
+        context = useRef(_gsap.context(() => { }, scope)),
+        contextSafe = useRef((func) => context.current.add(null, func)),
+        deferCleanup = dependencies && dependencies.length && !revertOnUpdate;
+  deferCleanup && useIsomorphicLayoutEffect(() => {
+    mounted.current = true;
+    return () => context.current.revert();
+  }, emptyArray);
+  useIsomorphicLayoutEffect(() => {
+    callback && context.current.add(callback, scope);
+    if (!deferCleanup || !mounted.current) { // React renders bottom-up, thus there could be hooks with dependencies that run BEFORE the component mounts, thus cleanup wouldn't occur since a hook with an empty dependency Array would only run once the component mounts.
+      return () => context.current.revert();
+    }
+  }, dependencies);
+  return { context: context.current, contextSafe: contextSafe.current };
+};
+useGSAP.register = core => { _gsap = core; };
+useGSAP.headless = true; // doesn't require the window to be registered.
+
 function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
@@ -9720,7 +9767,7 @@ const projects = [
     title: "PONPES MIFTAHUL HUDA | WEBSITE",
     description: "Pondok Pesantren Miftahul Huda: Sebuah sistem informasi berbasis web menggunakan Laravel untuk manajemen lembaga pendidikan. Fitur utama meliputi autentikasi berbasis peran, manajemen konten dinamis, pendaftaran siswa online, antarmuka responsif, dan arsitektur database yang efisien.",
     tags: ["Laravel", "Tailwind CSS"],
-    image: "/ponpes.png",
+    image: "/ponpes.webp",
     link: "https://github.com/adialam345/ponpes_miftahulhuda"
   },
   {
@@ -9728,7 +9775,7 @@ const projects = [
     title: "SISTOK GUDANG | MOBILE",
     description: "Sisitok Gudang: Adalah aplikasi Android untuk memantau dan mengelola inventaris gudang secara real-time. Fitur utama mencakup pencatatan barang masuk/keluar, manajemen pemasok, autentikasi pengguna, dan sinkronisasi data melalui API dengan arsitektur MVVM dan basis data lokal.",
     tags: ["Kotlin"],
-    image: "/apkgudang.png",
+    image: "/apkgudang.webp",
     link: "https://github.com/adialam345/sistok_gudang"
   },
   {
@@ -9736,7 +9783,7 @@ const projects = [
     title: "MONITORING SENSOR | MOBILE",
     description: "Monitoring Sensor: Sebuah aplikasi Android untuk memantau data sensor secara real-time menggunakan teknologi Internet of Things (IoT) dan Firebase Realtime Database. Fitur utama meliputi integrasi layanan Google dan antarmuka modern berbasis Material Design untuk tampilan yang intuitif dan responsif.",
     tags: ["Kotlin", "Firebase", "IOT"],
-    image: "/sensoriot.png",
+    image: "/sensoriot.webp",
     link: "https://github.com/adialam345/aplikasi-monitoring-sensor-IOT"
   },
   {
@@ -9744,7 +9791,7 @@ const projects = [
     title: "IOT SMART LAMP | WEBSITE",
     description: "IoT Smart Lamp Monitoring & Control: Sebuah sistem IoT berbasis web untuk memantau dan mengontrol lampu secara real-time menggunakan Firebase Realtime Database. Fitur utama meliputi pemantauan status perangkat, mode otomatis dan manual, deteksi gerakan dengan sensor PIR, serta antarmuka web responsif untuk kendali lampu.",
     tags: ["IOT", "Firebase"],
-    image: "/iotlampu.png",
+    image: "/iotlampu.webp",
     link: "https://github.com/adialam345/iot-lampu"
   },
   {
@@ -9752,7 +9799,7 @@ const projects = [
     title: "ABSENSI PROJECT | WEBSITE",
     description: "Sistem Absensi Digital: Sebuah aplikasi web untuk manajemen absensi karyawan dengan fitur canggih seperti deteksi lokasi dengan radius, foto selfie untuk verifikasi kehadiran, dan dashboard real-time. Dibangun menggunakan Laravel dan Tailwind CSS dengan fitur keamanan tinggi dan antarmuka yang user-friendly.",
     tags: ["Laravel", "Tailwind CSS", "GPS", "Camera API"],
-    image: "/absensi.png",
+    image: "/absensi.webp",
     link: "https://github.com/adialam345/absensi-notepro"
   },
   {
@@ -9760,7 +9807,7 @@ const projects = [
     title: "LAUNDRY SYSTEM | WEBSITE",
     description: "Sistem Manajemen Laundry: Sebuah aplikasi web untuk pengelolaan transaksi laundry, manajemen pelanggan, pelacakan status cucian (proses, cuci, setrika, selesai), cetak nota/struk, dan laporan keuangan. Dibangun menggunakan Laravel dan Tailwind CSS dengan antarmuka yang responsif dan efisien.",
     tags: ["Laravel", "Tailwind CSS"],
-    image: "/laundry.png",
+    image: "/laundry.webp",
     link: "https://github.com/adialam345/laundry"
   }
 ];
@@ -9774,7 +9821,7 @@ const initialProfileData = {
   aboutHeadline1: "where",
   aboutHeadline2: "EXPERIENCE BUILDS CHARACTER",
   aboutBio: "Saya adalah mahasiswa D3 Teknik Informatika di Politeknik Negeri Madiun (2023–2026) dengan fondasi yang kuat dalam pengembangan aplikasi web & mobile (frontend dan backend), jaringan komputer, serta keamanan siber. Berpengalaman kerja sebagai IT & Network Engineer Intern di Amins Project Teknologi Indonesia dan Technical Support Intern di Notepro Teknikatama, mencakup konfigurasi router MikroTik, penataan infrastruktur jaringan, pengawasan sistem CCTV, serta pengembangan aplikasi web modern menggunakan Laravel, Node.js, Next.js, Python, Tailwind CSS, Firebase, dan Kotlin. Didukung oleh sertifikasi BNSP sebagai Junior Web Developer dan Junior Cyber Security, saya berkomitmen untuk menciptakan solusi perangkat lunak yang aman, responsif, dan inovatif.",
-  profileImage: "/profile.jpg",
+  profileImage: "/profile.webp",
   cvUrl: "/CV_Adi_Alam_Sami_Aji_1.pdf",
   githubUrl: "https://github.com/adialam345",
   linkedinUrl: "https://www.linkedin.com/in/adi-alam-sami-aji-a62234334/",
@@ -9802,7 +9849,7 @@ const initialCertificates = [
     skills: ["Laravel", "React", "Node.js", "MySQL", "PHP", "Software Engineering"],
     credentialUrl: "/junior-web-developer.pdf",
     pdfUrl: "/junior-web-developer.pdf",
-    image: "/junior-web-developer.png"
+    image: "/junior-web-developer.webp"
   },
   {
     id: 2,
@@ -9812,7 +9859,7 @@ const initialCertificates = [
     skills: ["Networking", "Cyber Security", "Penetration Testing", "Security Audit"],
     credentialUrl: "/junior-cyber-security.pdf",
     pdfUrl: "/junior-cyber-security.pdf",
-    image: "/junior-cyber-security.png"
+    image: "/junior-cyber-security.webp"
   },
   {
     id: 3,
@@ -9820,6 +9867,22 @@ const initialCertificates = [
     issuer: "Politeknik Negeri Madiun",
     issueDate: "2023",
     skills: ["Kotlin", "Firebase", "IoT Sensors", "Material Design"],
+    credentialUrl: "https://github.com/adialam345"
+  },
+  {
+    id: 4,
+    title: "MikroTik Certified Network Associate (MTCNA)",
+    issuer: "MikroTik Academy / PNM",
+    issueDate: "2023",
+    skills: ["MikroTik RouterOS", "Routing", "Subnetting", "Bandwidth Management", "Firewall"],
+    credentialUrl: "https://github.com/adialam345"
+  },
+  {
+    id: 5,
+    title: "IT & Network Technical Support Specialist",
+    issuer: "Notepro Teknikatama",
+    issueDate: "2023",
+    skills: ["Network Infrastructure", "CCTV Surveillance", "Troubleshooting", "Hardware Maintenance"],
     credentialUrl: "https://github.com/adialam345"
   }
 ];
@@ -9905,7 +9968,13 @@ function getStoredCertificates() {
     const data = localStorage.getItem(CERTIFICATES_KEY);
     if (!data) return initialCertificates;
     const parsed = JSON.parse(data);
-    return parsed.map((item) => {
+    const merged = [...parsed];
+    for (const init of initialCertificates) {
+      if (!merged.some((m) => m.id === init.id || m.title.toLowerCase() === init.title.toLowerCase())) {
+        merged.push(init);
+      }
+    }
+    return merged.map((item) => {
       const match = initialCertificates.find((init) => init.id === item.id || init.title.toLowerCase() === item.title.toLowerCase());
       return {
         ...item,
@@ -10134,7 +10203,7 @@ function Hero() {
           /* @__PURE__ */ jsx("span", { className: "text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-mono", children: "Scroll" }),
           /* @__PURE__ */ jsx("div", { className: "w-px h-10 bg-gradient-to-b from-neutral-500 to-transparent" })
         ] }),
-        /* @__PURE__ */ jsx("div", { id: "hero-shared-origin", className: "absolute bottom-10 left-1/2 -translate-x-1/2 text-[9vw] font-display font-black text-white/5 whitespace-nowrap pointer-events-none tracking-tighter select-none z-0", children: "CRAFTING DIGITAL EXPERIENCES" })
+        /* @__PURE__ */ jsx("div", { id: "hero-shared-origin", className: "absolute bottom-10 left-1/2 -translate-x-1/2 text-[7vw] sm:text-[9vw] font-display font-black text-white/5 whitespace-nowrap pointer-events-none tracking-tighter select-none z-0 overflow-visible py-2 leading-normal", children: "CRAFTING DIGITAL EXPERIENCES" })
       ] })
     }
   ) });
@@ -10198,50 +10267,53 @@ TooltipContent.displayName = TooltipPrimitive.Content.displayName;
 const techStack = [
   {
     name: "JavaScript",
-    image: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
+    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
   },
   {
     name: "React",
-    image: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg"
+    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg"
   },
   {
     name: "Node.js",
-    image: "https://upload.wikimedia.org/wikipedia/commons/d/d9/Node.js_logo.svg"
+    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg"
+  },
+  {
+    name: "Next.js",
+    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg"
   },
   {
     name: "Tailwind CSS",
-    image: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg"
+    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg"
   },
   {
     name: "Laravel",
-    image: "https://upload.wikimedia.org/wikipedia/commons/9/9a/Laravel.svg"
+    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg"
   },
   {
     name: "Kotlin",
-    image: "https://upload.wikimedia.org/wikipedia/commons/7/74/Kotlin_Icon.png"
+    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kotlin/kotlin-original.svg"
   },
   {
     name: "Python",
-    image: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.freebiesupply.com%2Flogos%2Flarge%2F2x%2Fpython-5-logo-png-transparent.png&f=1&nofb=1&ipt=b3a2c04645c1e1e1dad1c914350563945745ff96c83ccae27a86b9dac37e7b16&ipo=images"
+    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
   },
   {
-    name: "Botstrap",
-    image: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fuxwing.com%2Fwp-content%2Fthemes%2Fuxwing%2Fdownload%2Fbrands-and-social-media%2Fbootstrap-5-logo-icon.png&f=1&nofb=1&ipt=a6f29b7a2a68329ff06ae29b8db349ba53f8dc04dbfcccee0ec27da5253a57b8&ipo=images"
+    name: "Bootstrap",
+    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg"
   },
   {
     name: "C++",
-    image: "https://upload.wikimedia.org/wikipedia/commons/1/18/ISO_C%2B%2B_Logo.svg"
+    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg"
   },
   {
     name: "Java",
-    image: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fbrandlogos.net%2Fwp-content%2Fuploads%2F2021%2F11%2Fjava-logo.png&f=1&nofb=1&ipt=61ef57427665cc668e60c3425e84c5790b7b7b9b90aeebf459771f53f78cb39d&ipo=images"
+    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg"
   },
   {
-    name: "",
-    image: ""
+    name: "MySQL",
+    image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg"
   }
 ];
-const firstRow = techStack.slice(0, techStack.length - 1);
 const ReviewCard = ({
   image,
   name
@@ -10250,24 +10322,35 @@ const ReviewCard = ({
     "figure",
     {
       className: cn(
-        "relative w-28 sm:w-40 cursor-pointer overflow-hidden rounded-xl border p-2.5 sm:p-4",
-        // light styles
-        "border-gray-950/[.1] bg-gray-950/[.01] hover:bg-gray-950/[.05]",
-        // dark styles
-        "dark:border-gray-50/[.1] dark:bg-gray-50/[.10] dark:hover:bg-gray-50/[.15]"
+        "relative w-24 sm:w-32 cursor-pointer overflow-hidden rounded-2xl p-3 sm:p-4 transition-all duration-300",
+        "border border-white/10 bg-white/[0.03] backdrop-blur-sm",
+        "hover:border-emerald-500/50 hover:bg-emerald-500/10 hover:scale-105 hover:shadow-[0_0_20px_rgba(52,211,153,0.15)]",
+        "group flex flex-col items-center justify-center gap-2"
       ),
-      children: /* @__PURE__ */ jsx("div", { className: "flex flex-col justify-center items-center", children: /* @__PURE__ */ jsx(TooltipProvider, { children: /* @__PURE__ */ jsxs(Tooltip, { children: [
-        /* @__PURE__ */ jsx(TooltipTrigger, { children: /* @__PURE__ */ jsx("img", { className: "rounded w-10 sm:w-16 h-10 sm:h-16 object-contain grayscale brightness-100", alt: name, src: image, loading: "lazy", decoding: "async" }) }),
+      children: /* @__PURE__ */ jsx(TooltipProvider, { children: /* @__PURE__ */ jsxs(Tooltip, { children: [
+        /* @__PURE__ */ jsx(TooltipTrigger, { asChild: true, children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center justify-center gap-2", children: [
+          /* @__PURE__ */ jsx(
+            "img",
+            {
+              className: "w-8 sm:w-12 h-8 sm:h-12 object-contain transition-all duration-300 group-hover:scale-110",
+              alt: name,
+              src: image,
+              loading: "lazy",
+              decoding: "async"
+            }
+          ),
+          /* @__PURE__ */ jsx("span", { className: "text-[10px] sm:text-xs font-mono text-neutral-400 group-hover:text-emerald-400 transition-colors font-medium", children: name })
+        ] }) }),
         /* @__PURE__ */ jsx(TooltipContent, { children: name })
-      ] }) }) })
+      ] }) })
     }
   );
 };
 function MarqueeDemo() {
-  return /* @__PURE__ */ jsxs("div", { className: "relative mt-6 sm:mt-10 flex h-[160px] sm:h-[260px] border-0 w-full flex-col items-center justify-center overflow-hidden rounded-lg ", children: [
-    /* @__PURE__ */ jsx(Marquee, { pauseOnHover: true, className: "[--duration:20s]", children: firstRow.map((review) => /* @__PURE__ */ jsx(ReviewCard, { ...review }, review.name)) }),
-    /* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute inset-y-0 left-0 w-1/4 sm:w-1/3 bg-gradient-to-r from-black dark:from-background" }),
-    /* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute inset-y-0 right-0 w-1/4 sm:w-1/3 bg-gradient-to-l from-black dark:from-background" })
+  return /* @__PURE__ */ jsxs("div", { className: "relative mt-8 sm:mt-12 flex h-[140px] sm:h-[180px] w-full flex-col items-center justify-center overflow-hidden bg-transparent", children: [
+    /* @__PURE__ */ jsx(Marquee, { pauseOnHover: true, className: "[--duration:25s] [--gap:1rem]", children: techStack.map((tech) => /* @__PURE__ */ jsx(ReviewCard, { ...tech }, tech.name)) }),
+    /* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute inset-y-0 left-0 w-1/6 sm:w-1/4 bg-gradient-to-r from-black/80 to-transparent" }),
+    /* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute inset-y-0 right-0 w-1/6 sm:w-1/4 bg-gradient-to-l from-black/80 to-transparent" })
   ] });
 }
 
@@ -10302,7 +10385,7 @@ function About() {
   return /* @__PURE__ */ jsxs("section", { id: "about", ref: sectionRef, className: "py-16 sm:py-28 px-4 sm:px-6 overflow-hidden select-none", children: [
     /* @__PURE__ */ jsx("div", { className: "max-w-6xl mx-auto", children: /* @__PURE__ */ jsxs("div", { className: "grid md:grid-cols-2 gap-12 md:gap-16 items-center", children: [
       /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("div", { id: "about-shared-target", className: "min-h-[24px] mb-5 flex items-center", children: /* @__PURE__ */ jsx("span", { className: "w-8 h-px bg-emerald-500 inline-block mr-3 opacity-60", id: "shared-line" }) }),
+        /* @__PURE__ */ jsx("div", { id: "about-shared-target", className: "min-h-[36px] mb-5 flex items-center gap-3 overflow-visible py-1", children: /* @__PURE__ */ jsx("span", { className: "w-8 sm:w-12 h-px bg-emerald-500 inline-block opacity-60 shrink-0", id: "shared-line" }) }),
         /* @__PURE__ */ jsxs("h2", { className: "text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-display tracking-tight leading-[1.05] mb-5 sm:mb-6", children: [
           /* @__PURE__ */ jsx("span", { className: "block font-light italic text-neutral-300", children: profile.aboutHeadline1 || "where" }),
           /* @__PURE__ */ jsx("span", { className: "block font-extrabold text-white mt-1.5", children: profile.aboutHeadline2 || "EXPERIENCE BUILDS CHARACTER" })
@@ -10702,12 +10785,15 @@ if (typeof window !== "undefined") {
 function scatterSet(chars) {
   gsapWithCSS.set(chars, {
     opacity: 0,
-    x: () => gsapWithCSS.utils.random(-700, 700),
-    y: () => gsapWithCSS.utils.random(-500, 500),
-    rotation: () => gsapWithCSS.utils.random(-360, 360),
-    scale: () => gsapWithCSS.utils.random(0.05, 3),
-    z: () => gsapWithCSS.utils.random(-400, 400),
-    // depth axis for 3D feel
+    x: () => gsapWithCSS.utils.random(-500, 500),
+    y: () => gsapWithCSS.utils.random(-250, 250),
+    z: () => gsapWithCSS.utils.random(-600, 600),
+    // deep 3D perspective axis
+    rotationX: () => gsapWithCSS.utils.random(-360, 360),
+    rotationY: () => gsapWithCSS.utils.random(-360, 360),
+    rotationZ: () => gsapWithCSS.utils.random(-360, 360),
+    scale: () => gsapWithCSS.utils.random(0.3, 3.2),
+    filter: "blur(10px)",
     force3D: true
   });
 }
@@ -10717,13 +10803,16 @@ function scatterAssemble(chars, delay = 0) {
     x: 0,
     y: 0,
     z: 0,
-    rotation: 0,
+    rotationX: 0,
+    rotationY: 0,
+    rotationZ: 0,
     scale: 1,
-    duration: 1.2,
-    ease: "back.out(2.5)",
-    // overshoots then snaps in — feels explosive
+    filter: "blur(0px)",
+    duration: 1.35,
+    ease: "back.out(2.8)",
+    // massive explosive snap-in effect
     stagger: { each: 0.04, from: "random" },
-    // wider stagger = more chaos
+    // wide chaos scatter
     delay,
     force3D: true,
     overwrite: true
@@ -10733,12 +10822,69 @@ function EducationCertificates() {
   const { educationList, certificatesList } = usePortfolioData();
   const [activeTab, setActiveTab] = useState("all");
   const [selectedCert, setSelectedCert] = useState(null);
+  const [showAllCerts, setShowAllCerts] = useState(false);
+  const INITIAL_CERT_LIMIT = 3;
+  const hasMoreCerts = certificatesList.length > INITIAL_CERT_LIMIT;
+  const displayedCerts = showAllCerts || !hasMoreCerts ? certificatesList : certificatesList.slice(0, INITIAL_CERT_LIMIT);
   const sectionRef = useRef(null);
+  const certsHeadingRef = useRef(null);
   const headingRef = useRef(null);
   const subRef = useRef(null);
   const labelRef = useRef(null);
   const tabsRef = useRef(null);
   const certModalRef = useRef(null);
+  const isFirstRender = useRef(true);
+  const handleToggleCerts = () => {
+    if (showAllCerts) {
+      setShowAllCerts(false);
+      if (certsHeadingRef.current) {
+        certsHeadingRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    } else {
+      setShowAllCerts(true);
+    }
+  };
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    if (showAllCerts) {
+      const extraCards = sectionRef.current?.querySelectorAll(".gsap-cert-card-extra");
+      if (extraCards && extraCards.length > 0) {
+        gsapWithCSS.fromTo(
+          extraCards,
+          {
+            opacity: 0,
+            y: 35,
+            scale: 0.92,
+            rotationX: -12,
+            transformPerspective: 900
+          },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            rotationX: 0,
+            duration: 0.55,
+            stagger: 0.08,
+            ease: "back.out(1.4)",
+            force3D: true,
+            clearProps: "transformPerspective",
+            onComplete: () => {
+              ScrollTrigger.refresh();
+            }
+          }
+        );
+      } else {
+        ScrollTrigger.refresh();
+      }
+    } else {
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 60);
+    }
+  }, [showAllCerts]);
   const handleOpenCert = (cert) => {
     setSelectedCert(cert);
     if (certModalRef.current) {
@@ -10792,7 +10938,7 @@ function EducationCertificates() {
     }
     gsapWithCSS.to(el, { scale: 1, duration: 0.55, ease: "power3.out", overwrite: "auto" });
   }, []);
-  useGSAP((_, contextSafe) => {
+  useGSAP(() => {
     if (!sectionRef.current || !headingRef.current) return;
     const headingSplit = SplitText.create(headingRef.current, { type: "chars" });
     scatterSet(headingSplit.chars);
@@ -10922,18 +11068,7 @@ function EducationCertificates() {
         gsapWithCSS.set(batch, { opacity: 0, y: 40, scale: 0.9, rotationX: -12 });
       }
     });
-    const safeMoveHandler = contextSafe(handleMouseMove);
-    const safeLeaveHandler = contextSafe(handleMouseLeave);
-    const cards = sectionRef.current.querySelectorAll(".gsap-cert-card");
-    cards.forEach((card) => {
-      card.addEventListener("mousemove", safeMoveHandler);
-      card.addEventListener("mouseleave", safeLeaveHandler);
-    });
     return () => {
-      cards.forEach((card) => {
-        card.removeEventListener("mousemove", safeMoveHandler);
-        card.removeEventListener("mouseleave", safeLeaveHandler);
-      });
       headingSplit.revert();
       h3Splits.forEach((s) => s.revert());
       cardSplits.forEach((s) => s.revert());
@@ -10945,7 +11080,7 @@ function EducationCertificates() {
     {
       id: "education-certificates",
       ref: sectionRef,
-      className: "py-8 sm:py-20 px-4 sm:px-6 overflow-hidden",
+      className: "py-8 sm:py-20 px-4 sm:px-6 overflow-visible",
       children: [
         /* @__PURE__ */ jsxs("div", { className: "max-w-6xl mx-auto", children: [
           /* @__PURE__ */ jsxs("div", { className: "flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-14 gap-4", children: [
@@ -10986,7 +11121,10 @@ function EducationCertificates() {
             ].map((tab) => /* @__PURE__ */ jsxs(
               "button",
               {
-                onClick: () => setActiveTab(tab.id),
+                onClick: () => {
+                  setActiveTab(tab.id);
+                  setShowAllCerts(false);
+                },
                 className: `px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${activeTab === tab.id ? "bg-white text-black shadow-lg scale-105" : "bg-white/5 border border-white/10 text-neutral-400 hover:text-white hover:bg-white/10"}`,
                 children: [
                   "icon" in tab ? tab.icon : null,
@@ -11012,6 +11150,8 @@ function EducationCertificates() {
               /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 gap-6", children: educationList.map((edu) => /* @__PURE__ */ jsxs(
                 "div",
                 {
+                  onMouseMove: handleMouseMove,
+                  onMouseLeave: handleMouseLeave,
                   className: "gsap-cert-card relative bg-neutral-900/60 border border-white/10 hover:border-white/30 rounded-2xl p-6 sm:p-8 backdrop-blur-xl transition-colors duration-300",
                   style: { willChange: "transform, opacity", transformPerspective: 900 },
                   children: [
@@ -11058,7 +11198,7 @@ function EducationCertificates() {
               )) })
             ] }),
             (activeTab === "all" || activeTab === "certificates") && /* @__PURE__ */ jsxs("div", { children: [
-              /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 mb-6", children: [
+              /* @__PURE__ */ jsxs("div", { ref: certsHeadingRef, className: "flex items-center gap-3 mb-6", children: [
                 /* @__PURE__ */ jsx("div", { className: "w-9 h-9 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-white shrink-0", children: /* @__PURE__ */ jsx(Award, { className: "w-4 h-4" }) }),
                 /* @__PURE__ */ jsx(
                   "h3",
@@ -11069,11 +11209,13 @@ function EducationCertificates() {
                   }
                 )
               ] }),
-              /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6", children: certificatesList.map((cert) => /* @__PURE__ */ jsxs(
+              /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6", children: displayedCerts.map((cert, index) => /* @__PURE__ */ jsxs(
                 "div",
                 {
                   onClick: () => handleOpenCert(cert),
-                  className: "gsap-cert-card group relative flex flex-col justify-between bg-neutral-900/60 border border-white/10 hover:border-white/30 rounded-2xl p-6 backdrop-blur-xl transition-all duration-300 cursor-pointer hover:shadow-[0_12px_40px_rgba(255,255,255,0.06)]",
+                  onMouseMove: handleMouseMove,
+                  onMouseLeave: handleMouseLeave,
+                  className: `gsap-cert-card group relative flex flex-col justify-between bg-neutral-900/60 border border-white/10 hover:border-white/30 rounded-2xl p-6 backdrop-blur-xl transition-all duration-300 cursor-pointer hover:shadow-[0_12px_40px_rgba(255,255,255,0.06)] ${index >= INITIAL_CERT_LIMIT ? "gsap-cert-card-extra" : ""}`,
                   style: { willChange: "transform, opacity", transformPerspective: 900 },
                   children: [
                     /* @__PURE__ */ jsxs("div", { children: [
@@ -11126,7 +11268,19 @@ function EducationCertificates() {
                   ]
                 },
                 cert.id
-              )) })
+              )) }),
+              hasMoreCerts && /* @__PURE__ */ jsx("div", { className: "mt-8 sm:mt-10 flex justify-center", children: /* @__PURE__ */ jsxs(
+                "button",
+                {
+                  type: "button",
+                  onClick: handleToggleCerts,
+                  className: "group relative inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-neutral-900/80 hover:bg-neutral-800 border border-white/15 hover:border-emerald-500/40 text-xs sm:text-sm font-semibold text-white transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.5)] hover:shadow-[0_0_25px_rgba(16,185,129,0.2)] active:scale-95 cursor-pointer backdrop-blur-md",
+                  children: [
+                    /* @__PURE__ */ jsx("span", { children: showAllCerts ? "Tampilkan Lebih Sedikit" : `Lihat Lainnya (+${certificatesList.length - INITIAL_CERT_LIMIT})` }),
+                    showAllCerts ? /* @__PURE__ */ jsx(ChevronUp, { className: "w-4 h-4 text-emerald-400 transition-transform duration-300 group-hover:-translate-y-0.5" }) : /* @__PURE__ */ jsx(ChevronDown, { className: "w-4 h-4 text-emerald-400 transition-transform duration-300 group-hover:translate-y-0.5" })
+                  ]
+                }
+              ) })
             ] })
           ] })
         ] }),
@@ -11578,8 +11732,7 @@ function Projects() {
                       },
                       onClick: (e) => {
                         e.stopPropagation();
-                        const itemW = typeof window !== "undefined" && window.innerWidth < 768 ? 100 : 210;
-                        handleOpen(project, itemW, i);
+                        handleOpen(project, i);
                       },
                       onMouseEnter: () => {
                         if (!sphere.current.moved) {
@@ -11612,14 +11765,14 @@ function Projects() {
                         /* @__PURE__ */ jsxs(
                           "div",
                           {
-                            className: "absolute -bottom-9 left-0 right-0 text-center pointer-events-none transition-all duration-300",
+                            className: "absolute -bottom-12 md:-bottom-9 -left-6 -right-6 md:left-0 md:right-0 text-center pointer-events-none transition-all duration-300",
                             style: {
                               opacity: hoveredIdx === i ? 1 : 0,
                               transform: hoveredIdx === i ? "translateY(0)" : "translateY(4px)"
                             },
                             children: [
-                              /* @__PURE__ */ jsx("p", { className: "text-[9px] font-mono uppercase tracking-widest text-neutral-500", children: project.tags?.[0] }),
-                              /* @__PURE__ */ jsx("h3", { className: "text-xs font-bold text-white leading-tight mt-0.5 line-clamp-1 px-1", children: project.title })
+                              /* @__PURE__ */ jsx("p", { className: "text-[8px] md:text-[9px] font-mono uppercase tracking-widest text-neutral-500", children: project.tags?.[0] }),
+                              /* @__PURE__ */ jsx("h3", { className: "text-[10px] md:text-xs font-bold text-white leading-tight mt-0.5 line-clamp-2 break-words px-1", children: project.title })
                             ]
                           }
                         ),
@@ -11688,8 +11841,8 @@ function Projects() {
               className: "absolute left-0 right-0 px-6 sm:px-10 py-4 pointer-events-auto",
               style: { opacity: 0 },
               children: /* @__PURE__ */ jsxs("div", { className: "max-w-3xl mx-auto", children: [
-                /* @__PURE__ */ jsx("p", { className: "text-[11px] font-mono uppercase tracking-widest text-neutral-400 mb-1", children: detail.project.tags?.[0] }),
-                /* @__PURE__ */ jsx("h2", { className: "text-2xl sm:text-4xl font-extrabold text-white font-display tracking-tight mb-2", children: detail.project.title }),
+                /* @__PURE__ */ jsx("p", { className: "text-[10px] sm:text-[11px] font-mono uppercase tracking-widest text-neutral-400 mb-1", children: detail.project.tags?.[0] }),
+                /* @__PURE__ */ jsx("h2", { className: "text-xl sm:text-3xl md:text-4xl font-extrabold text-white font-display tracking-tight mb-2 break-words leading-snug", children: detail.project.title }),
                 /* @__PURE__ */ jsx("p", { className: "text-neutral-300 text-sm sm:text-base leading-relaxed mb-4 max-w-2xl", children: detail.project.description }),
                 /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-center gap-3", children: [
                   /* @__PURE__ */ jsx("div", { className: "flex flex-wrap gap-2", children: detail.project.tags?.map((tag) => /* @__PURE__ */ jsx("span", { className: "text-[11px] font-mono px-3 py-1 rounded-full border border-white/20 text-neutral-300 bg-white/5", children: tag }, tag)) }),
@@ -12420,7 +12573,7 @@ function SafariDemo() {
     el.addEventListener("mouseleave", handleLeave);
   }, { scope: containerRef });
   return /* @__PURE__ */ jsxs("div", { ref: containerRef, className: "w-full py-4 sm:py-12 my-2 sm:my-6", children: [
-    /* @__PURE__ */ jsx("h2", { className: "safari-heading opacity-0 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight font-display mb-3 flex justify-center items-center px-4 text-center text-white", children: featuredProject.title || "Latest Projects" }),
+    /* @__PURE__ */ jsx("h2", { className: "safari-heading opacity-0 text-xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight font-display mb-3 flex justify-center items-center px-4 text-center text-white break-words leading-snug", children: featuredProject.title || "Latest Projects" }),
     /* @__PURE__ */ jsx("p", { className: "safari-sub opacity-0 mt-6 text-sm sm:text-base md:text-lg lg:text-xl text-center text-neutral-300 max-w-2xl mb-10 mx-auto px-4 leading-relaxed text-balance", children: featuredProject.description }),
     /* @__PURE__ */ jsx(
       "div",

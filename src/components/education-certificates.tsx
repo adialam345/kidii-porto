@@ -1,9 +1,9 @@
-import React, { useState, useRef, useCallback } from 'react'
+import React, { useState, useRef, useCallback, useEffect } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SplitText } from 'gsap/SplitText'
 import { useGSAP } from '@gsap/react'
-import { GraduationCap, Award, Calendar, MapPin, ExternalLink, BadgeCheck, X, Eye, FileText, Download } from 'lucide-react'
+import { GraduationCap, Award, Calendar, MapPin, ExternalLink, BadgeCheck, X, Eye, FileText, Download, ChevronDown, ChevronUp } from 'lucide-react'
 import { usePortfolioData, EducationItem, CertificateItem } from '@/lib/portfolio-store'
 
 if (typeof window !== 'undefined') {
@@ -51,13 +51,77 @@ export function EducationCertificates() {
   const { educationList, certificatesList } = usePortfolioData()
   const [activeTab, setActiveTab] = useState<'all' | 'education' | 'certificates'>('all')
   const [selectedCert, setSelectedCert] = useState<CertificateItem | null>(null)
+  const [showAllCerts, setShowAllCerts] = useState(false)
+
+  const INITIAL_CERT_LIMIT = 3
+  const hasMoreCerts = certificatesList.length > INITIAL_CERT_LIMIT
+  const displayedCerts = showAllCerts || !hasMoreCerts
+    ? certificatesList
+    : certificatesList.slice(0, INITIAL_CERT_LIMIT)
   
   const sectionRef = useRef<HTMLDivElement>(null)
+  const certsHeadingRef = useRef<HTMLDivElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
   const subRef = useRef<HTMLParagraphElement>(null)
   const labelRef = useRef<HTMLSpanElement>(null)
   const tabsRef = useRef<HTMLDivElement>(null)
   const certModalRef = useRef<HTMLDivElement>(null)
+  const isFirstRender = useRef(true)
+
+  const handleToggleCerts = () => {
+    if (showAllCerts) {
+      setShowAllCerts(false)
+      if (certsHeadingRef.current) {
+        certsHeadingRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      }
+    } else {
+      setShowAllCerts(true)
+    }
+  }
+
+  // Animate newly revealed certificates smoothly on expand
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+
+    if (showAllCerts) {
+      const extraCards = sectionRef.current?.querySelectorAll('.gsap-cert-card-extra')
+      if (extraCards && extraCards.length > 0) {
+        gsap.fromTo(
+          extraCards,
+          {
+            opacity: 0,
+            y: 35,
+            scale: 0.92,
+            rotationX: -12,
+            transformPerspective: 900,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            rotationX: 0,
+            duration: 0.55,
+            stagger: 0.08,
+            ease: 'back.out(1.4)',
+            force3D: true,
+            clearProps: 'transformPerspective',
+            onComplete: () => {
+              ScrollTrigger.refresh()
+            },
+          }
+        )
+      } else {
+        ScrollTrigger.refresh()
+      }
+    } else {
+      setTimeout(() => {
+        ScrollTrigger.refresh()
+      }, 60)
+    }
+  }, [showAllCerts])
 
   const handleOpenCert = (cert: CertificateItem) => {
     setSelectedCert(cert)
@@ -90,7 +154,7 @@ export function EducationCertificates() {
   // quickTo refs for magnetic tilt — 1 tween per card, reused each mousemove
   const tiltRefs = useRef<Map<Element, { qX: ReturnType<typeof gsap.quickTo>; qY: ReturnType<typeof gsap.quickTo> }>>(new Map())
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLElement> | MouseEvent) => {
     const el = e.currentTarget as HTMLElement
     let qt = tiltRefs.current.get(el)
     if (!qt) {
@@ -108,14 +172,14 @@ export function EducationCertificates() {
     gsap.to(el, { scale: 1.025, transformPerspective: 700, duration: 0.3, ease: 'power2.out', overwrite: 'auto' })
   }, [])
 
-  const handleMouseLeave = useCallback((e: MouseEvent) => {
+  const handleMouseLeave = useCallback((e: React.MouseEvent<HTMLElement> | MouseEvent) => {
     const el = e.currentTarget as HTMLElement
     const qt = tiltRefs.current.get(el)
     if (qt) { qt.qX(0); qt.qY(0) }
     gsap.to(el, { scale: 1, duration: 0.55, ease: 'power3.out', overwrite: 'auto' })
   }, [])
 
-  useGSAP((_, contextSafe) => {
+  useGSAP(() => {
     if (!sectionRef.current || !headingRef.current) return
 
     // ── SPLIT all text targets ─────────────────────────────────────────────
@@ -260,21 +324,7 @@ export function EducationCertificates() {
       },
     })
 
-    // ── 6. MAGNETIC TILT via quickTo ──────────────────────────────────────
-    const safeMoveHandler = contextSafe!(handleMouseMove)
-    const safeLeaveHandler = contextSafe!(handleMouseLeave)
-
-    const cards = sectionRef.current.querySelectorAll('.gsap-cert-card')
-    cards.forEach((card) => {
-      card.addEventListener('mousemove', safeMoveHandler as EventListener)
-      card.addEventListener('mouseleave', safeLeaveHandler as EventListener)
-    })
-
     return () => {
-      cards.forEach((card) => {
-        card.removeEventListener('mousemove', safeMoveHandler as EventListener)
-        card.removeEventListener('mouseleave', safeLeaveHandler as EventListener)
-      })
       // Revert all SplitText splits → restore original DOM
       headingSplit.revert()
       h3Splits.forEach(s => s.revert())
@@ -330,7 +380,10 @@ export function EducationCertificates() {
             ).map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  setActiveTab(tab.id)
+                  setShowAllCerts(false)
+                }}
                 className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
                   activeTab === tab.id
                     ? 'bg-white text-black shadow-lg scale-105'
@@ -367,6 +420,8 @@ export function EducationCertificates() {
                 {educationList.map((edu) => (
                   <div
                     key={edu.id}
+                    onMouseMove={handleMouseMove}
+                    onMouseLeave={handleMouseLeave}
                     className="gsap-cert-card relative bg-neutral-900/60 border border-white/10 hover:border-white/30 rounded-2xl p-6 sm:p-8 backdrop-blur-xl transition-colors duration-300"
                     style={{ willChange: 'transform, opacity', transformPerspective: 900 }}
                   >
@@ -426,7 +481,7 @@ export function EducationCertificates() {
           {/* SECTION 2: CERTIFICATIONS */}
           {(activeTab === 'all' || activeTab === 'certificates') && (
             <div>
-              <div className="flex items-center gap-3 mb-6">
+              <div ref={certsHeadingRef} className="flex items-center gap-3 mb-6">
                 <div className="w-9 h-9 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-white shrink-0">
                   <Award className="w-4 h-4" />
                 </div>
@@ -439,11 +494,15 @@ export function EducationCertificates() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {certificatesList.map((cert) => (
+                {displayedCerts.map((cert, index) => (
                   <div
                     key={cert.id}
                     onClick={() => handleOpenCert(cert)}
-                    className="gsap-cert-card group relative flex flex-col justify-between bg-neutral-900/60 border border-white/10 hover:border-white/30 rounded-2xl p-6 backdrop-blur-xl transition-all duration-300 cursor-pointer hover:shadow-[0_12px_40px_rgba(255,255,255,0.06)]"
+                    onMouseMove={handleMouseMove}
+                    onMouseLeave={handleMouseLeave}
+                    className={`gsap-cert-card group relative flex flex-col justify-between bg-neutral-900/60 border border-white/10 hover:border-white/30 rounded-2xl p-6 backdrop-blur-xl transition-all duration-300 cursor-pointer hover:shadow-[0_12px_40px_rgba(255,255,255,0.06)] ${
+                      index >= INITIAL_CERT_LIMIT ? 'gsap-cert-card-extra' : ''
+                    }`}
                     style={{ willChange: 'transform, opacity', transformPerspective: 900 }}
                   >
                     <div>
@@ -506,6 +565,28 @@ export function EducationCertificates() {
                   </div>
                 ))}
               </div>
+
+              {/* Show More / Show Less Button */}
+              {hasMoreCerts && (
+                <div className="mt-8 sm:mt-10 flex justify-center">
+                  <button
+                    type="button"
+                    onClick={handleToggleCerts}
+                    className="group relative inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-neutral-900/80 hover:bg-neutral-800 border border-white/15 hover:border-emerald-500/40 text-xs sm:text-sm font-semibold text-white transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.5)] hover:shadow-[0_0_25px_rgba(16,185,129,0.2)] active:scale-95 cursor-pointer backdrop-blur-md"
+                  >
+                    <span>
+                      {showAllCerts
+                        ? 'Tampilkan Lebih Sedikit'
+                        : `Lihat Lainnya (+${certificatesList.length - INITIAL_CERT_LIMIT})`}
+                    </span>
+                    {showAllCerts ? (
+                      <ChevronUp className="w-4 h-4 text-emerald-400 transition-transform duration-300 group-hover:-translate-y-0.5" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4 text-emerald-400 transition-transform duration-300 group-hover:translate-y-0.5" />
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -30,7 +30,8 @@ const POST = async ({ request }) => {
       const cleanName = path.basename(name || "file", ext).replace(/[^a-zA-Z0-9_-]/g, "_");
       fileName = `${cleanName}_${Date.now()}${ext}`;
     }
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
+    const isDev = process.env.NODE_ENV === "development";
+    const uploadsDir = isDev ? path.join(process.cwd(), "public", "uploads") : path.join(process.cwd(), "dist", "client", "uploads");
     if (!fs.existsSync(uploadsDir)) {
       fs.mkdirSync(uploadsDir, { recursive: true });
     }

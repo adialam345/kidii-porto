@@ -209,6 +209,24 @@ export async function initDatabase() {
           credentialUrl: "https://github.com/adialam345",
           pdfUrl: "",
           image: ""
+        },
+        {
+          title: "MikroTik Certified Network Associate (MTCNA)",
+          issuer: "MikroTik Academy / PNM",
+          issueDate: "2023",
+          skills: JSON.stringify(["MikroTik RouterOS", "Routing", "Subnetting", "Bandwidth Management", "Firewall"]),
+          credentialUrl: "https://github.com/adialam345",
+          pdfUrl: "",
+          image: ""
+        },
+        {
+          title: "IT & Network Technical Support Specialist",
+          issuer: "Notepro Teknikatama",
+          issueDate: "2023",
+          skills: JSON.stringify(["Network Infrastructure", "CCTV Surveillance", "Troubleshooting", "Hardware Maintenance"]),
+          credentialUrl: "https://github.com/adialam345",
+          pdfUrl: "",
+          image: ""
         }
       ];
 

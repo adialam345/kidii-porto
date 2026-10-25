@@ -108,6 +108,22 @@ export const initialCertificates: CertificateItem[] = [
     issueDate: "2023",
     skills: ["Kotlin", "Firebase", "IoT Sensors", "Material Design"],
     credentialUrl: "https://github.com/adialam345"
+  },
+  {
+    id: 4,
+    title: "MikroTik Certified Network Associate (MTCNA)",
+    issuer: "MikroTik Academy / PNM",
+    issueDate: "2023",
+    skills: ["MikroTik RouterOS", "Routing", "Subnetting", "Bandwidth Management", "Firewall"],
+    credentialUrl: "https://github.com/adialam345"
+  },
+  {
+    id: 5,
+    title: "IT & Network Technical Support Specialist",
+    issuer: "Notepro Teknikatama",
+    issueDate: "2023",
+    skills: ["Network Infrastructure", "CCTV Surveillance", "Troubleshooting", "Hardware Maintenance"],
+    credentialUrl: "https://github.com/adialam345"
   }
 ];
 
@@ -219,7 +235,13 @@ export function getStoredCertificates(): CertificateItem[] {
     const data = localStorage.getItem(CERTIFICATES_KEY);
     if (!data) return initialCertificates;
     const parsed: CertificateItem[] = JSON.parse(data);
-    return parsed.map((item) => {
+    const merged = [...parsed];
+    for (const init of initialCertificates) {
+      if (!merged.some(m => m.id === init.id || m.title.toLowerCase() === init.title.toLowerCase())) {
+        merged.push(init);
+      }
+    }
+    return merged.map((item) => {
       const match = initialCertificates.find((init) => init.id === item.id || init.title.toLowerCase() === item.title.toLowerCase());
       return {
         ...item,

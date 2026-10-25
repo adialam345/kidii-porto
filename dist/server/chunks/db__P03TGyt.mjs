@@ -186,6 +186,24 @@ async function initDatabase() {
           credentialUrl: "https://github.com/adialam345",
           pdfUrl: "",
           image: ""
+        },
+        {
+          title: "MikroTik Certified Network Associate (MTCNA)",
+          issuer: "MikroTik Academy / PNM",
+          issueDate: "2023",
+          skills: JSON.stringify(["MikroTik RouterOS", "Routing", "Subnetting", "Bandwidth Management", "Firewall"]),
+          credentialUrl: "https://github.com/adialam345",
+          pdfUrl: "",
+          image: ""
+        },
+        {
+          title: "IT & Network Technical Support Specialist",
+          issuer: "Notepro Teknikatama",
+          issueDate: "2023",
+          skills: JSON.stringify(["Network Infrastructure", "CCTV Surveillance", "Troubleshooting", "Hardware Maintenance"]),
+          credentialUrl: "https://github.com/adialam345",
+          pdfUrl: "",
+          image: ""
         }
       ];
       for (const c of initialCerts) {
@@ -194,6 +212,15 @@ async function initDatabase() {
           [c.title, c.issuer, c.issueDate, c.credentialUrl, c.pdfUrl, c.image, c.skills]
         );
       }
+    }
+    try {
+      await connection.query(`UPDATE certificates SET image = REPLACE(image, '.png', '.webp') WHERE image LIKE '%.png'`);
+      await connection.query(`UPDATE certificates SET image = REPLACE(image, '.jpg', '.webp') WHERE image LIKE '%.jpg'`);
+      await connection.query(`UPDATE projects SET image = REPLACE(image, '.png', '.webp') WHERE image LIKE '%.png'`);
+      await connection.query(`UPDATE projects SET image = REPLACE(image, '.jpg', '.webp') WHERE image LIKE '%.jpg'`);
+      await connection.query(`UPDATE profile SET profile_image = REPLACE(profile_image, '.jpg', '.webp') WHERE profile_image LIKE '%.jpg'`);
+    } catch (e) {
+      console.log("WebP auto-migration query executed");
     }
     connection.release();
     initialized = true;

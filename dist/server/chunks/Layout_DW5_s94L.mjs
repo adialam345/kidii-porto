@@ -1,4 +1,4 @@
-import { e as createComponent, g as addAttribute, n as renderHead, k as renderComponent, o as renderSlot, r as renderTemplate, h as createAstro } from './astro/server_CzcP1_xN.mjs';
+import { e as createAstro, f as createComponent, h as addAttribute, n as renderHead, k as renderComponent, o as renderSlot, r as renderTemplate } from './astro/server_DA5Sgb9R.mjs';
 import 'piccolore';
 /* empty css                         */
 import { useEffect } from 'react';
@@ -50,7 +50,7 @@ function SmoothScroll() {
   return null;
 }
 
-const $$Astro = createAstro();
+const $$Astro = createAstro("https://kidiepie.web.id");
 const $$Layout = createComponent(($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$Astro, $$props, $$slots);
   Astro2.self = $$Layout;
