@@ -35,19 +35,19 @@ export const POST: APIRoute = async ({ request }) => {
       fileName = `${cleanName}_${Date.now()}${ext}`;
     }
 
-    // In Astro standalone mode, static files are served from dist/client/
-    // In dev mode, they're served from public/
-    const isDev = process.env.NODE_ENV === 'development';
-    const uploadsDir = isDev
-      ? path.join(process.cwd(), 'public', 'uploads')
-      : path.join(process.cwd(), 'dist', 'client', 'uploads');
+    // Save to both public/uploads (permanent source) and dist/client/uploads (runtime serving)
+    const publicUploads = path.join(process.cwd(), 'public', 'uploads');
+    const distUploads = path.join(process.cwd(), 'dist', 'client', 'uploads');
 
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true });
+    if (!fs.existsSync(publicUploads)) {
+      fs.mkdirSync(publicUploads, { recursive: true });
+    }
+    if (!fs.existsSync(distUploads)) {
+      fs.mkdirSync(distUploads, { recursive: true });
     }
 
-    const filePath = path.join(uploadsDir, fileName);
-    fs.writeFileSync(filePath, buffer);
+    fs.writeFileSync(path.join(publicUploads, fileName), buffer);
+    fs.writeFileSync(path.join(distUploads, fileName), buffer);
 
     const publicUrl = `/uploads/${fileName}`;
 
